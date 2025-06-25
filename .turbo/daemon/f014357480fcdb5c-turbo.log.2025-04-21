@@ -1,0 +1,150 @@
+2025-04-21T17:31:49.180593Z  WARN daemon_server: turborepo_lib::commands::daemon: daemon already running
+2025-04-21T17:31:49.205459Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf(".turbo\\cookies\\.turbo-cookie"), AnchoredSystemPathBuf(".turbo\\cookies"), AnchoredSystemPathBuf(".turbo\\cookies\\1.cookie"), AnchoredSystemPathBuf(".turbo"), AnchoredSystemPathBuf(".turbo\\daemon")}
+2025-04-21T17:31:49.205514Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-04-21T17:31:49.403729Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf(".turbo\\cookies"), AnchoredSystemPathBuf("apps\\next\\.turbo"), AnchoredSystemPathBuf(".turbo\\cookies\\2.cookie"), AnchoredSystemPathBuf("apps\\next\\.turbo\\turbo-build.log")}
+2025-04-21T17:31:49.403758Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("next-app"), path: AnchoredSystemPathBuf("apps\\next") }, WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-04-21T17:31:49.542754Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf(".turbo\\daemon\\f014357480fcdb5c-turbo.log.2025-04-21"), AnchoredSystemPathBuf("apps\\next")}
+2025-04-21T17:31:49.542786Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }, WorkspacePackage { name: Other("next-app"), path: AnchoredSystemPathBuf("apps\\next") }}))
+2025-04-21T17:31:49.542846Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-04-21T17:31:50.800612Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf(".turbo\\cookies")}
+2025-04-21T17:31:50.800642Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-04-21T17:31:52.996666Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\next\\.next"), AnchoredSystemPathBuf("apps\\next")}
+2025-04-21T17:31:52.996699Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("next-app"), path: AnchoredSystemPathBuf("apps\\next") }}))
+2025-04-21T17:31:53.090208Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-04-21T17:31:59.993651Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\next\\.next")}
+2025-04-21T17:31:59.993672Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("next-app"), path: AnchoredSystemPathBuf("apps\\next") }}))
+2025-04-21T17:32:00.027628Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-04-21T17:32:00.300795Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\next\\.next")}
+2025-04-21T17:32:00.300825Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("next-app"), path: AnchoredSystemPathBuf("apps\\next") }}))
+2025-04-21T17:32:00.411766Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-04-21T17:32:03.591947Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\next\\.next")}
+2025-04-21T17:32:03.591966Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("next-app"), path: AnchoredSystemPathBuf("apps\\next") }}))
+2025-04-21T17:32:03.707554Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-04-21T17:32:04.092513Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\next\\.turbo\\turbo-build.log")}
+2025-04-21T17:32:04.092536Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("next-app"), path: AnchoredSystemPathBuf("apps\\next") }}))
+2025-04-21T17:32:41.000560Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\expo\\App.tsx")}
+2025-04-21T17:32:41.000587Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("expo-app"), path: AnchoredSystemPathBuf("apps\\expo") }}))
+2025-04-21T17:33:33.498049Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-pages\\src\\screens\\HomeScreen.tsx")}
+2025-04-21T17:33:33.498073Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/pages"), path: AnchoredSystemPathBuf("packages\\shared-pages") }}))
+2025-04-21T17:34:18.692372Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\expo\\package.json")}
+2025-04-21T17:34:18.692393Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("expo-app"), path: AnchoredSystemPathBuf("apps\\expo") }}))
+2025-04-21T17:34:19.397359Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("package-lock.json")}
+2025-04-21T17:34:19.397378Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-04-21T17:35:05.205178Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-pages\\src\\screens\\HomeScreen.tsx")}
+2025-04-21T17:35:05.205205Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/pages"), path: AnchoredSystemPathBuf("packages\\shared-pages") }}))
+2025-04-21T17:36:45.505054Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\expo\\package.json")}
+2025-04-21T17:36:45.505085Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("expo-app"), path: AnchoredSystemPathBuf("apps\\expo") }}))
+2025-04-21T17:36:46.498825Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("package-lock.json")}
+2025-04-21T17:36:46.498863Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-04-21T17:37:15.195401Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-pages\\src\\index.ts")}
+2025-04-21T17:37:15.195440Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/pages"), path: AnchoredSystemPathBuf("packages\\shared-pages") }}))
+2025-04-21T17:38:07.993070Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\expo\\package.json")}
+2025-04-21T17:38:07.993093Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("expo-app"), path: AnchoredSystemPathBuf("apps\\expo") }}))
+2025-04-21T17:38:08.796150Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("package-lock.json")}
+2025-04-21T17:38:08.796178Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-04-21T17:40:06.603968Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-pages\\src\\index.ts")}
+2025-04-21T17:40:06.603994Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/pages"), path: AnchoredSystemPathBuf("packages\\shared-pages") }}))
+2025-04-21T17:40:27.301618Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\expo"), AnchoredSystemPathBuf("apps\\expo\\navigation"), AnchoredSystemPathBuf("apps\\expo\\navigation\\index.tsx")}
+2025-04-21T17:40:27.301648Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("expo-app"), path: AnchoredSystemPathBuf("apps\\expo") }}))
+2025-04-21T17:40:40.495319Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\expo\\App.tsx")}
+2025-04-21T17:40:40.495341Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("expo-app"), path: AnchoredSystemPathBuf("apps\\expo") }}))
+2025-04-21T17:46:49.497441Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("package.json")}
+2025-04-21T17:46:49.497472Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(All)
+2025-04-21T17:46:50.801457Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("package-lock.json")}
+2025-04-21T17:46:50.801490Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-04-21T17:47:23.896837Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-pages\\tsconfig.json")}
+2025-04-21T17:47:23.896917Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/pages"), path: AnchoredSystemPathBuf("packages\\shared-pages") }}))
+2025-04-21T17:49:52.792579Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\next\\.next")}
+2025-04-21T17:49:52.792606Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("next-app"), path: AnchoredSystemPathBuf("apps\\next") }}))
+2025-04-21T17:49:52.880466Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-04-21T17:49:53.192153Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\next\\.next")}
+2025-04-21T17:49:53.192198Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("next-app"), path: AnchoredSystemPathBuf("apps\\next") }}))
+2025-04-21T17:49:53.414385Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-04-21T17:49:53.414739Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\next\\.next")}
+2025-04-21T17:49:53.414756Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("next-app"), path: AnchoredSystemPathBuf("apps\\next") }}))
+2025-04-21T17:49:53.414787Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-04-21T17:50:00.900724Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\next\\.next")}
+2025-04-21T17:50:00.900751Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("next-app"), path: AnchoredSystemPathBuf("apps\\next") }}))
+2025-04-21T17:50:01.077151Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-04-21T17:50:36.999027Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\next\\pages\\home\\index.tsx")}
+2025-04-21T17:50:36.999060Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("next-app"), path: AnchoredSystemPathBuf("apps\\next") }}))
+2025-04-21T17:51:33.495413Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-pages\\src\\screens\\HomeScreen.tsx")}
+2025-04-21T17:51:33.495446Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/pages"), path: AnchoredSystemPathBuf("packages\\shared-pages") }}))
+2025-04-21T17:52:10.397801Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-pages\\src\\screens\\HomeScreen.tsx")}
+2025-04-21T17:52:10.397841Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/pages"), path: AnchoredSystemPathBuf("packages\\shared-pages") }}))
+2025-04-21T17:52:27.005491Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-pages\\src\\screens\\HomeScreen.tsx")}
+2025-04-21T17:52:27.005562Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/pages"), path: AnchoredSystemPathBuf("packages\\shared-pages") }}))
+2025-04-21T17:52:58.596829Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-pages\\src\\screens\\HomeScreen.tsx")}
+2025-04-21T17:52:58.596859Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/pages"), path: AnchoredSystemPathBuf("packages\\shared-pages") }}))
+2025-04-21T17:53:56.602639Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-components"), AnchoredSystemPathBuf("packages\\shared-components\\index.d.ts")}
+2025-04-21T17:53:56.602667Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/components"), path: AnchoredSystemPathBuf("packages\\shared-components") }}))
+2025-04-21T17:54:07.095245Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-components\\package.json")}
+2025-04-21T17:54:07.095277Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/components"), path: AnchoredSystemPathBuf("packages\\shared-components") }}))
+2025-04-21T17:54:44.697233Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-pages\\src\\screens\\HomeScreen.tsx")}
+2025-04-21T17:54:44.697261Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/pages"), path: AnchoredSystemPathBuf("packages\\shared-pages") }}))
+2025-04-21T17:56:16.607449Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-pages\\src\\screens\\HomeScreen.tsx")}
+2025-04-21T17:56:16.607486Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/pages"), path: AnchoredSystemPathBuf("packages\\shared-pages") }}))
+2025-04-21T17:58:49.897357Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-components\\src\\index.ts")}
+2025-04-21T17:58:49.897390Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/components"), path: AnchoredSystemPathBuf("packages\\shared-components") }}))
+2025-04-21T17:59:15.794917Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-components\\src\\index.ts")}
+2025-04-21T17:59:15.794941Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/components"), path: AnchoredSystemPathBuf("packages\\shared-components") }}))
+2025-04-21T17:59:45.408110Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-components\\src\\index.ts")}
+2025-04-21T17:59:45.408135Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/components"), path: AnchoredSystemPathBuf("packages\\shared-components") }}))
+2025-04-21T18:00:05.392803Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-components\\src\\index.ts")}
+2025-04-21T18:00:05.392827Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/components"), path: AnchoredSystemPathBuf("packages\\shared-components") }}))
+2025-04-21T18:00:21.907519Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-pages\\src\\screens\\HomeScreen.tsx")}
+2025-04-21T18:00:21.907547Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/pages"), path: AnchoredSystemPathBuf("packages\\shared-pages") }}))
+2025-04-21T18:00:38.105109Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-pages\\src\\screens\\HomeScreen.tsx")}
+2025-04-21T18:00:38.105129Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/pages"), path: AnchoredSystemPathBuf("packages\\shared-pages") }}))
+2025-04-21T18:01:11.903611Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\next\\.next")}
+2025-04-21T18:01:11.903637Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("next-app"), path: AnchoredSystemPathBuf("apps\\next") }}))
+2025-04-21T18:01:11.941095Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-04-21T18:01:12.196834Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\next\\.next")}
+2025-04-21T18:01:12.196857Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("next-app"), path: AnchoredSystemPathBuf("apps\\next") }}))
+2025-04-21T18:01:12.426908Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-04-21T18:01:12.996351Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\next\\.next")}
+2025-04-21T18:01:12.996369Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("next-app"), path: AnchoredSystemPathBuf("apps\\next") }}))
+2025-04-21T18:01:13.059168Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-04-21T18:02:11.202315Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-pages\\src\\screens\\HomeScreen.tsx")}
+2025-04-21T18:02:11.202336Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/pages"), path: AnchoredSystemPathBuf("packages\\shared-pages") }}))
+2025-04-21T18:05:50.395642Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-pages\\src\\screens\\HomeScreen.tsx")}
+2025-04-21T18:05:50.395673Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/pages"), path: AnchoredSystemPathBuf("packages\\shared-pages") }}))
+2025-04-21T18:06:27.602634Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-components\\src\\WebHeader.tsx")}
+2025-04-21T18:06:27.602662Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/components"), path: AnchoredSystemPathBuf("packages\\shared-components") }}))
+2025-04-21T18:06:27.780349Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-components\\src")}
+2025-04-21T18:06:27.780365Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/components"), path: AnchoredSystemPathBuf("packages\\shared-components") }}))
+2025-04-21T18:06:27.780382Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-04-21T18:06:36.508206Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-components\\src\\index.ts")}
+2025-04-21T18:06:36.508236Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/components"), path: AnchoredSystemPathBuf("packages\\shared-components") }}))
+2025-04-21T18:06:43.098238Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-pages\\src\\screens\\HomeScreen.tsx")}
+2025-04-21T18:06:43.098265Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/pages"), path: AnchoredSystemPathBuf("packages\\shared-pages") }}))
+2025-04-21T18:07:18.292861Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-components\\src\\WebHeader.tsx")}
+2025-04-21T18:07:18.292884Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/components"), path: AnchoredSystemPathBuf("packages\\shared-components") }}))
+2025-04-21T18:07:25.003520Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\next\\pages\\web-exclusive"), AnchoredSystemPathBuf("apps\\next\\pages\\web-exclusive\\index.tsx")}
+2025-04-21T18:07:25.003543Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("next-app"), path: AnchoredSystemPathBuf("apps\\next") }}))
+2025-04-21T18:07:25.167959Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\next\\pages")}
+2025-04-21T18:07:25.167978Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("next-app"), path: AnchoredSystemPathBuf("apps\\next") }}))
+2025-04-21T18:07:25.168029Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-04-21T18:07:55.695875Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-components\\src\\WebHeader.tsx")}
+2025-04-21T18:07:55.695909Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/components"), path: AnchoredSystemPathBuf("packages\\shared-components") }}))
+2025-04-21T18:08:12.002149Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\next\\pages\\about"), AnchoredSystemPathBuf("apps\\next\\pages\\about\\index.tsx"), AnchoredSystemPathBuf("apps\\next\\pages")}
+2025-04-21T18:08:12.002180Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("next-app"), path: AnchoredSystemPathBuf("apps\\next") }}))
+2025-04-21T18:09:29.805027Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-pages\\src\\screens\\HomeScreen.tsx")}
+2025-04-21T18:09:29.805063Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/pages"), path: AnchoredSystemPathBuf("packages\\shared-pages") }}))
+2025-04-21T18:10:15.201045Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\next\\pages\\about")}
+2025-04-21T18:10:15.201069Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("next-app"), path: AnchoredSystemPathBuf("apps\\next") }}))
+2025-04-21T18:10:15.351032Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\next\\pages")}
+2025-04-21T18:10:15.351049Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("next-app"), path: AnchoredSystemPathBuf("apps\\next") }}))
+2025-04-21T18:10:15.351071Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-04-21T18:10:18.007632Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-components\\src\\WebHeader.tsx")}
+2025-04-21T18:10:18.007655Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/components"), path: AnchoredSystemPathBuf("packages\\shared-components") }}))
+2025-04-21T18:11:42.193009Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\next\\pages\\home\\index.tsx")}
+2025-04-21T18:11:42.193035Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("next-app"), path: AnchoredSystemPathBuf("apps\\next") }}))
+2025-04-21T18:12:35.094858Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-components\\src\\WebHeader.tsx")}
+2025-04-21T18:12:35.094926Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/components"), path: AnchoredSystemPathBuf("packages\\shared-components") }}))
+2025-04-21T18:15:19.892549Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-pages\\src\\screens\\HomeScreen.tsx")}
+2025-04-21T18:15:19.892585Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/pages"), path: AnchoredSystemPathBuf("packages\\shared-pages") }}))
+2025-04-21T20:39:05.102018Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("package-lock.json")}
+2025-04-21T20:39:05.102042Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-04-21T20:42:19.307745Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages\\shared-components\\src\\WebHeader.tsx")}
+2025-04-21T20:42:19.307776Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@shared/components"), path: AnchoredSystemPathBuf("packages\\shared-components") }}))

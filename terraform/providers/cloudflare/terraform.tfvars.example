@@ -1,0 +1,134 @@
+# Cloudflare Authentication
+cloudflare_api_token = "your-cloudflare-api-token"
+cloudflare_email     = "your-email@example.com"
+cloudflare_account_id = "your-cloudflare-account-id"
+
+# Tags to apply to resources
+tags = {
+  Environment = "production"
+  ManagedBy   = "terraform"
+  Project     = "multi-cloud-demo"
+}
+
+# DNS Zones Configuration
+dns_zones = {
+  "example.com" = {
+    plan = "free"
+    apply_settings = true
+    enable_dnssec = true
+    settings = {
+      always_use_https = "on"
+      ssl = "full"
+    }
+  },
+  "demo.example.com" = {
+    plan = "free"
+    type = "full"
+  }
+}
+
+# DNS Records
+dns_records = [
+  {
+    zone_name = "example.com"
+    name      = "@"
+    value     = "203.0.113.1"
+    type      = "A"
+    proxied   = true
+  },
+  {
+    zone_name = "example.com"
+    name      = "www"
+    value     = "example.com"
+    type      = "CNAME"
+    proxied   = true
+  },
+  {
+    zone_name = "example.com"
+    name      = "api"
+    value     = "203.0.113.2"
+    type      = "A"
+    proxied   = true
+  },
+  {
+    zone_name = "example.com"
+    name      = "_acme-challenge"
+    value     = "validate-dns.example.org"
+    type      = "CNAME"
+    proxied   = false
+  }
+]
+
+# WAF Configuration
+waf_filters = [
+  {
+    zone_id     = "zone-id-placeholder"
+    description = "Block SQL Injection Attempts"
+    expression  = "(http.request.uri.path contains \"wp-login.php\" or http.request.uri.path contains \"wp-admin\")"
+  }
+]
+
+waf_firewall_rules = [
+  {
+    zone_id    = "zone-id-placeholder"
+    filter_idx = 0
+    description = "Block WordPress Login Attempts"
+    action     = "block"
+  }
+]
+
+waf_rate_limits = [
+  {
+    zone_id   = "zone-id-placeholder"
+    threshold = 100
+    period    = 60
+    match = {
+      request = {
+        methods     = ["GET", "POST"]
+        schemes     = ["HTTP", "HTTPS"]
+        url_pattern = "/api/*"
+      }
+    }
+    action = {
+      mode = "challenge"
+    }
+  }
+]
+
+# Page Rules Configuration
+page_rules = [
+  {
+    zone_id = "zone-id-placeholder"
+    target  = "example.com/blog/*"
+    actions = {
+      cache_level = "cache_everything"
+      edge_cache_ttl = 86400
+    }
+  },
+  {
+    zone_id = "zone-id-placeholder"
+    target  = "example.com/old-page"
+    actions = {
+      forwarding_url = {
+        url = "https://example.com/new-page"
+        status_code = 301
+      }
+    }
+  }
+]
+
+# Workers Configuration
+worker_scripts = [
+  {
+    name    = "geo-redirect"
+    content = "addEventListener('fetch', event => { event.respondWith(handleRequest(event.request)) }); async function handleRequest(request) { const country = request.headers.get('CF-IPCountry'); if (country === 'US') { return Response.redirect('https://us.example.com', 302); } return fetch(request); }"
+  }
+]
+
+worker_routes = [
+  {
+    zone_id     = "zone-id-placeholder"
+    pattern     = "example.com/*"
+    script_name = "geo-redirect"
+  }
+]

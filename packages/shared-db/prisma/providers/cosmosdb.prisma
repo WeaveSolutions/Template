@@ -1,0 +1,56 @@
+// Azure CosmosDB Provider Schema
+generator cosmosClient {
+  provider        = "prisma-client-js"
+  output          = "../../../node_modules/.prisma/client-cosmosdb"
+}
+
+// IMPORTANT: This schema file is designed to be used INDEPENDENTLY, not with other schemas.
+// When used with other schemas, validation errors may appear due to Prisma limitations.
+// Use the following command to generate a client just for this schema:
+//   PRISMA_SCHEMA=prisma/providers/cosmosdb.prisma npx prisma generate
+
+// CosmosDB uses MongoDB API, so we use the mongodb provider
+datasource cosmosdb {
+  provider = "mongodb"
+  url      = env("COSMOS_DB_URI")
+}
+
+// Models for Azure CosmosDB
+model CosmosUser {
+  id        String     @id @default(auto()) @map("_id") @cosmosdb.ObjectId
+  email     String     @unique
+  name      String?
+  password  String
+  // Replaced list with a single role field since lists of primitives aren't supported
+  role      String
+  posts     CosmosPost[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@map("cosmos_users")
+  @@index([createdAt], name: "cosmos_user_created_at_idx")
+}
+
+model CosmosPost {
+  id        String   @id @default(auto()) @map("_id") @cosmosdb.ObjectId
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  author    CosmosUser @relation(fields: [authorId], references: [id])
+  authorId  String   @cosmosdb.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("cosmos_posts")
+  @@index([authorId], name: "cosmos_post_author_id_idx")
+  @@index([published], name: "cosmos_post_published_idx")
+}
+
+// CosmosDB Role enum using String values for MongoDB compatibility
+enum CosmosRole {
+  USER
+  ADMIN
+  EDITOR
+
+  @@map("cosmos_roles")
+}

@@ -1,0 +1,7 @@
+
+> @shared/hooks@1.0.0 lint E:\Workspace\Templates\Nexpo\packages\shared-hooks
+> eslint . --ext .ts,.tsx
+
+'eslint' is not recognized as an internal or external command,
+operable program or batch file.
+ ELIFECYCLE  Command failed with exit code 1.

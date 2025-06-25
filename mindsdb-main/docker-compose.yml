@@ -1,0 +1,137 @@
+version: '3.8'
+
+# Feature flags for cloud providers
+x-feature-flags: &feature-flags
+  # Set to 'true' to enable each provider
+  ENABLE_AWS: ${ENABLE_AWS:-false}
+  ENABLE_GCP: ${ENABLE_GCP:-false}
+  ENABLE_AZURE: ${ENABLE_AZURE:-false}
+  ENABLE_OCI: ${ENABLE_OCI:-false}
+  ENABLE_AUTH0: ${ENABLE_AUTH0:-false}
+
+services:
+  # Main MindsDB service with MCP (Model Control Plane) support
+  mindsdb:
+    image: mindsdb/mindsdb:v25.6.2.0
+    container_name: mindsdb_mindsdb
+    ports:
+      - "${MINDSDB_HTTP_PORT:-47334}:47334"  # MindsDB HTTP API
+      - "${MINDSDB_MYSQL_PORT:-47335}:47335"  # MindsDB MySQL API
+      - "${MINDSDB_MONGODB_PORT:-47336}:47336"  # MindsDB MongoDB API
+      - "${MINDSDB_MCP_PORT:-5500}:5500"    # MCP Port
+    environment:
+      # Core Configuration
+      MINDSDB_STORAGE_DIR: ${MINDSDB_STORAGE_DIR:-/data}
+      MINDSDB_CONFIG: ${MINDSDB_CONFIG_PATH:-/config/config.json}
+      
+      # Feature Flags
+      <<: *feature-flags
+      
+      # MCP (Model Control Plane) Configuration
+      MCP_ENABLED: 'true'
+      MCP_PORT: '${MINDSDB_MCP_PORT:-5500}'
+      MCP_STORAGE_PATH: /data/mcp
+      MCP_MODEL_STORE: /data/mcp_models
+      MCP_DATABASE_URI: ${MINDSDB_DATABASE_URI:-postgresql://mindsdb:mindsdb123@postgres:5432/mindsdb}
+      
+      # Cloud Provider Configurations (dynamically set based on feature flags)
+      # AWS Configuration
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-us-east-1}
+      AWS_S3_BUCKET: ${AWS_S3_BUCKET:-mindsdb-bucket}
+      
+      # GCP Configuration
+      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS:-/config/gcp-credentials.json}
+      GCP_PROJECT_ID: ${GCP_PROJECT_ID:-}
+      GCP_DATASET: ${GCP_DATASET:-mindsdb}
+      
+      # Azure Configuration
+      AZURE_TENANT_ID: ${AZURE_TENANT_ID:-}
+      AZURE_CLIENT_ID: ${AZURE_CLIENT_ID:-}
+      AZURE_CLIENT_SECRET: ${AZURE_CLIENT_SECRET:-}
+      AZURE_SUBSCRIPTION_ID: ${AZURE_SUBSCRIPTION_ID:-}
+      AZURE_CONTAINER_NAME: ${AZURE_CONTAINER_NAME:-mindsdb-container}
+      AZURE_STORAGE_CONNECTION_STRING: ${AZURE_STORAGE_CONNECTION_STRING:-}
+      
+      # OCI Configuration
+      OCI_USER_OCID: ${OCI_USER_OCID:-}
+      OCI_TENANCY_OCID: ${OCI_TENANCY_OCID:-}
+      OCI_FINGERPRINT: ${OCI_FINGERPRINT:-}
+      OCI_REGION: ${OCI_REGION:-}
+      OCI_COMPARTMENT_ID: ${OCI_COMPARTMENT_ID:-}
+      OCI_KEY_FILE: ${OCI_KEY_FILE:-/config/oci-key.pem}
+      OCI_BUCKET_NAME: ${OCI_BUCKET_NAME:-mindsdb-bucket}
+      
+      # Auth0 Configuration
+      AUTH0_DOMAIN: ${AUTH0_DOMAIN:-}
+      AUTH0_CLIENT_ID: ${AUTH0_CLIENT_ID:-}
+      AUTH0_CLIENT_SECRET: ${AUTH0_CLIENT_SECRET:-}
+      AUTH0_CONNECTION: ${AUTH0_CONNECTION:-Username-Password-Authentication}
+      
+      # Logging and Debugging
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      DEBUG: ${DEBUG:-false}
+      
+    volumes:
+      - mindsdb_data:/data
+      - mcp_data:/data/mcp
+      - mcp_models:/data/mcp_models
+      - ./config:/config:ro
+      - ./integrations:/integrations:ro
+    networks:
+      - mindsdb_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:47334/api/util/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - redis
+
+  # Optional: Redis for caching
+  redis:
+    image: redis:7-alpine
+    container_name: mindsdb_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - mindsdb_network
+    restart: unless-stopped
+
+  # Optional: PostgreSQL for metadata storage
+  postgres:
+    image: postgres:15-alpine
+    container_name: mindsdb_postgres
+    environment:
+      POSTGRES_DB: mindsdb
+      POSTGRES_USER: ${POSTGRES_USER:-mindsdb}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mindsdb123}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - mindsdb_network
+    restart: unless-stopped
+
+volumes:
+  mindsdb_data:
+    driver: local
+  mcp_data:
+    driver: local
+  mcp_models:
+    driver: local
+  redis_data:
+    driver: local
+  postgres_data:
+    driver: local
+
+networks:
+  mindsdb_network:
+    driver: bridge

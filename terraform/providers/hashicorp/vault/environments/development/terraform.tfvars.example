@@ -1,0 +1,56 @@
+# HashiCorp Vault Development Environment Configuration
+
+# Vault Server Configuration
+vault_address = "https://vault-dev.example.com:8200"
+vault_token   = "your-vault-development-token"
+
+# Feature Configuration
+enable_database_secrets = true
+enable_jwt_auth        = true
+enable_userpass_auth   = true   # Development only
+enable_audit_logging   = false  # Disabled for development simplicity
+
+# Database Configuration
+database_connection_url = "postgresql://{{username}}:{{password}}@localhost:5432/nextjs_dev?sslmode=disable"
+database_username      = "vault"
+database_password      = "vault-dev-password"
+database_name          = "nextjs_dev"
+
+# JWT Authentication Configuration
+jwt_discovery_url = "https://auth-dev.example.com/.well-known/openid_configuration"
+jwt_issuer       = "https://auth-dev.example.com"
+jwt_audience     = "next-solito-expo-dev"
+jwt_subject      = "app-service"
+
+# Application Secrets (Development Values)
+jwt_secret     = "development-jwt-secret-change-in-production"
+api_key        = "development-api-key-change-in-production"
+encryption_key = "dev-encryption-key-32-characters!!"
+webhook_secret = "development-webhook-secret-change-me"
+
+# Developer Access (Development Only)
+developer_password = "developer-password-123"
+
+# Development Environment Features:
+# - Single Vault node for simplicity
+# - In-memory storage backend
+# - Userpass auth for easy developer access
+# - No audit logging to reduce complexity
+# - Basic secret engines (KV v2, Database)
+# - Simple JWT auth for application integration
+# - Pre-configured secrets for immediate use
+# - Developer-friendly policies
+
+# Security Notes for Development:
+# - Use default secrets for rapid development
+# - Enable userpass auth for easy access
+# - Database credentials are static for simplicity
+# - JWT secrets are shared across environment
+# - No production-grade security measures
+
+# Usage:
+# 1. Start local Vault dev server: vault server -dev
+# 2. Export VAULT_ADDR=http://localhost:8200
+# 3. Export VAULT_TOKEN=<dev-token>
+# 4. Apply Terraform configuration
+# 5. Access secrets via vault CLI or application

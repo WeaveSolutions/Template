@@ -1,0 +1,60 @@
+// Microsoft SQL Server Provider Schema
+generator sqlserverClient {
+  provider        = "prisma-client-js"
+  output          = "../../../node_modules/.prisma/client-sqlserver"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource sqlserverdb {
+  provider = "sqlserver"
+  url      = env("SQLSERVER_URL")
+  schemas  = ["public", "dbo"]
+}
+
+// Models for SQL Server
+model SqlServerUser {
+  id        String         @id @default(cuid()) @map("id") @sqlserverdb.VarChar(30)
+  email     String         @unique @sqlserverdb.VarChar(255)
+  name      String?        @sqlserverdb.VarChar(255)
+  posts     SqlServerPost[]
+  roles     SqlServerRole[]
+  createdAt DateTime       @default(now()) @sqlserverdb.DateTime2
+  updatedAt DateTime       @updatedAt @sqlserverdb.DateTime2
+  deletedAt DateTime?      @sqlserverdb.DateTime2
+
+  @@map("sqlserver_users")
+  @@index([email])
+  @@index([createdAt])
+  @@schema("dbo")
+}
+
+model SqlServerPost {
+  id          String         @id @default(cuid()) @map("id") @sqlserverdb.VarChar(30)
+  title       String         @sqlserverdb.VarChar(255)
+  content     String?        @sqlserverdb.Text
+  published   Boolean        @default(false)
+  authorId    String         @sqlserverdb.VarChar(30)
+  author      SqlServerUser  @relation(fields: [authorId], references: [id])
+  createdAt   DateTime       @default(now()) @sqlserverdb.DateTime2
+  updatedAt   DateTime       @updatedAt @sqlserverdb.DateTime2
+  deletedAt   DateTime?      @sqlserverdb.DateTime2
+
+  @@index([authorId])
+  @@index([published])
+  @@map("sqlserver_posts")
+  @@schema("dbo")
+}
+
+model SqlServerRole {
+  id          String         @id @default(cuid()) @map("id") @sqlserverdb.VarChar(30)
+  name        String         @unique @sqlserverdb.VarChar(50)
+  description String?        @sqlserverdb.Text
+  userId      String         @sqlserverdb.VarChar(30)
+  user        SqlServerUser  @relation(fields: [userId], references: [id])
+  createdAt   DateTime       @default(now()) @sqlserverdb.DateTime2
+
+  @@index([name])
+  @@index([userId])
+  @@map("sqlserver_roles")
+  @@schema("dbo")
+}

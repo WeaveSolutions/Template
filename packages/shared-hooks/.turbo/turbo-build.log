@@ -1,0 +1,183 @@
+
+> @shared/hooks@1.0.0 build E:\Workspace\Templates\Nexpo\packages\shared-hooks
+> tsc
+
+../shared-utils/src/ditto-cloud-sync.ts(318,3): error TS1128: Declaration or statement expected.
+../shared-utils/src/ditto-cloud-sync.ts(320,21): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(320,40): error TS1005: ';' expected.
+../shared-utils/src/ditto-cloud-sync.ts(327,3): error TS1434: Unexpected keyword or identifier.
+../shared-utils/src/ditto-cloud-sync.ts(327,21): error TS1005: ';' expected.
+../shared-utils/src/ditto-cloud-sync.ts(327,35): error TS1109: Expression expected.
+../shared-utils/src/ditto-cloud-sync.ts(329,11): error TS1005: ':' expected.
+../shared-utils/src/ditto-cloud-sync.ts(329,44): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(331,18): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(331,27): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(331,29): error TS1136: Property assignment expected.
+../shared-utils/src/ditto-cloud-sync.ts(367,3): error TS1128: Declaration or statement expected.
+../shared-utils/src/ditto-cloud-sync.ts(372,18): error TS1005: ';' expected.
+../shared-utils/src/ditto-cloud-sync.ts(373,10): error TS1359: Identifier expected. 'const' is a reserved word that cannot be used here.
+../shared-utils/src/ditto-cloud-sync.ts(373,16): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(373,24): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(373,27): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(373,31): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(373,50): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(373,52): error TS1136: Property assignment expected.
+../shared-utils/src/ditto-cloud-sync.ts(386,3): error TS1128: Declaration or statement expected.
+../shared-utils/src/ditto-cloud-sync.ts(391,17): error TS1005: ';' expected.
+../shared-utils/src/ditto-cloud-sync.ts(392,10): error TS1359: Identifier expected. 'const' is a reserved word that cannot be used here.
+../shared-utils/src/ditto-cloud-sync.ts(392,16): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(392,36): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(392,39): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(392,43): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(392,64): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(392,66): error TS1136: Property assignment expected.
+../shared-utils/src/ditto-cloud-sync.ts(398,3): error TS1128: Declaration or statement expected.
+../shared-utils/src/ditto-cloud-sync.ts(403,3): error TS1434: Unexpected keyword or identifier.
+../shared-utils/src/ditto-cloud-sync.ts(403,18): error TS1005: ';' expected.
+../shared-utils/src/ditto-cloud-sync.ts(403,32): error TS1109: Expression expected.
+../shared-utils/src/ditto-cloud-sync.ts(404,10): error TS1359: Identifier expected. 'const' is a reserved word that cannot be used here.
+../shared-utils/src/ditto-cloud-sync.ts(404,16): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(404,24): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(404,27): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(404,31): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(404,50): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(404,52): error TS1136: Property assignment expected.
+../shared-utils/src/ditto-cloud-sync.ts(407,3): error TS1128: Declaration or statement expected.
+../shared-utils/src/ditto-cloud-sync.ts(412,3): error TS1434: Unexpected keyword or identifier.
+../shared-utils/src/ditto-cloud-sync.ts(412,31): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(412,51): error TS1005: ';' expected.
+../shared-utils/src/ditto-cloud-sync.ts(412,65): error TS1109: Expression expected.
+../shared-utils/src/ditto-cloud-sync.ts(413,11): error TS1005: ':' expected.
+../shared-utils/src/ditto-cloud-sync.ts(413,84): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(416,13): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(416,44): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(416,46): error TS1136: Property assignment expected.
+../shared-utils/src/ditto-cloud-sync.ts(539,3): error TS1128: Declaration or statement expected.
+../shared-utils/src/ditto-cloud-sync.ts(544,3): error TS1128: Declaration or statement expected.
+../shared-utils/src/ditto-cloud-sync.ts(544,36): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(544,51): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(544,66): error TS1011: An element access expression should take an argument.
+../shared-utils/src/ditto-cloud-sync.ts(544,68): error TS1005: ';' expected.
+../shared-utils/src/ditto-cloud-sync.ts(544,70): error TS1434: Unexpected keyword or identifier.
+../shared-utils/src/ditto-cloud-sync.ts(593,3): error TS1128: Declaration or statement expected.
+../shared-utils/src/ditto-cloud-sync.ts(593,36): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(593,51): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(593,66): error TS1011: An element access expression should take an argument.
+../shared-utils/src/ditto-cloud-sync.ts(593,68): error TS1005: ';' expected.
+../shared-utils/src/ditto-cloud-sync.ts(593,70): error TS1434: Unexpected keyword or identifier.
+../shared-utils/src/ditto-cloud-sync.ts(630,3): error TS1128: Declaration or statement expected.
+../shared-utils/src/ditto-cloud-sync.ts(630,32): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(630,48): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(630,63): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(630,78): error TS1011: An element access expression should take an argument.
+../shared-utils/src/ditto-cloud-sync.ts(630,80): error TS1005: ';' expected.
+../shared-utils/src/ditto-cloud-sync.ts(630,82): error TS1434: Unexpected keyword or identifier.
+../shared-utils/src/ditto-cloud-sync.ts(666,18): error TS1005: ';' expected.
+../shared-utils/src/ditto-cloud-sync.ts(666,81): error TS1005: ';' expected.
+../shared-utils/src/ditto-cloud-sync.ts(677,3): error TS1434: Unexpected keyword or identifier.
+../shared-utils/src/ditto-cloud-sync.ts(677,18): error TS1005: ';' expected.
+../shared-utils/src/ditto-cloud-sync.ts(677,32): error TS1109: Expression expected.
+../shared-utils/src/ditto-cloud-sync.ts(678,9): error TS1005: ':' expected.
+../shared-utils/src/ditto-cloud-sync.ts(678,24): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(680,10): error TS1359: Identifier expected. 'const' is a reserved word that cannot be used here.
+../shared-utils/src/ditto-cloud-sync.ts(680,16): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(680,23): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(680,26): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(680,30): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(680,49): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(680,51): error TS1136: Property assignment expected.
+../shared-utils/src/ditto-cloud-sync.ts(685,3): error TS1128: Declaration or statement expected.
+../shared-utils/src/ditto-cloud-sync.ts(686,1): error TS1128: Declaration or statement expected.
+
+E:\Workspace\Templates\Nexpo\packages\shared-hooks>XT:;.JS;=; 
+'XT:' is not recognized as an internal or external command,
+operable program or batch file.
+
+E:\Workspace\Templates\Nexpo\packages\shared-hooks>node  "E:\Workspace\Templates\Nexpo\packages\shared-hooks\node_modules\.bin\\..\..\..\..\node_modules\.pnpm\typescript@5.8.3\node_modules\typescript\bin\tsc"  
+../shared-utils/src/ditto-cloud-sync.ts(318,3): error TS1128: Declaration or statement expected.
+../shared-utils/src/ditto-cloud-sync.ts(320,21): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(320,40): error TS1005: ';' expected.
+../shared-utils/src/ditto-cloud-sync.ts(327,3): error TS1434: Unexpected keyword or identifier.
+../shared-utils/src/ditto-cloud-sync.ts(327,21): error TS1005: ';' expected.
+../shared-utils/src/ditto-cloud-sync.ts(327,35): error TS1109: Expression expected.
+../shared-utils/src/ditto-cloud-sync.ts(329,11): error TS1005: ':' expected.
+../shared-utils/src/ditto-cloud-sync.ts(329,44): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(331,18): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(331,27): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(331,29): error TS1136: Property assignment expected.
+../shared-utils/src/ditto-cloud-sync.ts(367,3): error TS1128: Declaration or statement expected.
+../shared-utils/src/ditto-cloud-sync.ts(372,18): error TS1005: ';' expected.
+../shared-utils/src/ditto-cloud-sync.ts(373,10): error TS1359: Identifier expected. 'const' is a reserved word that cannot be used here.
+../shared-utils/src/ditto-cloud-sync.ts(373,16): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(373,24): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(373,27): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(373,31): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(373,50): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(373,52): error TS1136: Property assignment expected.
+../shared-utils/src/ditto-cloud-sync.ts(386,3): error TS1128: Declaration or statement expected.
+../shared-utils/src/ditto-cloud-sync.ts(391,17): error TS1005: ';' expected.
+../shared-utils/src/ditto-cloud-sync.ts(392,10): error TS1359: Identifier expected. 'const' is a reserved word that cannot be used here.
+../shared-utils/src/ditto-cloud-sync.ts(392,16): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(392,36): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(392,39): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(392,43): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(392,64): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(392,66): error TS1136: Property assignment expected.
+../shared-utils/src/ditto-cloud-sync.ts(398,3): error TS1128: Declaration or statement expected.
+../shared-utils/src/ditto-cloud-sync.ts(403,3): error TS1434: Unexpected keyword or identifier.
+../shared-utils/src/ditto-cloud-sync.ts(403,18): error TS1005: ';' expected.
+../shared-utils/src/ditto-cloud-sync.ts(403,32): error TS1109: Expression expected.
+../shared-utils/src/ditto-cloud-sync.ts(404,10): error TS1359: Identifier expected. 'const' is a reserved word that cannot be used here.
+../shared-utils/src/ditto-cloud-sync.ts(404,16): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(404,24): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(404,27): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(404,31): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(404,50): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(404,52): error TS1136: Property assignment expected.
+../shared-utils/src/ditto-cloud-sync.ts(407,3): error TS1128: Declaration or statement expected.
+../shared-utils/src/ditto-cloud-sync.ts(412,3): error TS1434: Unexpected keyword or identifier.
+../shared-utils/src/ditto-cloud-sync.ts(412,31): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(412,51): error TS1005: ';' expected.
+../shared-utils/src/ditto-cloud-sync.ts(412,65): error TS1109: Expression expected.
+../shared-utils/src/ditto-cloud-sync.ts(413,11): error TS1005: ':' expected.
+../shared-utils/src/ditto-cloud-sync.ts(413,84): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(416,13): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(416,44): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(416,46): error TS1136: Property assignment expected.
+../shared-utils/src/ditto-cloud-sync.ts(539,3): error TS1128: Declaration or statement expected.
+../shared-utils/src/ditto-cloud-sync.ts(544,3): error TS1128: Declaration or statement expected.
+../shared-utils/src/ditto-cloud-sync.ts(544,36): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(544,51): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(544,66): error TS1011: An element access expression should take an argument.
+../shared-utils/src/ditto-cloud-sync.ts(544,68): error TS1005: ';' expected.
+../shared-utils/src/ditto-cloud-sync.ts(544,70): error TS1434: Unexpected keyword or identifier.
+../shared-utils/src/ditto-cloud-sync.ts(593,3): error TS1128: Declaration or statement expected.
+../shared-utils/src/ditto-cloud-sync.ts(593,36): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(593,51): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(593,66): error TS1011: An element access expression should take an argument.
+../shared-utils/src/ditto-cloud-sync.ts(593,68): error TS1005: ';' expected.
+../shared-utils/src/ditto-cloud-sync.ts(593,70): error TS1434: Unexpected keyword or identifier.
+../shared-utils/src/ditto-cloud-sync.ts(630,3): error TS1128: Declaration or statement expected.
+../shared-utils/src/ditto-cloud-sync.ts(630,32): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(630,48): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(630,63): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(630,78): error TS1011: An element access expression should take an argument.
+../shared-utils/src/ditto-cloud-sync.ts(630,80): error TS1005: ';' expected.
+../shared-utils/src/ditto-cloud-sync.ts(630,82): error TS1434: Unexpected keyword or identifier.
+../shared-utils/src/ditto-cloud-sync.ts(666,18): error TS1005: ';' expected.
+../shared-utils/src/ditto-cloud-sync.ts(666,81): error TS1005: ';' expected.
+../shared-utils/src/ditto-cloud-sync.ts(677,3): error TS1434: Unexpected keyword or identifier.
+../shared-utils/src/ditto-cloud-sync.ts(677,18): error TS1005: ';' expected.
+../shared-utils/src/ditto-cloud-sync.ts(677,32): error TS1109: Expression expected.
+../shared-utils/src/ditto-cloud-sync.ts(678,9): error TS1005: ':' expected.
+../shared-utils/src/ditto-cloud-sync.ts(678,24): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(680,10): error TS1359: Identifier expected. 'const' is a reserved word that cannot be used here.
+../shared-utils/src/ditto-cloud-sync.ts(680,16): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(680,23): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(680,26): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(680,30): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(680,49): error TS1005: ',' expected.
+../shared-utils/src/ditto-cloud-sync.ts(680,51): error TS1136: Property assignment expected.
+../shared-utils/src/ditto-cloud-sync.ts(685,3): error TS1128: Declaration or statement expected.
+../shared-utils/src/ditto-cloud-sync.ts(686,1): error TS1128: Declaration or statement expected.
+ ELIFECYCLE  Command failed with exit code 2.

@@ -1,15 +1,26 @@
 {
   "name": "@shared/pages",
   "version": "0.1.0",
-  "main": "index.ts",
-  "types": "index.ts",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "solito": "^3.1.0",
-    "react": "18.2.0",
-    "react-native": "0.72.4"
+    "@shared/provider": "workspace:*",
+    "@shared/components": "workspace:*",
+    "solito": "^4.4.1",
+    "react": "^18.3.1",
+    "react-native": "0.73.2"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "0.73.2"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.17",
+    "@types/react-native": "^0.73.0",
+    "typescript": "^5.0.0"
   }
 }

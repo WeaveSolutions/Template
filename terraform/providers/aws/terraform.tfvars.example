@@ -1,0 +1,52 @@
+# AWS Provider Configuration Example
+
+# AWS Region
+aws_region = "us-east-1"
+availability_zones = ["us-east-1a", "us-east-1b"]
+
+# Networking
+vpc_cidr = "10.0.0.0/16"
+public_subnet_cidrs = ["10.0.1.0/24", "10.0.2.0/24"]
+private_subnet_cidrs = ["10.0.10.0/24", "10.0.11.0/24"]
+database_subnet_cidrs = ["10.0.20.0/24", "10.0.21.0/24"]
+
+# Database
+db_instance_class = "db.t3.micro"  # For dev. Use db.r6g.large for prod
+db_allocated_storage = 20
+db_backup_retention_period = 7
+enable_read_replica = false  # Set to true for production
+
+# App Runner
+app_runner_cpu = "0.25 vCPU"
+app_runner_memory = "0.5 GB"
+app_runner_max_concurrency = 100
+app_runner_max_size = 3
+app_runner_min_size = 1
+
+# Storage
+enable_versioning = true
+lifecycle_archive_days = 90
+lifecycle_delete_days = 365
+
+# CDN
+enable_cdn = true
+cdn_price_class = "PriceClass_100"  # Use PriceClass_All for global
+
+# Security
+enable_waf = false  # Enable for production
+allowed_ip_ranges = ["0.0.0.0/0"]  # Restrict in production
+
+# Monitoring
+alarm_email_endpoints = ["your-email@example.com"]
+enable_detailed_monitoring = false  # Enable for production
+log_retention_days = 30
+
+# Cost Optimization
+enable_spot_instances = false  # Can enable for dev environments
+
+# Tagging
+tags = {
+  Environment = "dev"
+  ManagedBy   = "Terraform"
+  Project     = "NextSolitoExpo"
+}

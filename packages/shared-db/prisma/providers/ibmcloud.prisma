@@ -1,0 +1,62 @@
+// IBM Cloud DB2 Provider Schema
+generator ibmcloudClient {
+  provider        = "prisma-client-js"
+  output          = "../../../node_modules/.prisma/client-ibmcloud"
+  previewFeatures = ["multiSchema"]
+}
+
+// Environment variables should be set in .env file
+// For IBM Cloud DB2, we'll use a PostgreSQL connector since Prisma doesn't have native DB2 support
+// DB2_URL should use a format compatible with PostgreSQL: "postgresql://user:password@hostname:port/database"
+datasource ibmcloud {
+  provider = "postgresql"
+  url      = env("DB2_URL")
+  schemas  = ["public", "ibm"]
+}
+
+// Define IBM Cloud user model
+model IbmcloudUser {
+  id             String         @id @default(uuid()) @ibmcloud.Uuid
+  email          String         @unique @ibmcloud.VarChar(255)
+  name           String?        @ibmcloud.VarChar(255)
+  imageUrl       String?        @map("image_url") @ibmcloud.VarChar(500)
+  createdAt      DateTime       @default(now()) @map("created_at") @ibmcloud.Timestamp
+  updatedAt      DateTime       @updatedAt @map("updated_at") @ibmcloud.Timestamp
+  deletedAt      DateTime?      @map("deleted_at") @ibmcloud.Timestamp
+  role           IbmcloudRole   @default(USER) @map("role")
+  posts          IbmcloudPost[] @relation("IbmcloudPostToUser")
+
+  @@map("ibmcloud_users")
+  @@index([email])
+  @@index([createdAt])
+  @@schema("public")
+}
+
+// Define IBM Cloud post model
+model IbmcloudPost {
+  id          String       @id @default(uuid()) @ibmcloud.Uuid
+  title       String       @ibmcloud.VarChar(255)
+  content     String?      @ibmcloud.Text
+  published   Boolean      @default(false)
+  authorId    String       @map("author_id") @ibmcloud.Uuid
+  createdAt   DateTime     @default(now()) @map("created_at") @ibmcloud.Timestamp
+  updatedAt   DateTime     @updatedAt @map("updated_at") @ibmcloud.Timestamp
+  deletedAt   DateTime?    @map("deleted_at") @ibmcloud.Timestamp
+  author      IbmcloudUser @relation("IbmcloudPostToUser", fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@map("ibmcloud_posts")
+  @@index([authorId])
+  @@index([published])
+  @@schema("public")
+}
+
+// Define IBM Cloud role enum
+// Using a native enum for PostgreSQL
+enum IbmcloudRole {
+  USER
+  ADMIN
+  EDITOR
+
+  @@map("ibmcloud_roles")
+  @@schema("public")
+}

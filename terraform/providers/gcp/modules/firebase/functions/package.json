@@ -1,0 +1,18 @@
+{
+  "name": "firebase-auth0-integration",
+  "version": "1.0.0",
+  "description": "Cloud Functions for Auth0 and Firebase integration",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.3.0",
+    "firebase-admin": "^12.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "jwks-rsa": "^3.1.0"
+  },
+  "engines": {
+    "node": "20"
+  }
+}

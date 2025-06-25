@@ -1,0 +1,218 @@
+# IBM Cloud Provider Configuration
+ibmcloud_api_key = "your-ibm-cloud-api-key"
+region           = "us-south"
+zone             = "us-south-1"
+
+# Project Information
+project_name     = "Nexpo"
+environment      = "dev"
+
+# Tags
+tags = [
+  "project:Nexpo",
+  "environment:dev",
+  "owner:terraform",
+  "managed-by:terraform"
+]
+
+# VPC Network Configuration
+vpc_name = "ibm-vpc"
+vpc_subnets = [
+  {
+    name = "subnet-1"
+    cidr = "10.10.10.0/24"
+    zone = "us-south-1"
+    public_gateway = true
+  },
+  {
+    name = "subnet-2"
+    cidr = "10.10.20.0/24"
+    zone = "us-south-2"
+    public_gateway = false
+  },
+  {
+    name = "subnet-3"
+    cidr = "10.10.30.0/24"
+    zone = "us-south-3"
+    public_gateway = false
+  }
+]
+
+vpc_security_groups = [
+  {
+    name = "web-sg"
+    rules = [
+      {
+        name      = "allow-http"
+        direction = "inbound"
+        remote    = "0.0.0.0/0"
+        tcp = {
+          port_min = 80
+          port_max = 80
+        }
+      },
+      {
+        name      = "allow-https"
+        direction = "inbound"
+        remote    = "0.0.0.0/0"
+        tcp = {
+          port_min = 443
+          port_max = 443
+        }
+      },
+      {
+        name      = "allow-ssh"
+        direction = "inbound"
+        remote    = "0.0.0.0/0"
+        tcp = {
+          port_min = 22
+          port_max = 22
+        }
+      }
+    ]
+  },
+  {
+    name = "app-sg"
+    rules = [
+      {
+        name      = "allow-web-to-app"
+        direction = "inbound"
+        remote    = "10.10.10.0/24"
+        tcp = {
+          port_min = 8080
+          port_max = 8080
+        }
+      }
+    ]
+  }
+]
+
+# Compute Configuration
+instances = [
+  {
+    name     = "web-server"
+    profile  = "cx2-2x4"
+    image    = "ibm-ubuntu-20-04-minimal-amd64-2"
+    zone     = "us-south-1"
+    user_data = <<-EOF
+      #!/bin/bash
+      apt-get update
+      apt-get install -y nginx
+      systemctl enable nginx
+      systemctl start nginx
+    EOF
+  },
+  {
+    name     = "app-server"
+    profile  = "cx2-4x8"
+    image    = "ibm-ubuntu-20-04-minimal-amd64-2"
+    zone     = "us-south-2"
+    user_data = <<-EOF
+      #!/bin/bash
+      apt-get update
+      apt-get install -y nodejs npm
+      npm install -g pm2
+    EOF
+  }
+]
+
+ssh_keys = [
+  {
+    name       = "ssh-key-1"
+    public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCj7ndNxQowgcQnjshcLrqPEiiphnt+VTTvDP6mHBL9j1aNUkY4Ue1gvwnGLVlOhGeYrnZaMgRK6+PKCUXaDbC7qtbW8gIkhL7aGCsOr/C56SJMy/BCZfxd1nWzAOxSDPgVsmerOBYfNqltV9/hWCqBywINIR+5dIg6JTJ72pcEpEjcYgXkE2YEFXV1JHnsKgbLWNlhScqb2UmyRkQyytRLtL+38TGxkxCflmO+5Z8CSSNY7GidjMIZ7Q4zMjA2n1nGrlTDkzwDCsw+wqFPGQA179cnfGWOWRVruj16z6XyvxvjJwbz0wQZ75XK5tKSb7FNyeIEs4TT4jk+S4dhPeAUC5y+bDYirYgM4GC7uEnztnZyaVWQ7B381AK4Qdrwt51ZqExKbQpTUNn+EjqoTwvqNj8duwPFMfP5FIcp/0G0mq66v8Nvl6JCyNwH8TdR4XLYYnuD38PU/Ex7DYnRaSHpjiOt2uyDa+7d6i8C/l5UpZFm3888jwJnDC5Ghal4YnZ81lw="
+  }
+]
+
+# Kubernetes Configuration
+enable_kubernetes = true
+kubernetes_cluster_name = "Nexpo-cluster"
+kubernetes_worker_count = 2
+kubernetes_machine_type = "bx2-4x16"
+kubernetes_version = "1.26"
+kubernetes_flavor = "kubernetes"
+
+# Storage Configuration
+cos_instances = [
+  {
+    name = "app-storage"
+    plan = "standard"
+    buckets = [
+      {
+        name = "app-assets"
+        storage_class = "standard"
+      },
+      {
+        name = "app-backups"
+        storage_class = "standard"
+      }
+    ]
+  }
+]
+
+block_volumes = [
+  {
+    name = "app-data"
+    profile = "general-purpose"
+    capacity = 100
+    zone = "us-south-1"
+  }
+]
+
+# Database Configuration
+enable_databases = true
+db_instances = [
+  {
+    name = "postgres-db"
+    type = "databases-for-postgresql"
+    plan = "standard"
+    version = "12"
+    adminuser = "postgres"
+  }
+]
+
+# Cloudant Configuration
+enable_cloudant = true
+cloudant_instances = [
+  {
+    name = "app-nosql-db"
+    plan = "standard"
+    databases = [
+      {
+        name = "users"
+        partitioned = false
+      },
+      {
+        name = "sessions"
+        partitioned = true
+      }
+    ]
+  }
+]
+
+# Power VS Configuration
+enable_power_vs = false
+power_vs_zone = "dal12"
+power_vs_instances = []
+power_vs_networks = []
+power_vs_volumes = []
+
+# Security Configuration
+kms_instances = [
+  {
+    name = "app-key-protect"
+    plan = "tiered-pricing"
+    keys = [
+      {
+        name = "app-encryption-key"
+        standard_key = false
+        rotation = 3
+      }
+    ]
+  }
+]
+
+# Schematics Configuration
+enable_schematics = false
+schematics_workspace_name = "app-terraform-workspace"
+schematics_template_repo_url = ""
+schematics_template_git_branch = "main"

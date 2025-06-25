@@ -1,0 +1,43 @@
+# Common Configuration
+project_name = "my-project"
+environment  = "dev"
+
+# Auth0 Configuration
+auth0_domain   = "your-tenant.auth0.com"
+auth0_audience = "https://api.your-project.com"
+
+# CORS Configuration
+allowed_origins = [
+  "https://your-frontend.com",
+  "http://localhost:3000"
+]
+
+# AWS Configuration
+enable_aws = true
+aws_region = "us-east-1"
+
+# GCP Configuration
+enable_gcp = false
+gcp_project_id = "your-gcp-project-id"
+gcp_region     = "us-central1"
+
+# Azure Configuration
+enable_azure = false
+azurerm_location            = "eastus"
+azurerm_resource_group_name = "my-resource-group"
+
+# OCI Configuration
+enable_oci = false
+oci_region           = "us-ashburn-1"
+oci_compartment_ocid = "ocid1.compartment.oc1..example"
+
+# Monitoring
+alert_emails = ["alerts@your-company.com"]
+slack_webhook_url = "https://hooks.slack.com/services/..."
+
+# Tags
+tags = {
+  Team        = "Platform"
+  Environment = "dev"
+  ManagedBy   = "terraform"
+}

@@ -1,12 +1,5 @@
-import { createSolitoRouter } from 'solito';
-import { HomeScreen } from './screens/HomeScreen';
-
-export const router = createSolitoRouter({
-  initialRouteName: 'home',
-  routes: {
-    home: {
-      component: HomeScreen,
-      path: '/',
-    },
-  },
-});
+export { default as HomeScreen } from './screens/HomeScreen';
+export { default as LoginScreen } from './screens/LoginScreen';
+export * from './screens/DashboardScreen';
+export * from './screens/ProfileScreen';
+export * from './screens/ForgotPasswordScreen';

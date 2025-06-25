@@ -1,0 +1,42 @@
+// MongoDB Provider Schema
+generator mongodbClient {
+  provider = "prisma-client-js"
+  output   = "../../../node_modules/.prisma/client-mongodb"
+}
+
+// IMPORTANT: This schema file is designed to be used INDEPENDENTLY, not with other schemas.
+// When used with other schemas, validation errors may appear due to Prisma limitations.
+// Use the following command to generate a client just for this schema:
+//   PRISMA_SCHEMA=prisma/providers/mongodb.prisma npx prisma generate
+
+datasource mongodb {
+  provider = "mongodb"
+  url      = env("MONGODB_URI")
+}
+
+// Models for MongoDB
+model MongodbUser {
+  id        String        @id @default(auto()) @map("_id") @mongodb.ObjectId
+  email     String        @unique
+  name      String?
+  password  String
+  role      String
+  posts     MongodbPost[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("mongodb_users")
+}
+
+model MongodbPost {
+  id          String      @id @default(auto()) @map("_id") @mongodb.ObjectId
+  title       String
+  content     String?
+  published   Boolean     @default(false)
+  authorId    String      @mongodb.ObjectId
+  author      MongodbUser @relation(fields: [authorId], references: [id])
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("mongodb_posts")
+}

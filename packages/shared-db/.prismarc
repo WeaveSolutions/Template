@@ -1,0 +1,6 @@
+{
+  "schema": "prisma/schema.prisma",
+  "generate": {
+    "provider": "prisma-client-js"
+  }
+}

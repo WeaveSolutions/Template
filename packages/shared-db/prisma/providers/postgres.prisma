@@ -1,0 +1,64 @@
+// PostgreSQL Provider Schema with Prisma Accelerate Support
+generator postgresClient {
+  provider        = "prisma-client-js"
+  output          = "../../../node_modules/.prisma/client-postgres"
+  previewFeatures = ["multiSchema", "relationJoins"]
+}
+
+// PostgreSQL Datasource with Prisma Accelerate Support
+// Uses POSTGRES_ACCELERATE_URL for production (high-performance)
+// Falls back to POSTGRES_PRISMA_URL for local development
+datasource pgdb {
+  provider  = "postgresql"
+  url       = env("POSTGRES_ACCELERATE_URL")
+  directUrl = env("POSTGRES_PRISMA_URL")
+  schemas   = ["public"]
+}
+
+// Common models for PostgreSQL
+model PostgresUser {
+  id        String         @id @default(cuid()) @map("id") @pgdb.VarChar(30)
+  email     String         @unique @pgdb.VarChar(255)
+  name      String?        @pgdb.VarChar(255)
+  posts     PostgresPost[]
+  roles     PostgresRole[]
+  createdAt DateTime       @default(now()) @pgdb.Timestamp(6)
+  updatedAt DateTime       @updatedAt @pgdb.Timestamp(6)
+  deletedAt DateTime?      @pgdb.Timestamp(6)
+  
+  @@index([email])
+  @@index([createdAt])
+  @@map("pg_users")
+  @@schema("public")
+}
+
+model PostgresPost {
+  id          String       @id @default(cuid()) @map("id") @pgdb.VarChar(30)
+  title       String       @pgdb.VarChar(255)
+  content     String?      @pgdb.Text
+  published   Boolean      @default(false)
+  authorId    String       @pgdb.VarChar(30)
+  author      PostgresUser @relation(fields: [authorId], references: [id])
+  createdAt   DateTime     @default(now()) @pgdb.Timestamp(6)
+  updatedAt   DateTime     @updatedAt @pgdb.Timestamp(6)
+  deletedAt   DateTime?    @pgdb.Timestamp(6)
+
+  @@index([authorId])
+  @@index([published])
+  @@map("pg_posts")
+  @@schema("public")
+}
+
+model PostgresRole {
+  id          String       @id @default(cuid()) @map("id") @pgdb.VarChar(30)
+  name        String       @unique @pgdb.VarChar(50)
+  description String?      @pgdb.Text
+  userId      String       @pgdb.VarChar(30)
+  user        PostgresUser @relation(fields: [userId], references: [id])
+  createdAt   DateTime     @default(now()) @pgdb.Timestamp(6)
+
+  @@index([name])
+  @@index([userId])
+  @@map("pg_roles")
+  @@schema("public")
+}

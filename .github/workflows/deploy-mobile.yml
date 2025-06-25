@@ -1,0 +1,217 @@
+name: Deploy Mobile App
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/expo/**'
+      - 'packages/**'
+      - '!packages/shared-db/prisma/providers/**'
+      - '!**.md'
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build type'
+        required: true
+        default: 'preview'
+        type: choice
+        options:
+          - preview
+          - development
+          - production
+      platform:
+        description: 'Platform to build'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - android
+          - ios
+      database_providers:
+        description: 'Enable database providers (comma-separated list)'
+        required: false
+        default: 'postgres'
+        type: string
+
+jobs:
+  deploy-mobile:
+    name: Deploy Expo App
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'yarn'
+          
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+        
+      - name: Setup environment variables
+        run: |
+          # Parse enabled providers from input or use default
+          PROVIDERS="${{ github.event.inputs.database_providers || 'postgres' }}"
+          IFS=',' read -ra PROVIDER_ARRAY <<< "$PROVIDERS"
+          
+          # Create .env file
+          echo "EXPO_PUBLIC_APP_ENV=${{ github.event.inputs.build_type || 'preview' }}" > apps/expo/.env
+          
+          # Set feature flags based on enabled providers
+          for provider in "${PROVIDER_ARRAY[@]}"; do
+            case $provider in
+              postgres)
+                echo "EXPO_PUBLIC_ENABLE_POSTGRES=true" >> apps/expo/.env
+                echo "EXPO_PUBLIC_POSTGRES_CONNECTION_STRING=${{ secrets.POSTGRES_CONNECTION_STRING || '' }}" >> apps/expo/.env
+                ;;
+              mongodb)
+                echo "EXPO_PUBLIC_ENABLE_MONGODB=true" >> apps/expo/.env
+                echo "EXPO_PUBLIC_MONGODB_CONNECTION_STRING=${{ secrets.MONGODB_CONNECTION_STRING || '' }}" >> apps/expo/.env
+                ;;
+              supabase)
+                echo "EXPO_PUBLIC_ENABLE_SUPABASE=true" >> apps/expo/.env
+                echo "EXPO_PUBLIC_SUPABASE_URL=${{ secrets.SUPABASE_URL || '' }}" >> apps/expo/.env
+                echo "EXPO_PUBLIC_SUPABASE_API_KEY=${{ secrets.SUPABASE_API_KEY || '' }}" >> apps/expo/.env
+                ;;
+              cosmosdb)
+                echo "EXPO_PUBLIC_ENABLE_COSMOSDB=true" >> apps/expo/.env
+                echo "EXPO_PUBLIC_COSMOSDB_CONNECTION_STRING=${{ secrets.COSMOSDB_CONNECTION_STRING || '' }}" >> apps/expo/.env
+                echo "EXPO_PUBLIC_COSMOSDB_DATABASE_NAME=${{ secrets.COSMOSDB_DATABASE_NAME || '' }}" >> apps/expo/.env
+                ;;
+              sqlserver)
+                echo "EXPO_PUBLIC_ENABLE_SQLSERVER=true" >> apps/expo/.env
+                echo "EXPO_PUBLIC_SQLSERVER_CONNECTION_STRING=${{ secrets.SQLSERVER_CONNECTION_STRING || '' }}" >> apps/expo/.env
+                echo "EXPO_PUBLIC_SQLSERVER_SCHEMA=${{ secrets.SQLSERVER_SCHEMA || '' }}" >> apps/expo/.env
+                ;;
+              ibmcloud)
+                echo "EXPO_PUBLIC_ENABLE_IBM=true" >> apps/expo/.env
+                echo "EXPO_PUBLIC_IBMCLOUD_CONNECTION_STRING=${{ secrets.IBMCLOUD_CONNECTION_STRING || '' }}" >> apps/expo/.env
+                ;;
+              firebase)
+                echo "EXPO_PUBLIC_ENABLE_FIREBASE=true" >> apps/expo/.env
+                echo "EXPO_PUBLIC_FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID || '' }}" >> apps/expo/.env
+                echo "EXPO_PUBLIC_FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY || '' }}" >> apps/expo/.env
+                echo "EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=${{ secrets.FIREBASE_AUTH_DOMAIN || '' }}" >> apps/expo/.env
+                # Make sure GCP is enabled flag is set for Firebase initialization
+                echo "EXPO_PUBLIC_ENABLE_GCP=true" >> apps/expo/.env
+                ;;
+              aws-rds)
+                echo "EXPO_PUBLIC_ENABLE_AWS_RDS=true" >> apps/expo/.env
+                echo "EXPO_PUBLIC_AWS_REGION=${{ secrets.AWS_REGION || '' }}" >> apps/expo/.env
+                echo "EXPO_PUBLIC_AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID || '' }}" >> apps/expo/.env
+                echo "EXPO_PUBLIC_AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY || '' }}" >> apps/expo/.env
+                echo "EXPO_PUBLIC_AWS_RDS_CONNECTION_STRING=${{ secrets.AWS_RDS_CONNECTION_STRING || '' }}" >> apps/expo/.env
+                echo "EXPO_PUBLIC_AWS_RDS_ENGINE_TYPE=${{ secrets.AWS_RDS_ENGINE_TYPE || '' }}" >> apps/expo/.env
+                ;;
+              aws-s3)
+                echo "EXPO_PUBLIC_ENABLE_AWS_S3=true" >> apps/expo/.env
+                echo "EXPO_PUBLIC_AWS_REGION=${{ secrets.AWS_REGION || '' }}" >> apps/expo/.env
+                echo "EXPO_PUBLIC_AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID || '' }}" >> apps/expo/.env
+                echo "EXPO_PUBLIC_AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY || '' }}" >> apps/expo/.env
+                echo "EXPO_PUBLIC_AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME || '' }}" >> apps/expo/.env
+                ;;
+              *)
+                echo "Unknown provider: $provider" >&2
+                ;;
+            esac
+          done
+          
+          # Auth0 configuration
+          echo "EXPO_PUBLIC_AUTH0_DOMAIN=${{ secrets.AUTH0_DOMAIN || '' }}" >> apps/expo/.env
+          echo "EXPO_PUBLIC_AUTH0_CLIENT_ID=${{ secrets.AUTH0_CLIENT_ID || '' }}" >> apps/expo/.env
+        shell: bash
+          
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN || '' }}
+          
+      - name: Determine platform parameter
+        id: set-platform
+        run: |
+          if [ "${{ github.event.inputs.platform }}" = "all" ]; then
+            echo "platform_param=''" >> $GITHUB_OUTPUT
+          else
+            echo "platform_param=--platform ${{ github.event.inputs.platform }}" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
+        
+      - name: Build mobile app
+        run: |
+          cd apps/expo
+          eas build --profile ${{ github.event.inputs.build_type || 'preview' }} ${{ steps.set-platform.outputs.platform_param }} --non-interactive
+        
+      - name: Submit to stores (production only)
+        if: ${{ github.event.inputs.build_type == 'production' }}
+        run: |
+          cd apps/expo
+          eas submit --platform ${{ github.event.inputs.platform == 'all' && 'all' || github.event.inputs.platform }} --non-interactive
+        env:
+          EXPO_APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.EXPO_APPLE_APP_SPECIFIC_PASSWORD || '' }}
+          
+  notify:
+    name: Notify deployment
+    needs: deploy-mobile
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Send Slack notification
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": "Mobile App Deployment: ${{ needs.deploy-mobile.result == 'success' && '✅ Success' || '❌ Failed' }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Mobile App Deployment*: ${{ needs.deploy-mobile.result == 'success' && '✅ Success' || '❌ Failed' }}"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Build Type:*\n${{ github.event.inputs.build_type || 'preview' }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Platform:*\n${{ github.event.inputs.platform || 'all' }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Providers:*\n${{ github.event.inputs.database_providers || 'postgres' }}"
+                  }
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Workflow"
+                      },
+                      "url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL || '' }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK

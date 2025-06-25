@@ -1,0 +1,34 @@
+# DigitalOcean Staging Environment Configuration
+
+# Provider Configuration
+digitalocean_access_token = "dop_v1_your_access_token_here"
+digitalocean_region       = "nyc3"
+
+# Network Configuration
+digitalocean_vpc_cidr = "10.20.0.0/16"
+enable_vpc           = true
+
+# App Platform Configuration
+enable_app_platform          = true
+app_platform_instance_count  = 2
+app_platform_instance_size   = "basic-xs"
+app_platform_repo_url        = "https://github.com/your-username/next-solito-expo"
+app_platform_branch          = "staging"
+
+# Database Configuration
+enable_managed_database = true
+database_cluster_size   = "db-s-1vcpu-2gb"
+
+# Storage Configuration
+enable_spaces = true
+enable_cdn    = true
+
+# Domain Configuration
+domain_name = "your-domain.com"
+subdomain   = "staging"
+
+# Staging Environment Features
+# - Higher instance count for load testing
+# - Larger database for data volume testing
+# - CDN enabled for performance testing
+# - Versioning and lifecycle rules enabled

@@ -1,0 +1,52 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "jsx": "react-native",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "lib": ["esnext", "dom", "dom.iterable"],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "esnext",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": false,
+    "baseUrl": ".",
+    "paths": {
+      "@repo/shared-hooks": ["../shared-hooks/src/index.ts"],
+      "@repo/shared-hooks/*": ["../shared-hooks/src/*"],
+      "@repo/shared-provider": ["../shared-provider/src/index.ts"],
+      "@repo/shared-provider/*": ["../shared-provider/src/*"],
+      "@repo/shared-utils": ["../shared-utils/src/index.ts"],
+      "@repo/shared-utils/*": ["../shared-utils/src/*"],
+      "@repo/shared-components": ["./src/index.ts"],
+      "@repo/shared-components/*": ["./src/*"]
+    },
+    "typeRoots": [
+      "./node_modules/@types",
+      "../../node_modules/@types",
+      "../../types"
+    ]
+  },
+  "include": [
+    "src/**/*",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "index.ts",
+    "**/node_modules/*",
+    "**/__tests__/*",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ]
+}

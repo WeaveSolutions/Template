@@ -1,0 +1,81 @@
+# OCI Authentication
+tenancy_ocid     = "ocid1.tenancy.oc1..xxxxx"
+user_ocid        = "ocid1.user.oc1..xxxxx"
+fingerprint      = "xx:xx:xx:xx:xx:xx:xx:xx"
+private_key_path = "~/.oci/oci_api_key.pem"
+region           = "us-phoenix-1"
+
+# Compartment
+compartment_ocid = "ocid1.compartment.oc1..xxxxx"
+
+# Project Configuration
+project_name = "Nexpo"
+
+# Networking
+vcn_cidr_block         = "10.0.0.0/16"
+public_subnet_cidr     = "10.0.1.0/24"
+private_subnet_cidr    = "10.0.2.0/24"
+database_subnet_cidr   = "10.0.3.0/24"
+allowed_ssh_cidr_blocks = []  # Add your IP for SSH access if needed
+
+# Kubernetes (OKE)
+kubernetes_version  = "v1.28.2"
+node_pool_size     = 2  # Reduced for dev
+node_shape         = "VM.Standard.E4.Flex"
+node_ocpus         = 1  # Reduced for dev
+node_memory_in_gbs = 8  # Reduced for dev
+
+# Database
+autonomous_db_name         = "appdb"
+autonomous_db_display_name = "Dev Application Database"
+autonomous_db_version      = "19c"
+autonomous_db_cpu_count    = 1
+autonomous_db_storage_gb   = 20
+autonomous_db_license      = "LICENSE_INCLUDED"
+database_admin_password    = "ChangeMePlease123!"  # Change this!
+
+# Storage
+object_storage_buckets = {
+  assets = {
+    name          = "dev-assets"
+    public_access = "ObjectRead"
+    versioning    = true
+  }
+  backups = {
+    name          = "dev-backups"
+    public_access = "NoPublicAccess"
+    versioning    = false
+  }
+}
+
+# Load Balancer
+load_balancer_shape              = "flexible"
+load_balancer_min_bandwidth_mbps = 10
+load_balancer_max_bandwidth_mbps = 50  # Reduced for dev
+
+# Functions
+enable_functions = true
+function_shape   = "GENERIC_X86"
+
+# Auth0 Configuration
+auth0_domain         = "dev-xxxxx.auth0.com"
+auth0_client_id      = "your-dev-client-id"
+auth0_client_secret  = "your-dev-client-secret"
+auth0_api_identifier = "https://dev.your-app.com/api"
+
+# Security
+enable_vault   = true
+enable_bastion = false  # Enable if you need SSH access
+
+# Monitoring
+enable_monitoring     = true
+notification_protocol = "EMAIL"
+notification_endpoint = "dev-alerts@your-domain.com"
+
+# Tags
+common_tags = {
+  environment = "dev"
+  project     = "Nexpo"
+  managed_by  = "terraform"
+  cost_center = "development"
+}

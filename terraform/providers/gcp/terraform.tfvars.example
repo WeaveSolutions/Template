@@ -1,0 +1,66 @@
+# GCP Provider Configuration Example
+
+# GCP Project
+gcp_project_id = "your-gcp-project-id"
+gcp_region = "us-central1"
+gcp_zone = "us-central1-a"
+
+# Networking
+vpc_auto_create_subnetworks = false
+public_subnet_cidr = "10.0.1.0/24"
+private_subnet_cidr = "10.0.10.0/24"
+database_subnet_cidr = "10.0.20.0/24"
+
+# Cloud Run
+cloud_run_cpu = "1"
+cloud_run_memory = "512Mi"
+cloud_run_max_instances = 10
+cloud_run_min_instances = 0
+cloud_run_concurrency = 80
+
+# Cloud SQL
+db_tier = "db-f1-micro"  # For dev. Use db-n1-standard-4 for prod
+db_disk_size = 10
+db_backup_enabled = true
+enable_high_availability = false  # Set to true for production
+
+# Storage
+storage_location = "US"
+storage_class = "STANDARD"
+enable_versioning = true
+lifecycle_age_days = 365
+
+# CDN
+enable_cdn = true
+cdn_cache_mode = "CACHE_ALL_STATIC"
+
+# Security
+enable_cloud_armor = false  # Enable for production
+allowed_source_ranges = ["0.0.0.0/0"]  # Restrict in production
+
+# Monitoring
+notification_emails = ["your-email@example.com"]
+enable_uptime_checks = true
+log_retention_days = 30
+
+# Service Accounts
+create_service_accounts = true
+
+# Firebase Configuration
+firestore_location = "nam5"  # Multi-region US
+enable_firebase_analytics = true
+enable_firebase_crashlytics = true
+enable_firebase_performance = true
+enable_firebase_messaging = true
+enable_firebase_remote_config = true
+
+# Auth0 Configuration
+auth0_domain = "your-tenant.auth0.com"
+auth0_api_identifier = "https://your-app.com/api"
+
+# Labels
+labels = {
+  environment = "dev"
+  managed-by  = "terraform"
+  project     = "Nexpo"
+}

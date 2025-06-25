@@ -1,0 +1,37 @@
+# Heroku Development Environment Configuration
+
+# Heroku Account Configuration
+heroku_email   = "your-email@example.com"
+heroku_api_key = "your-heroku-api-key"
+heroku_region  = "us"
+heroku_stack   = "heroku-22"
+heroku_team    = ""  # Leave empty for personal accounts
+
+# Application Configuration
+enable_api_app = true
+enable_redis   = false  # Free tier doesn't need Redis in development
+enable_logging = false  # Basic logging is sufficient for development
+
+# Add-on Plans (Free/Hobby tier for development)
+database_plan = "heroku-postgresql:mini"  # Free tier
+redis_plan    = "heroku-redis:mini"       # Free tier (if enabled)
+logging_plan  = "papertrail:choklad"     # Free tier (if enabled)
+
+# Domain Configuration (optional)
+custom_domain = ""  # Leave empty to use default .herokuapp.com domains
+
+# Security Configuration
+jwt_secret = "development-jwt-secret-change-me"
+api_key    = "development-api-key-change-me"
+
+# Development Environment Features:
+# - Hobby dynos (free tier or $7/month)
+# - Mini PostgreSQL database (free tier)
+# - No Redis by default (not needed for simple development)
+# - No advanced logging (basic logs are sufficient)
+# - Debug mode enabled
+# - Hot reload enabled for faster development
+# - All monitoring and analytics disabled for simplicity
+
+# Cost: $0/month with free tier add-ons
+# Note: Hobby dynos sleep after 30 minutes of inactivity

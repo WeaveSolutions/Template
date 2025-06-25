@@ -1,0 +1,30 @@
+# Staging Environment Configuration Example
+
+# Project Configuration
+project_name = "Nexpo"
+environment  = "staging"
+aws_region   = "us-east-1"
+
+# Supabase Configuration
+supabase_url      = "https://your-staging-project.supabase.co"
+supabase_anon_key = "your-staging-anon-key"
+
+# Auth0 Configuration
+auth0_secret          = "your-staging-auth0-secret"
+auth0_base_url        = "https://staging.your-domain.com"
+auth0_issuer_base_url = "https://your-staging-tenant.auth0.com"
+auth0_client_id       = "your-staging-client-id"
+auth0_client_secret   = "your-staging-client-secret"
+
+# Monitoring
+alarm_email_endpoints = ["staging-alerts@your-domain.com"]
+
+# CORS Configuration
+cors_allowed_origins = [
+  "https://staging.your-domain.com",
+  "https://staging-app.your-domain.com"
+]
+
+# Custom Domain (optional)
+custom_domain       = "staging.your-domain.com"
+acm_certificate_arn = "arn:aws:acm:us-east-1:123456789012:certificate/your-cert-id"

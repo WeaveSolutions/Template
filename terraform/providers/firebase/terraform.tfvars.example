@@ -1,0 +1,181 @@
+# ==============================================================================
+# FIREBASE TERRAFORM PROVIDER EXAMPLE CONFIGURATION
+# ==============================================================================
+# This file demonstrates Firebase data services configuration.
+# Authentication is handled by Auth0 with custom token exchange via CRA service.
+# ==============================================================================
+
+# ==============================================================================
+# PROJECT CONFIGURATION
+# ==============================================================================
+
+# Google Cloud Project settings
+gcp_project_id       = "nexpo-firebase-dev"
+project_name         = "Nexpo Firebase Dev"
+gcp_region          = "us-central1"
+billing_account_id  = "012345-678901-234567"  # Optional
+create_new_project  = false  # Set to true to create new GCP project
+
+# ==============================================================================
+# FIREBASE APPLICATIONS
+# ==============================================================================
+
+# Firebase app configuration
+enable_web_app     = true
+enable_android_app = true
+enable_ios_app     = true
+
+# App-specific settings
+android_package_name = "com.nexpo.app"
+ios_bundle_id       = "com.nexpo.app"
+ios_app_store_id    = ""  # Optional
+
+# ==============================================================================
+# AUTHENTICATION INTEGRATION
+# ==============================================================================
+# No Firebase Auth configuration needed
+# Authentication handled by Auth0 → CRA Service → Firebase Custom Tokens
+# See docs/Authentication/Firebase-Auth0.md for integration guide
+
+# ==============================================================================
+# FIRESTORE CONFIGURATION
+# ==============================================================================
+
+firestore_config = {
+  location_id         = "nam5"                    # North America multi-region
+  database_type       = "FIRESTORE_NATIVE"       # Native mode
+  concurrency_mode    = "OPTIMISTIC"             # Optimistic concurrency
+  app_engine_integration_mode = "DISABLED"       # Disable App Engine
+  
+  # Sample Firestore indexes for efficient queries
+  indexes = [
+    {
+      collection = "users"
+      fields = [
+        { field_path = "email", order = "ASCENDING" },
+        { field_path = "created_at", order = "DESCENDING" }
+      ]
+      query_scope = "COLLECTION"
+    },
+    {
+      collection = "posts"
+      fields = [
+        { field_path = "author_id", order = "ASCENDING" },
+        { field_path = "published", order = "ASCENDING" },
+        { field_path = "created_at", order = "DESCENDING" }
+      ]
+      query_scope = "COLLECTION"
+    }
+  ]
+  
+  create_sample_data    = true
+  backup_retention_days = 7
+}
+
+# ==============================================================================
+# CLOUD STORAGE CONFIGURATION
+# ==============================================================================
+
+storage_config = {
+  buckets = [
+    {
+      name     = "nexpo-uploads"
+      location = "US"
+    },
+    {
+      name     = "nexpo-avatars"
+      location = "US"
+    }
+  ]
+  
+  create_sample_data = true
+  sample_files = [
+    {
+      name    = "sample-image.jpg"
+      content = "sample-image-content"
+      bucket  = "nexpo-uploads"
+    }
+  ]
+}
+
+# ==============================================================================
+# CLOUD FUNCTIONS CONFIGURATION
+# ==============================================================================
+
+functions_config = {
+  create_source_bucket = true
+  source_bucket_name   = "nexpo-functions-source"
+  
+  functions = [
+    {
+      name         = "auth0-token-exchange"
+      description  = "Exchange Auth0 JWT for Firebase custom token"
+      runtime      = "nodejs20"
+      entry_point  = "exchangeToken"
+      source_bucket = "nexpo-functions-source"
+      source_object = "auth0-token-exchange.zip"
+      trigger_type = "HTTP"
+      
+      environment_variables = {
+        AUTH0_DOMAIN     = "your-auth0-domain.auth0.com"
+        AUTH0_AUDIENCE   = "your-auth0-api-identifier"
+        FIREBASE_PROJECT = "nexpo-firebase-dev"
+      }
+      
+      timeout = 60
+      memory  = 256
+    },
+    {
+      name         = "user-profile-sync"
+      description  = "Sync user profile from Auth0 to Firestore"
+      runtime      = "nodejs20"
+      entry_point  = "syncProfile"
+      source_bucket = "nexpo-functions-source"  
+      source_object = "user-profile-sync.zip"
+      trigger_type = "HTTP"
+      
+      environment_variables = {
+        FIRESTORE_COLLECTION = "user_profiles"
+      }
+      
+      timeout = 30
+      memory  = 128
+    }
+  ]
+}
+
+# ==============================================================================
+# REALTIME DATABASE CONFIGURATION
+# ==============================================================================
+
+enable_realtime_database = true
+
+rtdb_config = {
+  database_id  = "nexpo-realtime"
+  region       = "us-central1"
+  database_url = ""  # Auto-generated if empty
+}
+
+# ==============================================================================
+# SECURITY RULES CONFIGURATION
+# ==============================================================================
+
+security_rules_config = {
+  firestore_rules_file = "./rules/firestore.rules"  # Custom rules file
+  storage_rules_file   = "./rules/storage.rules"    # Custom rules file
+  create_default_rules = true                       # Create Auth0-compatible defaults
+}
+
+# ==============================================================================
+# APP HOSTING CONFIGURATION
+# ==============================================================================
+
+enable_app_hosting = false
+
+app_hosting_config = {
+  backend_id            = "nexpo-frontend"
+  github_repository_url = "https://github.com/your-org/nexpo"
+  github_branch         = "main"
+  root_directory       = "/apps/web"
+  create_initial_build = true
+}

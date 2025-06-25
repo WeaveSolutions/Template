@@ -1,0 +1,862 @@
+## Make this file work with all cloud providers depending on the feature flag's boolean value for AWS, GCP, Azure, OCI, IBM, Digital Ocean, Cloudflare.
+
+name: 'Terraform Infrastructure'
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'terraform/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'terraform/**'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        default: 'development'
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+      action:
+        description: 'Terraform action to perform'
+        required: true
+        default: 'plan'
+        type: choice
+        options:
+          - plan
+          - apply
+          - destroy
+
+env:
+  TF_VERSION: '1.5.7'
+  # Cloud Provider Regions
+  AWS_REGION: 'us-east-1'
+  GCP_REGION: 'us-central1'
+  AZURE_LOCATION: 'eastus'
+  OCI_REGION: 'us-ashburn-1'
+  IBM_CLOUD_REGION: 'us-south'
+  DIGITALOCEAN_REGION: 'nyc3'
+  HEROKU_REGION: 'us'
+  # HashiCorp Stack
+  HASHICORP_NOMAD_REGION: 'global'
+  HASHICORP_VAULT_NAMESPACE: 'terraform'
+  HASHICORP_CONSUL_DATACENTER: 'dc1'
+
+jobs:
+  terraform-check:
+    name: 'Terraform Format & Validate'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ env.TF_VERSION }}
+
+    - name: Terraform Format Check
+      run: terraform fmt -check=true -recursive=true
+
+    - name: Terraform Validate
+      run: |
+        # Find all terraform directories and validate them
+        find terraform -name "*.tf" -type f | xargs -I {} dirname {} | sort -u | while read dir; do
+          echo "Validating $dir"
+          cd "$dir"
+          terraform init -backend=false
+          terraform validate
+          cd - > /dev/null
+        done
+
+    - name: Security Scan
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'config'
+        scan-ref: 'terraform/'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+        severity: 'HIGH'
+
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+  prepare:
+    name: 'Prepare Configuration'
+    runs-on: ubuntu-latest
+    outputs:
+      enabled_providers: ${{ steps.set-outputs.outputs.enabled_providers }}
+      project_name: ${{ steps.set-outputs.outputs.project_name }}
+      environment_target: ${{ steps.set-outputs.outputs.environment_target }}
+      # Cloud Providers
+      enable_aws: ${{ steps.set-outputs.outputs.enable_aws }}
+      enable_gcp: ${{ steps.set-outputs.outputs.enable_gcp }}
+      enable_azure: ${{ steps.set-outputs.outputs.enable_azure }}
+      enable_oci: ${{ steps.set-outputs.outputs.enable_oci }}
+      enable_ibm: ${{ steps.set-outputs.outputs.enable_ibm }}
+      enable_digitalocean: ${{ steps.set-outputs.outputs.enable_digitalocean }}
+      enable_cloudflare: ${{ steps.set-outputs.outputs.enable_cloudflare }}
+      # HashiCorp Stack
+      enable_hashicorp_nomad: ${{ steps.set-outputs.outputs.enable_hashicorp_nomad }}
+      enable_hashicorp_vault: ${{ steps.set-outputs.outputs.enable_hashicorp_vault }}
+      enable_hashicorp_consul: ${{ steps.set-outputs.outputs.enable_hashicorp_consul }}
+      # Platform as a Service
+      enable_heroku: ${{ steps.set-outputs.outputs.enable_heroku }}
+      # Additional Services
+      enable_supabase: ${{ steps.set-outputs.outputs.enable_supabase }}
+      enable_auth0: ${{ steps.set-outputs.outputs.enable_auth0 }}
+    
+    steps:
+    - name: Set up outputs
+      id: set-outputs
+      run: |
+        # Read feature flags from GitHub variables (set from .env.example)
+        ENABLED_PROVIDERS=()
+        
+        # Cloud Providers
+        if [ "${{ vars.ENABLE_AWS || 'true' }}" = "true" ]; then
+          ENABLED_PROVIDERS+=("aws")
+          echo "enable_aws=true" >> $GITHUB_OUTPUT
+        else
+          echo "enable_aws=false" >> $GITHUB_OUTPUT
+        fi
+        
+        if [ "${{ vars.ENABLE_GCP || 'false' }}" = "true" ]; then
+          ENABLED_PROVIDERS+=("gcp")
+          echo "enable_gcp=true" >> $GITHUB_OUTPUT
+        else
+          echo "enable_gcp=false" >> $GITHUB_OUTPUT
+        fi
+        
+        if [ "${{ vars.ENABLE_AZURE || 'false' }}" = "true" ]; then
+          ENABLED_PROVIDERS+=("azure")
+          echo "enable_azure=true" >> $GITHUB_OUTPUT
+        else
+          echo "enable_azure=false" >> $GITHUB_OUTPUT
+        fi
+        
+        if [ "${{ vars.ENABLE_OCI || 'false' }}" = "true" ]; then
+          ENABLED_PROVIDERS+=("oci")
+          echo "enable_oci=true" >> $GITHUB_OUTPUT
+        else
+          echo "enable_oci=false" >> $GITHUB_OUTPUT
+        fi
+        
+        if [ "${{ vars.ENABLE_IBM || 'false' }}" = "true" ]; then
+          ENABLED_PROVIDERS+=("ibm")
+          echo "enable_ibm=true" >> $GITHUB_OUTPUT
+        else
+          echo "enable_ibm=false" >> $GITHUB_OUTPUT
+        fi
+        
+        if [ "${{ vars.ENABLE_DIGITALOCEAN || 'false' }}" = "true" ]; then
+          ENABLED_PROVIDERS+=("digitalocean")
+          echo "enable_digitalocean=true" >> $GITHUB_OUTPUT
+        else
+          echo "enable_digitalocean=false" >> $GITHUB_OUTPUT
+        fi
+        
+        if [ "${{ vars.ENABLE_CLOUDFLARE || 'false' }}" = "true" ]; then
+          ENABLED_PROVIDERS+=("cloudflare")
+          echo "enable_cloudflare=true" >> $GITHUB_OUTPUT
+        else
+          echo "enable_cloudflare=false" >> $GITHUB_OUTPUT
+        fi
+        
+        # HashiCorp Stack
+        if [ "${{ vars.ENABLE_HASHICORP_NOMAD || 'true' }}" = "true" ]; then
+          ENABLED_PROVIDERS+=("hashicorp-nomad")
+          echo "enable_hashicorp_nomad=true" >> $GITHUB_OUTPUT
+        else
+          echo "enable_hashicorp_nomad=false" >> $GITHUB_OUTPUT
+        fi
+        
+        if [ "${{ vars.ENABLE_HASHICORP_VAULT || 'true' }}" = "true" ]; then
+          ENABLED_PROVIDERS+=("hashicorp-vault")
+          echo "enable_hashicorp_vault=true" >> $GITHUB_OUTPUT
+        else
+          echo "enable_hashicorp_vault=false" >> $GITHUB_OUTPUT
+        fi
+        
+        if [ "${{ vars.ENABLE_HASHICORP_CONSUL || 'true' }}" = "true" ]; then
+          ENABLED_PROVIDERS+=("hashicorp-consul")
+          echo "enable_hashicorp_consul=true" >> $GITHUB_OUTPUT
+        else
+          echo "enable_hashicorp_consul=false" >> $GITHUB_OUTPUT
+        fi
+        
+        # Platform as a Service
+        if [ "${{ vars.ENABLE_HEROKU || 'true' }}" = "true" ]; then
+          ENABLED_PROVIDERS+=("heroku")
+          echo "enable_heroku=true" >> $GITHUB_OUTPUT
+        else
+          echo "enable_heroku=false" >> $GITHUB_OUTPUT
+        fi
+        
+        # Additional Services
+        if [ "${{ vars.ENABLE_SUPABASE || 'false' }}" = "true" ]; then
+          echo "enable_supabase=true" >> $GITHUB_OUTPUT
+        else
+          echo "enable_supabase=false" >> $GITHUB_OUTPUT
+        fi
+        
+        if [ "${{ vars.ENABLE_AUTH0 || 'true' }}" = "true" ]; then
+          ENABLED_PROVIDERS+=("auth0")
+          echo "enable_auth0=true" >> $GITHUB_OUTPUT
+        else
+          echo "enable_auth0=false" >> $GITHUB_OUTPUT
+        fi
+        
+        # Join array with commas for output
+        echo "enabled_providers=$(IFS=,; echo "${ENABLED_PROVIDERS[*]}")" >> $GITHUB_OUTPUT
+        echo "Enabled providers: ${ENABLED_PROVIDERS[*]}"
+
+        # Project configuration
+        PROJECT_NAME_VAR="${{ vars.PROJECT_NAME || 'Nexpo' }}"
+        echo "project_name=$PROJECT_NAME_VAR" >> $GITHUB_OUTPUT
+        echo "Project name: $PROJECT_NAME_VAR"
+
+        # Environment target
+        ENV_TARGET="${{ github.event.inputs.environment || 'development' }}"
+        echo "environment_target=$ENV_TARGET" >> $GITHUB_OUTPUT
+        echo "Environment target: $ENV_TARGET"
+
+  terraform-development:
+    name: 'Terraform Development Environment'
+    runs-on: ubuntu-latest
+    needs: [terraform-check, prepare]
+    if: github.ref != 'refs/heads/main' || github.event_name == 'pull_request'
+    environment: development
+    
+    defaults:
+      run:
+        working-directory: terraform/environments/development
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Configure AWS Credentials
+      if: contains(needs.prepare.outputs.enabled_providers, 'aws')
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEVELOPMENT }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEVELOPMENT }}
+        aws-region: ${{ env.AWS_REGION }}
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN_DEVELOPMENT }}
+        role-duration-seconds: 3600
+        role-session-name: GitHubActions-Terraform-Deploy-Development
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ env.TF_VERSION }}
+
+    - name: Terraform Init
+      id: init-dev
+      run: |
+        # Initialize with appropriate backend based on provider
+        if [ "${{ needs.prepare.outputs.enabled_providers }}" = "aws" ]; then
+          terraform init \
+            -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}" \
+            -backend-config="key=${{ needs.prepare.outputs.project_name }}/development/terraform.tfstate" \
+            -backend-config="region=${{ env.AWS_REGION }}" \
+            -backend-config="dynamodb_table=${{ secrets.TF_STATE_LOCK_TABLE }}"
+        elif [ "${{ needs.prepare.outputs.enabled_providers }}" = "gcp" ]; then
+          terraform init \
+            -backend-config="bucket=${{ secrets.GCP_STATE_BUCKET }}" \
+            -backend-config="prefix=terraform/state/development"
+        elif [ "${{ needs.prepare.outputs.enabled_providers }}" = "azure" ]; then
+          terraform init \
+            -backend-config="storage_account_name=${{ secrets.AZURE_STORAGE_ACCOUNT }}" \
+            -backend-config="container_name=tfstate" \
+            -backend-config="key=development.terraform.tfstate" \
+            -backend-config="resource_group_name=${{ secrets.AZURE_RESOURCE_GROUP }}"
+        elif [ "${{ needs.prepare.outputs.enabled_providers }}" = "oci" ]; then
+          terraform init \
+            -backend-config="bucket=${{ secrets.OCI_TF_STATE_BUCKET }}" \
+            -backend-config="key=${{ needs.prepare.outputs.project_name }}/development/terraform.tfstate" \
+            -backend-config="region=${{ env.OCI_REGION }}" \
+            -backend-config="endpoint=https://${{ secrets.OCI_NAMESPACE }}.compat.objectstorage.${{ env.OCI_REGION }}.oraclecloud.com" \
+            -backend-config="skip_region_validation=true" \
+            -backend-config="skip_credentials_validation=true" \
+            -backend-config="skip_metadata_api_check=true" \
+            -backend-config="force_path_style=true"
+        elif [ "${{ needs.prepare.outputs.enabled_providers }}" = "digitalocean" ]; then
+          terraform init \
+            -backend-config="bucket=${{ secrets.DIGITALOCEAN_TF_STATE_BUCKET }}" \
+            -backend-config="key=${{ needs.prepare.outputs.project_name }}/development/terraform.tfstate" \
+            -backend-config="region=${{ env.DIGITALOCEAN_REGION }}" \
+            -backend-config="endpoint=https://${{ secrets.DIGITALOCEAN_NAMESPACE }}.digitaloceanspaces.com" \
+            -backend-config="skip_region_validation=true" \
+            -backend-config="skip_credentials_validation=true" \
+            -backend-config="skip_metadata_api_check=true" \
+            -backend-config="force_path_style=true"
+        else
+          echo "No valid provider specified for backend initialization. Enabled providers: ${{ needs.prepare.outputs.enabled_providers }}"
+          exit 1
+        fi
+
+    - name: Terraform Plan
+      id: plan
+      run: |
+        # Common variables
+        PLAN_ARGS=(
+          -var="environment=development"
+          -var="project_name=${{ needs.prepare.outputs.project_name }}"
+          -var="aws_region=${{ env.AWS_REGION }}"
+          -var="gcp_region=${{ env.GCP_REGION }}"
+          -var="azure_location=${{ env.AZURE_LOCATION }}"
+          -var="oci_region=${{ env.OCI_REGION }}"
+          -var="digitalocean_region=${{ env.DIGITALOCEAN_REGION }}"
+          -var="enable_aws=${{ contains(needs.prepare.outputs.enabled_providers, 'aws') }}"
+          -var="enable_gcp=${{ contains(needs.prepare.outputs.enabled_providers, 'gcp') }}"
+          -var="enable_azure=${{ contains(needs.prepare.outputs.enabled_providers, 'azure') }}"
+          -var="enable_oci=${{ contains(needs.prepare.outputs.enabled_providers, 'oci') }}"
+          -var="enable_digitalocean=${{ contains(needs.prepare.outputs.enabled_providers, 'digitalocean') }}"
+          -var="enable_supabase=${{ needs.prepare.outputs.enable_supabase }}"
+          -var="enable_hashicorp_nomad=${{ needs.prepare.outputs.enable_hashicorp_nomad }}"
+          -var="enable_hashicorp_vault=${{ needs.prepare.outputs.enable_hashicorp_vault }}"
+          -var="enable_hashicorp_consul=${{ needs.prepare.outputs.enable_hashicorp_consul }}"
+          -var="enable_heroku=${{ needs.prepare.outputs.enable_heroku }}"
+        )
+        
+        # Add provider-specific variables
+        if [ "${{ contains(needs.prepare.outputs.enabled_providers, 'aws') }}" = "true" ]; then
+          PLAN_ARGS+=(
+            -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID_DEVELOPMENT }}"
+            -var="aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY_DEVELOPMENT }}"
+          )
+        fi
+        
+        if [ "${{ contains(needs.prepare.outputs.enabled_providers, 'gcp') }}" = "true" ]; then
+          echo "${{ secrets.GCP_CREDENTIALS }}" > gcp_credentials.json
+          export GOOGLE_APPLICATION_CREDENTIALS=gcp_credentials.json
+          PLAN_ARGS+=(
+            -var="gcp_credentials=${GOOGLE_APPLICATION_CREDENTIALS}"
+            -var="gcp_project_id=${{ secrets.GCP_PROJECT_ID }}"
+          )
+        fi
+        
+        if [ "${{ contains(needs.prepare.outputs.enabled_providers, 'azure') }}" = "true" ]; then
+          echo "${{ secrets.AZURE_CREDENTIALS }}" > azure_credentials.json
+          export ARM_CLIENT_ID=$(jq -r .clientId azure_credentials.json)
+          export ARM_CLIENT_SECRET=$(jq -r .clientSecret azure_credentials.json)
+          export ARM_TENANT_ID=$(jq -r .tenantId azure_credentials.json)
+          export ARM_SUBSCRIPTION_ID=$(jq -r .subscriptionId azure_credentials.json)
+        fi
+        
+        if [ "${{ contains(needs.prepare.outputs.enabled_providers, 'digitalocean') }}" = "true" ]; then
+          echo "${{ secrets.DIGITALOCEAN_CREDENTIALS }}" > digitalocean_credentials.json
+          export DIGITALOCEAN_ACCESS_TOKEN=$(jq -r .accessToken digitalocean_credentials.json)
+          PLAN_ARGS+=(
+            -var="digitalocean_access_token=${DIGITALOCEAN_ACCESS_TOKEN}"
+          )
+        fi
+        
+        # HashiCorp Nomad configuration
+        if [ "${{ contains(needs.prepare.outputs.enabled_providers, 'hashicorp-nomad') }}" = "true" ]; then
+          export NOMAD_ADDR="${{ secrets.NOMAD_ADDR }}"
+          export NOMAD_TOKEN="${{ secrets.NOMAD_TOKEN }}"
+          PLAN_ARGS+=(
+            -var="nomad_address=${NOMAD_ADDR}"
+            -var="nomad_token=${NOMAD_TOKEN}"
+          )
+        fi
+        
+        # HashiCorp Vault configuration
+        if [ "${{ contains(needs.prepare.outputs.enabled_providers, 'hashicorp-vault') }}" = "true" ]; then
+          export VAULT_ADDR="${{ secrets.VAULT_ADDR }}"
+          export VAULT_TOKEN="${{ secrets.VAULT_TOKEN }}"
+          PLAN_ARGS+=(
+            -var="vault_address=${VAULT_ADDR}"
+            -var="vault_token=${VAULT_TOKEN}"
+          )
+        fi
+        
+        # HashiCorp Consul configuration
+        if [ "${{ contains(needs.prepare.outputs.enabled_providers, 'hashicorp-consul') }}" = "true" ]; then
+          export CONSUL_HTTP_ADDR="${{ secrets.CONSUL_HTTP_ADDR }}"
+          export CONSUL_HTTP_TOKEN="${{ secrets.CONSUL_HTTP_TOKEN }}"
+          PLAN_ARGS+=(
+            -var="consul_address=${CONSUL_HTTP_ADDR}"
+            -var="consul_token=${CONSUL_HTTP_TOKEN}"
+          )
+        fi
+        
+        # Heroku configuration
+        if [ "${{ contains(needs.prepare.outputs.enabled_providers, 'heroku') }}" = "true" ]; then
+          export HEROKU_API_KEY="${{ secrets.HEROKU_API_KEY }}"
+          export HEROKU_EMAIL="${{ secrets.HEROKU_EMAIL }}"
+          PLAN_ARGS+=(
+            -var="heroku_api_key=${HEROKU_API_KEY}"
+            -var="heroku_email=${HEROKU_EMAIL}"
+          )
+        fi
+        
+        # Execute plan
+        terraform plan "${PLAN_ARGS[@]}" -out=tfplan
+        
+        # Generate plan output for PR comment
+        terraform show -no-color tfplan > tfplan.txt
+
+    - name: Upload Plan
+      uses: actions/upload-artifact@v3
+      with:
+        name: tfplan-development
+        path: terraform/environments/development/tfplan
+
+    - name: Comment PR
+      uses: actions/github-script@v6
+      if: github.event_name == 'pull_request'
+      env:
+        PLAN: "${{ steps.plan.outputs.stdout }}"
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const output = `#### Terraform Plan \`${{ steps.plan.outcome }}\`
+          
+          <details><summary>Show Plan</summary>
+          
+          \`\`\`terraform
+          ${process.env.PLAN}
+          \`\`\`
+          
+          </details>
+          
+          *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          })
+
+  terraform-production:
+    name: 'Terraform Production Environment'
+    runs-on: ubuntu-latest
+    needs: terraform-check
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: production
+    
+    defaults:
+      run:
+        working-directory: terraform/environments/production
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PRODUCTION }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PRODUCTION }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ env.TF_VERSION }}
+
+    - name: Terraform Init
+      id: init-prod
+      run: |
+        terraform init \
+          -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}" \
+          -backend-config="key=${{ needs.prepare.outputs.project_name }}/production/terraform.tfstate" \
+          -backend-config="region=${{ env.AWS_REGION }}" \
+          -backend-config="dynamodb_table=${{ secrets.TF_STATE_LOCK_TABLE }}"
+
+    - name: Terraform Plan
+      run: |
+        terraform plan \
+          -var="supabase_url=${{ secrets.SUPABASE_URL_PRODUCTION }}" \
+          -var="supabase_anon_key=${{ secrets.SUPABASE_ANON_KEY_PRODUCTION }}" \
+          -var="custom_domain=${{ secrets.CUSTOM_DOMAIN }}" \
+          -var="acm_certificate_arn=${{ secrets.ACM_CERTIFICATE_ARN }}" \
+          -var="route53_zone_id=${{ secrets.ROUTE53_ZONE_ID }}" \
+          -var="alarm_email_endpoints=${{ secrets.ALARM_EMAILS_PRODUCTION }}" \
+          -var="alarm_sms_endpoints=${{ secrets.ALARM_SMS_PRODUCTION }}" \
+          -var="budget_alert_emails=${{ secrets.BUDGET_EMAILS_PRODUCTION }}" \
+          -out=tfplan
+
+    - name: Terraform Apply
+      if: github.event_name == 'push'
+      run: terraform apply -auto-approve tfplan
+
+  terraform-manual:
+    name: 'Terraform Manual Deployment'
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    environment: ${{ github.event.inputs.environment }}
+    
+    defaults:
+      run:
+        working-directory: terraform/environments/${{ github.event.inputs.environment }}
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets[format('AWS_ACCESS_KEY_ID_{0}', github.event.inputs.environment == 'production' && 'PRODUCTION' || 'DEVELOPMENT')] }}
+        aws-secret-access-key: ${{ secrets[format('AWS_SECRET_ACCESS_KEY_{0}', github.event.inputs.environment == 'production' && 'PRODUCTION' || 'DEVELOPMENT')] }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ env.TF_VERSION }}
+
+    - name: Terraform Init
+      id: init-manual
+      run: |
+        terraform init \
+          -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}" \
+          -backend-config="key=${{ needs.prepare.outputs.project_name }}/${{ github.event.inputs.environment }}/terraform.tfstate" \
+          -backend-config="region=${{ env.AWS_REGION }}" \
+          -backend-config="dynamodb_table=${{ secrets.TF_STATE_LOCK_TABLE }}"
+
+    - name: Setup Terraform Variables
+      run: |
+        if [ "${{ github.event.inputs.environment }}" == "production" ]; then
+          cat > terraform.tfvars <<EOF
+        project_name = "${{ needs.prepare.outputs.project_name }}"
+        enable_supabase = ${{ needs.prepare.outputs.enable_supabase }}
+        environment = "production"
+        aws_region = "${{ env.AWS_REGION }}"
+        supabase_url = "${{ secrets.SUPABASE_URL_PRODUCTION }}"
+        supabase_anon_key = "${{ secrets.SUPABASE_ANON_KEY_PRODUCTION }}"
+        custom_domain = "${{ secrets.CUSTOM_DOMAIN }}"
+        acm_certificate_arn = "${{ secrets.ACM_CERTIFICATE_ARN }}"
+        route53_zone_id = "${{ secrets.ROUTE53_ZONE_ID }}"
+        alarm_email_endpoints = ${{ secrets.ALARM_EMAILS_PRODUCTION }}
+        alarm_sms_endpoints = ${{ secrets.ALARM_SMS_PRODUCTION }}
+        budget_alert_emails = ${{ secrets.BUDGET_EMAILS_PRODUCTION }}
+        EOF
+        else
+          cat > terraform.tfvars <<EOF
+        project_name = "${{ needs.prepare.outputs.project_name }}"
+        enable_supabase = ${{ needs.prepare.outputs.enable_supabase }}
+        environment = "development"
+        aws_region = "${{ env.AWS_REGION }}"
+        supabase_url = "${{ secrets.SUPABASE_URL }}"
+        supabase_anon_key = "${{ secrets.SUPABASE_ANON_KEY }}"
+        alarm_email_endpoints = ${{ secrets.ALARM_EMAILS }}
+        EOF
+        fi
+
+    - name: Terraform Plan
+      if: github.event.inputs.action == 'plan'
+      run: terraform plan
+
+    - name: Terraform Apply
+      if: github.event.inputs.action == 'apply'
+      run: terraform apply -auto-approve
+
+    - name: Terraform Destroy
+      if: github.event.inputs.action == 'destroy'
+      run: terraform destroy -auto-approve
+
+  cost-estimation:
+    name: 'Cost Estimation'
+    runs-on: ubuntu-latest
+    needs: terraform-check
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Infracost
+      uses: infracost/actions/setup@v3
+      with:
+        api-key: ${{ secrets.INFRACOST_API_KEY }}
+
+    - name: Generate Cost Estimate
+      run: |
+        infracost breakdown \
+          --path=terraform/environments/development \
+          --format=json \
+          --out-file=/tmp/infracost-development.json
+
+        infracost breakdown \
+          --path=terraform/environments/production \
+          --format=json \
+          --out-file=/tmp/infracost-production.json
+
+    - name: Post Cost Estimate to PR
+      run: |
+        infracost comment github \
+          --path=/tmp/infracost-development.json,/tmp/infracost-production.json \
+          --repo=${{ github.repository }} \
+          --pull-request=${{ github.event.pull_request.number }} \
+          --github-token=${{ secrets.GITHUB_TOKEN }} \
+          --behavior=update
+
+  # Individual Provider Deployment Jobs
+  deploy-aws:
+    name: 'Deploy AWS Provider'
+    runs-on: ubuntu-latest
+    needs: [prepare, terraform-development]
+    if: contains(needs.prepare.outputs.enabled_providers, 'aws') && github.ref == 'refs/heads/main'
+    environment: production
+    
+    defaults:
+      run:
+        working-directory: terraform/providers/aws/environments/production
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PRODUCTION }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PRODUCTION }}
+        aws-region: ${{ vars.AWS_REGION || 'us-east-1' }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ env.TF_VERSION }}
+
+    - name: Terraform Init
+      run: |
+        terraform init \
+          -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}" \
+          -backend-config="key=aws/production/terraform.tfstate" \
+          -backend-config="region=${{ vars.AWS_REGION || 'us-east-1' }}" \
+          -backend-config="dynamodb_table=${{ secrets.TF_STATE_LOCK_TABLE }}"
+
+    - name: Terraform Apply
+      run: terraform apply -auto-approve -var-file="terraform.tfvars"
+
+  deploy-gcp:
+    name: 'Deploy GCP Provider'
+    runs-on: ubuntu-latest
+    needs: [prepare, terraform-development]
+    if: contains(needs.prepare.outputs.enabled_providers, 'gcp') && github.ref == 'refs/heads/main'
+    environment: production
+    
+    defaults:
+      run:
+        working-directory: terraform/providers/gcp/environments/production
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Google Cloud SDK
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ env.TF_VERSION }}
+
+    - name: Terraform Init
+      run: |
+        terraform init \
+          -backend-config="bucket=${{ secrets.GCP_TF_STATE_BUCKET }}" \
+          -backend-config="prefix=gcp/production"
+
+    - name: Terraform Apply
+      run: terraform apply -auto-approve -var-file="terraform.tfvars"
+
+  deploy-azure:
+    name: 'Deploy Azure Provider'
+    runs-on: ubuntu-latest
+    needs: [prepare, terraform-development]
+    if: contains(needs.prepare.outputs.enabled_providers, 'azure') && github.ref == 'refs/heads/main'
+    environment: production
+    
+    defaults:
+      run:
+        working-directory: terraform/providers/azure/environments/production
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Azure CLI
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ env.TF_VERSION }}
+
+    - name: Terraform Init
+      run: |
+        terraform init \
+          -backend-config="storage_account_name=${{ secrets.AZURE_STORAGE_ACCOUNT }}" \
+          -backend-config="container_name=${{ secrets.AZURE_STORAGE_CONTAINER }}" \
+          -backend-config="key=azure/production/terraform.tfstate"
+
+    - name: Terraform Apply
+      run: terraform apply -auto-approve -var-file="terraform.tfvars"
+
+  deploy-digitalocean:
+    name: 'Deploy DigitalOcean Provider'
+    runs-on: ubuntu-latest
+    needs: [prepare, terraform-development]
+    if: contains(needs.prepare.outputs.enabled_providers, 'digitalocean') && github.ref == 'refs/heads/main'
+    environment: production
+    
+    defaults:
+      run:
+        working-directory: terraform/providers/digitalocean/environments/production
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ env.TF_VERSION }}
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Apply
+      env:
+        DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      run: terraform apply -auto-approve -var-file="terraform.tfvars"
+
+  deploy-hashicorp-nomad:
+    name: 'Deploy HashiCorp Nomad'
+    runs-on: ubuntu-latest
+    needs: [prepare, terraform-development]
+    if: contains(needs.prepare.outputs.enabled_providers, 'hashicorp-nomad') && github.ref == 'refs/heads/main'
+    environment: production
+    
+    defaults:
+      run:
+        working-directory: terraform/providers/hashicorp/nomad/environments/production
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ env.TF_VERSION }}
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Apply
+      env:
+        NOMAD_ADDR: ${{ secrets.NOMAD_ADDR }}
+        NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN }}
+      run: terraform apply -auto-approve -var-file="terraform.tfvars"
+
+  deploy-hashicorp-vault:
+    name: 'Deploy HashiCorp Vault'
+    runs-on: ubuntu-latest
+    needs: [prepare, terraform-development]
+    if: contains(needs.prepare.outputs.enabled_providers, 'hashicorp-vault') && github.ref == 'refs/heads/main'
+    environment: production
+    
+    defaults:
+      run:
+        working-directory: terraform/providers/hashicorp/vault/environments/production
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ env.TF_VERSION }}
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Apply
+      env:
+        VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
+        VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
+      run: terraform apply -auto-approve -var-file="terraform.tfvars"
+
+  deploy-hashicorp-consul:
+    name: 'Deploy HashiCorp Consul'
+    runs-on: ubuntu-latest
+    needs: [prepare, terraform-development]
+    if: contains(needs.prepare.outputs.enabled_providers, 'hashicorp-consul') && github.ref == 'refs/heads/main'
+    environment: production
+    
+    defaults:
+      run:
+        working-directory: terraform/providers/hashicorp/consul/environments/production
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ env.TF_VERSION }}
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Apply
+      env:
+        CONSUL_HTTP_ADDR: ${{ secrets.CONSUL_HTTP_ADDR }}
+        CONSUL_HTTP_TOKEN: ${{ secrets.CONSUL_HTTP_TOKEN }}
+      run: terraform apply -auto-approve -var-file="terraform.tfvars"
+
+  deploy-heroku:
+    name: 'Deploy Heroku Provider'
+    runs-on: ubuntu-latest
+    needs: [prepare, terraform-development]
+    if: contains(needs.prepare.outputs.enabled_providers, 'heroku') && github.ref == 'refs/heads/main'
+    environment: production
+    
+    defaults:
+      run:
+        working-directory: terraform/providers/heroku/environments/production
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ env.TF_VERSION }}
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Apply
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
+      run: terraform apply -auto-approve -var-file="terraform.tfvars"

@@ -1,0 +1,292 @@
+/**
+ * Ditto Native Implementation for React Native/Expo
+ */
+
+import { DittoConfig, DittoInstance, registerDittoPlatform } from './ditto-service';
+
+// Import React Native Ditto - we'll handle the import differently on native
+// This is just a type reference
+type DittoType = any;
+
+// Native implementation of the Ditto instance
+class NativeDittoInstance implements DittoInstance {
+  store: DittoType | null = null;
+  isInitialized: boolean = false;
+  isOnline: boolean = false;
+  private collections: Map<string, any> = new Map();
+  private subscriptions: Map<string, any> = new Map();
+  private Ditto: any = null;
+
+  async initialize(config: DittoConfig): Promise<void> {
+    try {
+      // Import Ditto for React Native
+      this.Ditto = require('react-native-ditto').Ditto;
+      const { DittoIdentity, DittoTransportConfig } = require('react-native-ditto');
+      
+      // Set up Ditto identity
+      const identity = new DittoIdentity.OnlinePlayground({
+        appID: config.appID,
+        token: config.token,
+      });
+
+      // Configure transport
+      const transportConfig = new DittoTransportConfig();
+      
+      if (config.syncWithPeers) {
+        transportConfig.enableBluetooth();
+        transportConfig.enableMulticast();
+        transportConfig.enableP2P();
+        transportConfig.enableAWDL(); // Apple Wireless Direct Link (if applicable)
+      }
+
+      // Create Ditto instance
+      this.store = new this.Ditto(identity, transportConfig);
+
+      // Initialize collections
+      for (const name of config.collectionNames) {
+        this.collections.set(name, this.store.collection(name));
+      }
+
+      // Set up cloud sync if enabled
+      if (config.enableCloudSync && config.syncWithCloud && config.cloudSyncURL) {
+        await this.store.sync.configure({
+          syncURL: config.cloudSyncURL,
+          authenticator: identity,
+        });
+      }
+
+      // Start Ditto
+      await this.store.startSync();
+      
+      this.isInitialized = true;
+      this.isOnline = true; // We'll assume online initially
+
+      // Set up network listeners if available
+      try {
+        const NetInfo = require('@react-native-community/netinfo').default;
+        NetInfo.addEventListener((state: any) => {
+          this.isOnline = state.isConnected && state.isInternetReachable;
+        });
+        
+        // Get initial state
+        const initialState = await NetInfo.fetch();
+        this.isOnline = initialState.isConnected && initialState.isInternetReachable;
+      } catch (err) {
+        console.warn('NetInfo not available, network status tracking disabled', err);
+      }
+
+      console.log('Ditto initialized successfully (native)');
+    } catch (error) {
+      console.error('Failed to initialize Ditto:', error);
+      throw error;
+    }
+  }
+
+  async sync(): Promise<void> {
+    if (!this.isInitialized || !this.store) {
+      throw new Error('Ditto is not initialized');
+    }
+
+    try {
+      // For native, we just ensure sync is running
+      if (!this.store.sync.isEnabled()) {
+        await this.store.startSync();
+      }
+    } catch (error) {
+      console.error('Failed to sync Ditto:', error);
+      throw error;
+    }
+  }
+
+  async disconnect(): Promise<void> {
+    if (!this.isInitialized || !this.store) {
+      return;
+    }
+
+    try {
+      // Clear all subscriptions
+      for (const [_, subscription] of this.subscriptions.entries()) {
+        subscription.cancel();
+      }
+      this.subscriptions.clear();
+
+      // Stop Ditto
+      await this.store.stopSync();
+      this.isInitialized = false;
+      console.log('Ditto disconnected successfully');
+    } catch (error) {
+      console.error('Failed to disconnect Ditto:', error);
+      throw error;
+    }
+  }
+
+  collection(name: string): any {
+    if (!this.isInitialized || !this.store) {
+      throw new Error('Ditto is not initialized');
+    }
+
+    if (!this.collections.has(name)) {
+      this.collections.set(name, this.store.collection(name));
+    }
+
+    return this.collections.get(name);
+  }
+
+  async query(collectionName: string, query: any): Promise<any[]> {
+    if (!this.isInitialized) {
+      throw new Error('Ditto is not initialized');
+    }
+
+    try {
+      const collection = this.collection(collectionName);
+      const result = await collection.find(query).exec();
+      return result.items.map((item: any) => ({
+        id: item.id,
+        ...item.value,
+      }));
+    } catch (error) {
+      console.error(`Failed to query collection ${collectionName}:`, error);
+      throw error;
+    }
+  }
+
+  async insert(collectionName: string, document: any): Promise<string> {
+    if (!this.isInitialized) {
+      throw new Error('Ditto is not initialized');
+    }
+
+    try {
+      const collection = this.collection(collectionName);
+      const result = await collection.insert(document);
+      return result;
+    } catch (error) {
+      console.error(`Failed to insert document into ${collectionName}:`, error);
+      throw error;
+    }
+  }
+
+  async update(collectionName: string, id: string, updateObject: any): Promise<boolean> {
+    if (!this.isInitialized) {
+      throw new Error('Ditto is not initialized');
+    }
+
+    try {
+      const collection = this.collection(collectionName);
+      await collection.findByID(id).update((doc: any) => {
+        Object.keys(updateObject).forEach((key) => {
+          doc[key] = updateObject[key];
+        });
+      });
+      return true;
+    } catch (error) {
+      console.error(`Failed to update document in ${collectionName}:`, error);
+      throw error;
+    }
+  }
+
+  async remove(collectionName: string, id: string): Promise<boolean> {
+    if (!this.isInitialized) {
+      throw new Error('Ditto is not initialized');
+    }
+
+    try {
+      const collection = this.collection(collectionName);
+      await collection.findByID(id).remove();
+      return true;
+    } catch (error) {
+      console.error(`Failed to remove document from ${collectionName}:`, error);
+      throw error;
+    }
+  }
+
+  subscribe(collectionName: string, callback: (docs: any[]) => void): () => void {
+    if (!this.isInitialized) {
+      throw new Error('Ditto is not initialized');
+    }
+
+    try {
+      const collection = this.collection(collectionName);
+      const subscription = collection.find().subscribe((result: any) => {
+        const docs = result.items.map((item: any) => ({
+          id: item.id,
+          ...item.value,
+        }));
+        callback(docs);
+      });
+
+      const subscriptionKey = `${collectionName}-${Date.now()}`;
+      this.subscriptions.set(subscriptionKey, subscription);
+
+      return () => {
+        if (this.subscriptions.has(subscriptionKey)) {
+          const sub = this.subscriptions.get(subscriptionKey);
+          sub.cancel();
+          this.subscriptions.delete(subscriptionKey);
+        }
+      };
+    } catch (error) {
+      console.error(`Failed to subscribe to collection ${collectionName}:`, error);
+      throw error;
+    }
+  }
+
+  async exportData(): Promise<string> {
+    if (!this.isInitialized) {
+      throw new Error('Ditto is not initialized');
+    }
+
+    try {
+      // Export all collections as JSON
+      const exportData: Record<string, any[]> = {};
+      
+      for (const [name, _] of this.collections.entries()) {
+        const docs = await this.query(name, {});
+        exportData[name] = docs;
+      }
+
+      return JSON.stringify(exportData);
+    } catch (error) {
+      console.error('Failed to export Ditto data:', error);
+      throw error;
+    }
+  }
+
+  async importData(data: string): Promise<void> {
+    if (!this.isInitialized) {
+      throw new Error('Ditto is not initialized');
+    }
+
+    try {
+      const importData = JSON.parse(data);
+      
+      // Import data into collections
+      for (const [name, docs] of Object.entries(importData)) {
+        const collection = this.collection(name);
+        
+        // Clear existing data
+        const existingDocs = await this.query(name, {});
+        for (const doc of existingDocs) {
+          await collection.findByID(doc.id).remove();
+        }
+        
+        // Insert new data
+        for (const doc of docs as any[]) {
+          const { id, ...rest } = doc;
+          await collection.insert(rest);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to import Ditto data:', error);
+      throw error;
+    }
+  }
+}
+
+// Create the native platform implementation
+export const NativeDitto = {
+  createInstance: (): DittoInstance => {
+    return new NativeDittoInstance();
+  }
+};
+
+export default NativeDitto;

@@ -1,0 +1,60 @@
+# Azure Provider Configuration Example
+
+# Azure Region
+location = "East US"
+backup_location = "West US 2"  # For geo-redundancy
+
+# Resource Group
+resource_group_name = "rg-Nexpo-dev"
+
+# Networking
+vnet_cidr = ["10.0.0.0/16"]
+public_subnet_cidrs = ["10.0.1.0/24", "10.0.2.0/24"]
+private_subnet_cidrs = ["10.0.10.0/24", "10.0.11.0/24"]
+database_subnet_cidrs = ["10.0.20.0/24", "10.0.21.0/24"]
+
+# Container Apps
+container_cpu = "0.25"
+container_memory = "0.5Gi"
+min_replicas = 0
+max_replicas = 10
+
+# PostgreSQL
+postgresql_sku = "B_Standard_B1ms"  # For dev. Use GP_Standard_D4s_v3 for prod
+postgresql_storage_mb = 32768
+postgresql_backup_retention_days = 7
+enable_high_availability = false  # Set to true for production
+postgresql_version = "14"
+
+# Storage
+storage_tier = "Standard"
+replication_type = "LRS"  # Use GRS for production
+enable_versioning = true
+soft_delete_retention_days = 7
+backup_retention_days = 90
+
+# CDN
+enable_cdn = true
+cdn_sku = "Standard_Microsoft"  # Use Standard_Verizon for advanced features
+
+# Security
+enable_waf = false  # Enable for production
+allowed_ip_rules = []  # Add your IPs for restricted access
+enable_private_endpoints = false  # Enable for production
+
+# Monitoring
+action_group_emails = ["your-email@example.com"]
+enable_diagnostics = true
+log_retention_days = 30
+metric_retention_days = 93
+
+# Key Vault
+enable_soft_delete = true
+purge_protection_enabled = false  # Enable for production
+
+# Tags
+tags = {
+  Environment = "dev"
+  ManagedBy   = "Terraform"
+  Project     = "NextSolitoExpo"
+}

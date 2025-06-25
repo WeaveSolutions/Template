@@ -1,0 +1,62 @@
+// Supabase Provider Schema (PostgreSQL-based)
+// Independent schema for Supabase + Prisma integration
+// Uses PostgreSQL connector with Supabase-specific configuration
+
+generator supabaseClient {
+  provider        = "prisma-client-js"
+  output          = "../../../node_modules/.prisma/client-supabase"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource supabasedb {
+  provider = "postgresql"
+  url      = env("SUPABASE_DATABASE_URL")
+  directUrl = env("SUPABASE_DIRECT_URL")
+  schemas  = ["public"]
+}
+
+// Central Rank Authority User Model
+model User {
+  id          String    @id @default(uuid()) @supabasedb.Uuid
+  email       String    @unique @supabasedb.VarChar(255)
+  displayName String?   @map("display_name") @supabasedb.VarChar(255)
+  rank        Int       @default(1) @supabasedb.Integer
+  createdAt   DateTime  @default(now()) @map("created_at") @supabasedb.Timestamptz(6)
+  updatedAt   DateTime  @updatedAt @map("updated_at") @supabasedb.Timestamptz(6)
+  deletedAt   DateTime? @map("deleted_at") @supabasedb.Timestamptz(6)
+
+  // Relations
+  accounts Account[]
+
+  @@index([email], name: "user_email_idx")
+  @@index([rank], name: "user_rank_idx")
+  @@index([createdAt], name: "user_created_at_idx")
+  @@map("users")
+  @@schema("public")
+}
+
+// OAuth Account Connections Model
+model Account {
+  id                String    @id @default(uuid()) @supabasedb.Uuid
+  userId            String    @map("user_id") @supabasedb.Uuid
+  provider          String    @supabasedb.VarChar(50)
+  providerAccountId String    @map("provider_account_id") @supabasedb.VarChar(255)
+  accessToken       String?   @map("access_token") @supabasedb.Text
+  refreshToken      String?   @map("refresh_token") @supabasedb.Text
+  expiresAt         DateTime? @map("expires_at") @supabasedb.Timestamptz(6)
+  scope             String?   @supabasedb.Text
+  tokenType         String?   @map("token_type") @supabasedb.VarChar(50)
+  createdAt         DateTime  @default(now()) @map("created_at") @supabasedb.Timestamptz(6)
+  updatedAt         DateTime  @updatedAt @map("updated_at") @supabasedb.Timestamptz(6)
+  deletedAt         DateTime? @map("deleted_at") @supabasedb.Timestamptz(6)
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId], name: "account_provider_unique")
+  @@index([userId], name: "account_user_id_idx")
+  @@index([provider], name: "account_provider_idx")
+  @@index([createdAt], name: "account_created_at_idx")
+  @@map("accounts")
+  @@schema("public")
+}

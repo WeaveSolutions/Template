@@ -1,0 +1,4 @@
+
+> @your-org/shared-db@0.1.0 lint E:\Workspace\Templates\Nexpo\packages\shared-db
+> eslint . --ext .ts,.tsx
+

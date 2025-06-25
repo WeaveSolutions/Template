@@ -1,0 +1,111 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    function hasRole(role) {
+      return isAuthenticated() && 
+             request.auth.token.roles != null && 
+             role in request.auth.token.roles;
+    }
+    
+    function isValidImageFile() {
+      return request.resource.contentType.matches('image/.*') &&
+             request.resource.size < 10 * 1024 * 1024; // 10MB limit
+    }
+    
+    function isValidVideoFile() {
+      return request.resource.contentType.matches('video/.*') &&
+             request.resource.size < 100 * 1024 * 1024; // 100MB limit
+    }
+    
+    function isValidDocumentFile() {
+      return request.resource.contentType.matches('application/(pdf|msword|vnd.*|octet-stream)') &&
+             request.resource.size < 50 * 1024 * 1024; // 50MB limit
+    }
+    
+    // User profile pictures
+    match /users/{userId}/profile/{fileName} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && 
+                      isOwner(userId) && 
+                      isValidImageFile();
+    }
+    
+    // User private files
+    match /users/{userId}/private/{allPaths=**} {
+      allow read, write: if isAuthenticated() && isOwner(userId);
+    }
+    
+    // Shared files with access control
+    match /shared/{fileId}/{fileName} {
+      allow read: if isAuthenticated() && (
+        // Check Firestore for permissions
+        firestore.get(/databases/(default)/documents/files/$(fileId)).data.public == true ||
+        firestore.get(/databases/(default)/documents/files/$(fileId)).data.ownerId == request.auth.uid ||
+        request.auth.uid in firestore.get(/databases/(default)/documents/files/$(fileId)).data.sharedWith
+      );
+      allow write: if isAuthenticated() && (
+        firestore.get(/databases/(default)/documents/files/$(fileId)).data.ownerId == request.auth.uid
+      );
+    }
+    
+    // Public assets (read-only)
+    match /public/{allPaths=**} {
+      allow read: if true;
+      allow write: if hasRole('admin');
+    }
+    
+    // Chat attachments
+    match /chats/{chatId}/attachments/{fileName} {
+      allow read: if isAuthenticated() && 
+                     request.auth.uid in firestore.get(/databases/(default)/documents/chats/$(chatId)).data.participants;
+      allow write: if isAuthenticated() && 
+                      request.auth.uid in firestore.get(/databases/(default)/documents/chats/$(chatId)).data.participants &&
+                      (isValidImageFile() || isValidVideoFile() || isValidDocumentFile());
+    }
+    
+    // Post images
+    match /posts/{postId}/images/{fileName} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && 
+                      firestore.get(/databases/(default)/documents/posts/$(postId)).data.authorId == request.auth.uid &&
+                      isValidImageFile();
+    }
+    
+    // Temporary uploads (auto-deleted after 24 hours)
+    match /temp/{userId}/{allPaths=**} {
+      allow read, write: if isAuthenticated() && isOwner(userId);
+    }
+    
+    // System assets (managed by admin)
+    match /system/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if hasRole('admin');
+    }
+    
+    // Backup data (admin only)
+    match /backups/{allPaths=**} {
+      allow read, write: if hasRole('admin');
+    }
+    
+    // Analytics exports
+    match /analytics/{allPaths=**} {
+      allow read: if hasRole('admin') || hasRole('analyst');
+      allow write: if hasRole('system');
+    }
+    
+    // Logs storage
+    match /logs/{allPaths=**} {
+      allow read: if hasRole('admin');
+      allow write: if hasRole('system');
+    }
+  }
+}

@@ -9,24 +9,36 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth0/nextjs-auth0": "^4.6.1",
     "@expo/next-adapter": "^6.0.0",
-    "@shared/components": "*",
-    "@shared/pages": "*",
-    "@shared/utils": "*",
-    "next": "13.4.19",
-    "react": "18.2.0",
-    "react-dom": "^18.2.0",
+    "@shared/components": "workspace:*",
+    "@shared/pages": "workspace:*",
+    "@shared/ui": "workspace:*",
+    "@shared/utils": "workspace:*",
+    "@tailwindcss/postcss": "^4.1.7",
+    "autoprefixer": "^10.4.21",
+    "cors": "^2.8.5",
+    "critters": "^0.0.24",
+    "express": "^5.1.0",
+    "express-oauth2-jwt-bearer": "^1.6.1",
+    "mysql2": "^3.14.1",
+    "next": "15.3.2",
+    "next-seo": "^6.8.0",
+    "postcss": "^8.4.31",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-native-web": "~0.19.6",
-    "solito": "^3.1.0"
+    "solito": "^4.4.1",
+    "tailwindcss": "^4.1.7"
   },
   "devDependencies": {
-    "@types/node": "20.5.0",
-    "@types/react": "18.2.20",
+    "@types/node": "^22.15.30",
+    "@types/react": "18.3.17",
     "@types/react-native": "~0.72.2",
-    "eslint": "8.48.0",
-    "eslint-config-next": "13.4.19",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "15.3.2",
     "next-compose-plugins": "^2.2.1",
     "next-transpile-modules": "^10.0.1",
-    "typescript": "5.1.6"
+    "typescript": "^5.8.3"
   }
 }

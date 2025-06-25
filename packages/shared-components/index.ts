@@ -1,1 +1,2 @@
-export { View, Text } from 'react-native';
+// Re-export everything from src
+export * from './src/';

@@ -1,0 +1,416 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Enhanced CRA Account Center Schema",
+  "description": "Comprehensive schema for Central Rank Authority federated identity management with linked list optimization and security enhancements",
+  "type": "object",
+  "properties": {
+    "root_id": {
+      "type": "string",
+      "pattern": "^auth0\\|[a-zA-Z0-9]+$",
+      "description": "Auth0 user ID as root identity"
+    },
+    "cra_version": {
+      "type": "string",
+      "default": "2.1.0",
+      "description": "CRA schema version for compatibility"
+    },
+    "primary_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Primary verified email address"
+    },
+    "pending_email_change": {
+      "type": ["object", "null"],
+      "description": "Tracks the process of changing the primary email address, requiring code verification.",
+      "properties": {
+        "new_email": {
+          "type": "string",
+          "format": "email",
+          "description": "The new email address pending verification."
+        },
+        "verification_code_hash": {
+          "type": "string",
+          "description": "A hash of the verification code sent to the new email."
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the verification code expires."
+        },
+        "attempts": {
+          "type": "integer",
+          "default": 0,
+          "description": "Number of verification attempts."
+        }
+      },
+      "required": ["new_email", "verification_code_hash", "expires_at"]
+    },
+    "display_name": {
+      "type": "string",
+      "description": "User's preferred display name"
+    },
+    "connected_providers": {
+      "type": "object",
+      "description": "Linked list structure for OAuth providers with performance optimization",
+      "properties": {
+        "head": {
+          "type": ["string", "null"],
+          "description": "ID of first provider in linked list (null if empty)"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of connected providers"
+        },
+        "nodes": {
+          "type": "object",
+          "patternProperties": {
+            "^provider_[a-z0-9_]+$": {
+              "type": "object",
+              "properties": {
+                "provider": {
+                  "type": "string",
+                  "enum": ["google-oauth2", "apple", "facebook", "microsoft", "x-twitter", "discord", "github", "linkedin", "amazon", "spotify", "slack", "reddit", "coderabbit"]
+                },
+                "provider_user_id": {
+                  "type": "string",
+                  "description": "Provider's unique user identifier"
+                },
+                "display_name": {
+                  "type": "string",
+                  "description": "Human-readable provider name"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "scopes": {
+                  "type": "array",
+                  "items": {"type": "string"}
+                },
+                "token_data": {
+                  "type": "object",
+                  "properties": {
+                    "access_token_hash": {"type": "string"},
+                    "refresh_token_hash": {"type": "string"},
+                    "vault_reference": {"type": "string"},
+                    "expires_at": {"type": "string", "format": "date-time"},
+                    "scope_granted": {"type": "array", "items": {"type": "string"}}
+                  },
+                  "required": ["vault_reference", "expires_at"]
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["active", "disconnected", "suspended", "error"],
+                  "default": "active"
+                },
+                "connected_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "last_sync": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "data_retention_choice": {
+                  "type": "string",
+                  "enum": ["keep", "delete"],
+                  "description": "Binary retention policy (CRA requirement)"
+                },
+                "error_count": {
+                  "type": "integer",
+                  "default": 0
+                },
+                "last_error": {
+                  "type": ["object", "null"],
+                  "properties": {
+                    "message": {"type": "string"},
+                    "timestamp": {"type": "string", "format": "date-time"},
+                    "type": {"type": "string"}
+                  }
+                },
+                "next": {
+                  "type": ["string", "null"],
+                  "description": "ID of next provider in linked list (null if last)"
+                },
+                "origin_signature": {
+                  "type": "string",
+                  "description": "HMAC-SHA256 signature for tamper detection"
+                }
+              },
+              "required": ["provider", "provider_user_id", "status", "connected_at", "data_retention_choice", "origin_signature"]
+            }
+          }
+        }
+      },
+      "required": ["head", "count", "nodes"]
+    },
+    "data_objects": {
+      "type": "object",
+      "description": "Linked list for data objects with comprehensive origin tracking",
+      "properties": {
+        "head": {"type": ["string", "null"]},
+        "count": {"type": "integer", "minimum": 0},
+        "size_bytes": {"type": "integer", "minimum": 0},
+        "nodes": {
+          "type": "object",
+          "patternProperties": {
+            "^data_[a-f0-9-]+$": {
+              "type": "object",
+              "properties": {
+                "object_id": {"type": "string"},
+                "object_type": {"type": "string"},
+                "data_reference": {
+                  "type": "object",
+                  "properties": {
+                    "storage_type": {"type": "string", "enum": ["inline", "external", "encrypted"]},
+                    "storage_key": {"type": "string"},
+                    "size_bytes": {"type": "integer"},
+                    "encryption_method": {"type": "string", "enum": ["aes-256-gcm", "none"]}
+                  }
+                },
+                "origin": {
+                  "type": "object",
+                  "properties": {
+                    "provider": {"type": "string"},
+                    "provider_user_id": {"type": "string"},
+                    "source_type": {"type": "string"},
+                    "imported_at": {"type": "string", "format": "date-time"},
+                    "last_updated": {"type": "string", "format": "date-time"},
+                    "retention_policy": {"type": "string", "enum": ["keep", "delete"]},
+                    "sync_enabled": {"type": "boolean"},
+                    "quality_score": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1,
+                        "description": "A score representing the quality and completeness of the data, potentially informed by ML models."
+                    },
+                    "trust_level": {
+                        "type": "string",
+                        "enum": ["verified", "unverified", "suspicious"],
+                        "description": "A trust classification for the data source, potentially based on configurable thresholds."
+                    },
+                    "integrity_hash": {"type": "string", "description": "SHA-256 hash for integrity verification"}
+                  },
+                  "required": ["provider", "source_type", "imported_at", "retention_policy", "integrity_hash"]
+                },
+                "access_log": {
+                  "type": "object",
+                  "description": "Linked list of access events for this data object.",
+                  "properties": {
+                    "head": {
+                      "type": ["string", "null"],
+                      "description": "ID of the first log entry in the linked list."
+                    },
+                    "count": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "description": "Total number of access log entries."
+                    },
+                    "nodes": {
+                      "type": "object",
+                      "patternProperties": {
+                        "^log_[a-f0-9-]+$": {
+                          "type": "object",
+                          "properties": {
+                            "action": {"type": "string"},
+                            "timestamp": {"type": "string", "format": "date-time"},
+                            "source": {"type": "string", "description": "e.g., user_id or system process"},
+                            "ip_address": {"type": "string", "format": "ipv4-or-ipv6"},
+                            "user_agent": {"type": "string"},
+                            "next": {"type": ["string", "null"]}
+                          },
+                          "required": ["action", "timestamp", "source", "next"]
+                        }
+                      }
+                    }
+                  },
+                  "required": ["head", "count", "nodes"]
+                },
+                "next": {"type": ["string", "null"]}
+              },
+              "required": ["object_id", "object_type", "origin", "next"]
+            }
+          }
+        }
+      }
+    },
+    "passkeys": {
+      "type": "object",
+      "description": "Manages WebAuthn passkeys for passwordless authentication.",
+      "properties": {
+        "head": {
+          "type": ["string", "null"],
+          "description": "ID of the first passkey in the linked list."
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "nodes": {
+          "type": "object",
+          "patternProperties": {
+            "^passkey_[a-f0-9-]+$": {
+              "type": "object",
+              "properties": {
+                "credential_id": {
+                  "type": "string",
+                  "description": "The globally unique ID for the credential."
+                },
+                "public_key": {
+                  "type": "string",
+                  "description": "The COSE-encoded public key."
+                },
+                "device_info": {
+                  "type": "object",
+                  "properties": {
+                    "name": {"type": "string"},
+                    "type": {"type": "string", "enum": ["phone", "laptop", "desktop", "tablet", "security_key"]}
+                  }
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "last_used": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "next": {
+                  "type": ["string", "null"]
+                }
+              },
+              "required": ["credential_id", "public_key", "created_at", "next"]
+            }
+          }
+        }
+      },
+      "required": ["head", "count", "nodes"]
+    },
+    "user_preferences": {
+      "type": "object",
+      "properties": {
+        "default_retention_policy": {"type": "string", "enum": ["keep", "delete"]},
+        "mfa_enabled": {"type": "boolean", "default": false},
+        "preferred_mfa_method": {"type": "string", "enum": ["sms", "totp", "webauthn", "none"]},
+        "notifications": {
+          "type": "object",
+          "properties": {
+            "email_alerts": {"type": "boolean", "default": true},
+            "security_notifications": {"type": "boolean", "default": true},
+            "provider_sync_notifications": {"type": "boolean", "default": false}
+          }
+        },
+        "privacy": {
+          "type": "object",
+          "properties": {
+            "data_sharing_consent": {
+              "type": "object",
+              "description": "Granular consent settings for data sharing, allowing users to control what they share.",
+              "properties": {
+                "global_opt_out": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "A master switch to opt-out of all non-essential data sharing."
+                },
+                "per_category": {
+                  "type": "object",
+                  "description": "Consent settings grouped by data category.",
+                  "properties": {
+                    "profile": { "type": "boolean", "default": true },
+                    "analytics": { "type": "boolean", "default": true },
+                    "marketing": { "type": "boolean", "default": false }
+                  }
+                }
+              }
+            },
+            "analytics_enabled": {"type": "boolean", "default": true},
+            "gdpr_consent_given": {"type": "boolean"},
+            "gdpr_consent_date": {"type": "string", "format": "date-time"}
+          }
+        }
+      }
+    },
+    "system_metadata": {
+      "type": "object",
+      "properties": {
+        "roles": {"type": "array", "items": {"type": "string"}},
+        "permissions": {"type": "array", "items": {"type": "string"}},
+        "subscription": {
+          "type": "object",
+          "properties": {
+            "plan": {"type": "string", "enum": ["free", "premium", "enterprise"]},
+            "status": {"type": "string", "enum": ["active", "cancelled", "past_due"]},
+            "features_enabled": {"type": "array", "items": {"type": "string"}}
+          }
+        },
+        "security": {
+          "type": "object",
+          "properties": {
+            "risk_score": {"type": "number", "minimum": 0, "maximum": 1},
+            "failed_login_attempts": {"type": "integer", "default": 0},
+            "account_locked": {"type": "boolean", "default": false},
+            "last_security_audit": {"type": "string", "format": "date-time"},
+            "account_recovery_challenge": {
+              "type": ["object", "null"],
+              "description": "Stores details for an AI-assisted account recovery challenge, presenting questions to the user.",
+              "properties": {
+                "challenge_id": { "type": "string" },
+                "questions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "question_text": { "type": "string" },
+                      "options_hash": { "type": "string", "description": "Hash of the concatenated correct and fake answers." },
+                      "answer_hash": { "type": "string", "description": "Hash of the correct answer." }
+                    },
+                    "required": ["question_text", "options_hash", "answer_hash"]
+                  }
+                },
+                "expires_at": { "type": "string", "format": "date-time" },
+                "attempts": { "type": "integer", "default": 0 }
+              },
+              "required": ["challenge_id", "questions", "expires_at"]
+            }
+          }
+        }
+      }
+    },
+    "audit_trail": {
+      "type": "object",
+      "description": "Append-only audit log with linked list structure",
+      "properties": {
+        "head": {"type": ["string", "null"]},
+        "tail": {"type": ["string", "null"]},
+        "count": {"type": "integer", "minimum": 0},
+        "retention_days": {"type": "integer", "default": 3653},
+        "last_compaction": {"type": "string", "format": "date-time"}
+      }
+    },
+    "created_at": {"type": "string", "format": "date-time"},
+    "updated_at": {"type": "string", "format": "date-time"},
+    "last_login": {"type": "string", "format": "date-time"},
+    "schema_integrity": {
+      "type": "object",
+      "properties": {
+        "checksum": {"type": "string", "description": "SHA-256 checksum of entire record"},
+        "last_verified": {"type": "string", "format": "date-time"},
+        "signature": {"type": "string", "description": "Digital signature for non-repudiation"},
+        "encryption": {
+            "type": ["object", "null"],
+            "description": "Details for data-at-rest encryption.",
+            "properties": {
+                "algorithm": { "type": "string", "enum": ["AES-256-GCM"], "default": "AES-256-GCM" },
+                "iv": { "type": "string", "description": "Initialization Vector used for encryption." },
+                "auth_tag": { "type": "string", "description": "Authentication tag produced by GCM." }
+            },
+            "required": ["algorithm", "iv", "auth_tag"]
+        }
+      },
+      "required": ["checksum", "last_verified"]
+    }
+  },
+  "required": ["root_id", "cra_version", "primary_email", "connected_providers", "data_objects", "passkeys", "user_preferences", "created_at", "updated_at", "schema_integrity"],
+  "additionalProperties": false
+}

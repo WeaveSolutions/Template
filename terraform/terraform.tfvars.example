@@ -1,0 +1,30 @@
+# Multi-Cloud Provider Selection
+# Enable the cloud providers you want to deploy to
+enable_aws        = false
+enable_gcp        = false
+enable_azure      = false
+enable_oci        = false
+enable_cloudflare = false
+enable_ibm        = false
+
+# Common Configuration
+project_name = "Nexpo"
+environment  = "dev"  # Options: dev, staging, prod
+
+# Note: Provider-specific configurations should be set in:
+# - aws.tfvars (for AWS configuration)
+# - gcp.tfvars (for GCP configuration)  
+# - azure.tfvars (for Azure configuration)
+# - oci.tfvars (for OCI configuration)
+# - cloudflare.tfvars (for Cloudflare configuration)
+# - ibm.tfvars (for IBM Cloud configuration)
+
+# Cloudflare Configuration (only needed if enable_cloudflare = true)
+# cloudflare_api_token   = "your-cloudflare-api-token"
+# cloudflare_email       = "your-email@example.com"
+# cloudflare_account_id  = "your-cloudflare-account-id"
+
+# IBM Cloud Configuration (only needed if enable_ibm = true)
+# ibmcloud_api_key      = "your-ibm-cloud-api-key"
+# ibm_region            = "us-south"  # Options: us-south, us-east, eu-de, eu-gb, jp-tok, etc.
+# ibm_zone              = "us-south-1"  # Zone within the selected region

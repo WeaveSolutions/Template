@@ -1,0 +1,114 @@
+swagger: "2.0"
+info:
+  title: "${project_name} API (${environment})"
+  description: "API Gateway for ${project_name} in ${environment} environment"
+  version: "1.0.0"
+
+# Security Definitions
+securityDefinitions:
+  firebase:
+    authorizationUrl: ""
+    flow: "implicit"
+    type: "oauth2"
+    x-google-issuer: "https://securetoken.google.com/${gcp_project_id}"
+    x-google-jwks_uri: "https://www.googleapis.com/service_accounts/v1/metadata/x509/securetoken@system.gserviceaccount.com"
+    x-google-audiences: "${gcp_project_id}"
+
+# Global security
+security:
+  - firebase: []
+
+# Auth0 JWT Validation
+x-google-backend:
+  address: https://${gcp_region}-${gcp_project_id}.cloudfunctions.net/auth0-jwt-validator
+  path_translation: APPEND_PATH_TO_ADDRESS
+
+# Paths
+paths:
+  /api/v1/health:
+    get:
+      summary: Health check endpoint
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "ok"
+  
+  /api/v1/auth/me:
+    get:
+      summary: Get current user info
+      operationId: getCurrentUser
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                example: "user123"
+              email:
+                type: string
+                example: "user@example.com"
+  
+  # Add more endpoints as needed
+  # /api/v1/...
+  
+# CORS Configuration
+x-google-endpoints:
+- name: "${google_api_gateway_gateway.api_gw.default_hostname}"
+  allowCors: true
+
+# Logging Configuration
+x-google-management:
+  metrics:
+  - name: "read_requests"
+    displayName: "Read requests"
+    valueType: INT64
+    metricKind: DELTA
+  - name: "write_requests"
+    displayName: "Write requests"
+    valueType: INT64
+    metricKind: DELTA
+
+# Quota Configuration
+x-google-quota:
+  limits:
+  - name: "read-limit"
+    metric: "read_requests"
+    unit: "1/min/{project}"
+    values:
+      STANDARD: 1000
+  - name: "write-limit"
+    metric: "write_requests"
+    unit: "1/min/{project}"
+    values:
+      STANDARD: 100
+
+# Monitoring
+x-google-monitoring:
+  producerDestinations:
+  - metrics:
+    - cloudsql.googleapis.com/database/cpu/utilization
+    - cloudsql.googleapis.com/database/network/received_bytes_count
+    monitoredResource: cloud_sql_database
+  - metrics:
+    - cloudfunctions.googleapis.com/function/execution_count
+    - cloudfunctions.googleapis.com/function/execution_times
+    monitoredResource: cloud_function
+
+# Cloud Logging Configuration
+x-google-logging:
+  producerDestinations:
+  - logs:
+    - cloudfunctions.googleapis.com/cloud-functions
+    monitoredResource: cloud_function
+  - logs:
+    - cloudsql.googleapis.com/mysql.err
+    - cloudsql.googleapis.com/mysql.slow
+    monitoredResource: cloud_sql_database

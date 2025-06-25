@@ -1,0 +1,30 @@
+# pnpm configuration for Nexpo monorepo
+# Enable shamefully-hoist for compatibility with React Native, Expo, and Prisma
+shamefully-hoist=true
+
+# Enable auto-install-peers for better dependency resolution
+auto-install-peers=true
+
+# Use strict peer dependencies (disabled for React Native compatibility)
+strict-peer-dependencies=false
+
+# Enable workspace support
+enable-pre-post-scripts=true
+
+# Hoist all dependencies to root for React Native Metro compatibility
+hoist-pattern=*
+
+# Public hoist pattern for better compatibility
+public-hoist-pattern=*
+
+# Workspace settings from official pnpm docs
+link-workspace-packages=true
+prefer-workspace-packages=true
+shared-workspace-lockfile=true
+save-workspace-protocol=rolling
+
+# Ensure lockfile is generated
+lockfile=true
+
+# Allow installing dependencies at root level
+ignore-workspace-root-check=true

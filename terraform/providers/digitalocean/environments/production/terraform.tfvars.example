@@ -1,0 +1,53 @@
+# DigitalOcean Production Environment Configuration
+
+# Provider Configuration
+digitalocean_access_token = "dop_v1_your_access_token_here"
+digitalocean_region       = "nyc3"
+
+# Network Configuration
+digitalocean_vpc_cidr = "10.30.0.0/16"
+enable_vpc           = true
+
+# App Platform Configuration
+enable_app_platform          = true
+app_platform_instance_count  = 3
+app_platform_instance_size   = "basic-s"
+app_platform_repo_url        = "https://github.com/your-username/next-solito-expo"
+app_platform_branch          = "main"
+
+# Database Configuration
+enable_managed_database = true
+enable_read_replica     = true
+database_cluster_size   = "db-s-2vcpu-4gb"
+database_node_count     = 2
+replica_region          = "sfo3"
+replica_size           = "db-s-1vcpu-2gb"
+
+# Storage Configuration
+enable_spaces = true
+enable_cdn    = true
+cdn_custom_domain = "cdn.your-domain.com"
+
+# Load Balancer Configuration
+enable_load_balancer     = false  # App Platform handles load balancing
+load_balancer_size_unit  = 1
+ssl_certificate_name     = "your-ssl-cert"
+
+# Security Configuration
+enable_firewall = true
+ssh_allowed_ips = [
+  "192.168.1.0/24",    # Office network
+  "10.0.0.0/8"         # VPN network
+]
+
+# Domain Configuration
+domain_name = "your-domain.com"
+subdomain   = ""  # Production uses root domain
+
+# Production Environment Features
+# - High availability with multiple instances
+# - Database clustering with read replica
+# - CDN for global performance
+# - Enhanced security with firewall
+# - Monitoring and alerting enabled
+# - Automated backups and maintenance windows

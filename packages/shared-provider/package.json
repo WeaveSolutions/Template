@@ -1,0 +1,21 @@
+{
+  "name": "@shared/provider",
+  "version": "0.0.0",
+  "main": "src/index.tsx",
+  "types": "src/index.tsx",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf node_modules"
+  },
+  "dependencies": {
+    "@react-native-async-storage/async-storage": "^2.1.2",
+    "expo-auth-session": "^5.5.2",
+    "expo-web-browser": "^13.0.3",
+    "expo-secure-store": "^13.0.2",
+    "react": "*",
+    "react-native": "*"
+  },
+  "devDependencies": {
+    "@shared/utils": "*"
+  }
+}

@@ -1,0 +1,252 @@
+name: Test Multi-Cloud Sync Adapters
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'packages/shared-utils/src/ditto-*-sync.ts'
+      - 'packages/shared-db/prisma/providers/**'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'packages/shared-utils/src/ditto-*-sync.ts'
+      - 'packages/shared-db/prisma/providers/**'
+  workflow_dispatch:
+    inputs:
+      providers:
+        description: 'Providers to test (comma-separated)'
+        required: false
+        default: 'all'
+        type: string
+
+jobs:
+  test-sync-adapters:
+    name: Test Sync Adapters
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        provider: 
+          - postgres
+          - mongodb
+          - supabase
+          - cosmosdb
+          - sqlserver
+          - ibmcloud
+          - firebase
+          - aws-rds
+          - aws-s3
+      fail-fast: false
+      
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Check if provider should be tested
+        id: check-provider
+        run: |
+          PROVIDERS="${{ github.event.inputs.providers || 'all' }}"
+          if [ "$PROVIDERS" = "all" ]; then
+            echo "run_test=true" >> $GITHUB_OUTPUT
+          else
+            IFS=',' read -ra PROVIDER_ARRAY <<< "$PROVIDERS"
+            for p in "${PROVIDER_ARRAY[@]}"; do
+              if [ "$p" = "${{ matrix.provider }}" ]; then
+                echo "run_test=true" >> $GITHUB_OUTPUT
+                break
+              fi
+            done
+          fi
+        shell: bash
+        
+      - name: Setup Node.js
+        if: steps.check-provider.outputs.run_test == 'true'
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'yarn'
+          
+      - name: Install dependencies
+        if: steps.check-provider.outputs.run_test == 'true'
+        run: yarn install --frozen-lockfile
+        
+      - name: Setup mock database (Postgres)
+        if: matrix.provider == 'postgres' && steps.check-provider.outputs.run_test == 'true'
+        uses: Daniel-Marynicz/postgresql-action@master
+        with:
+          postgres_image_tag: 14-alpine
+          postgres_user: postgres
+          postgres_password: postgres
+          postgres_db: test_db
+          
+      - name: Setup mock database (MongoDB)
+        if: matrix.provider == 'mongodb' && steps.check-provider.outputs.run_test == 'true'
+        uses: supercharge/mongodb-github-action@1.10.0
+        with:
+          mongodb-version: '6.0'
+          mongodb-username: mongodb
+          mongodb-password: mongodb
+          mongodb-db: test_db
+          
+      - name: Set environment variables for adapter
+        if: steps.check-provider.outputs.run_test == 'true'
+        run: |
+          # Enable all provider flags for testing
+          # Convert provider name to uppercase for environment variable
+          PROVIDER_UPPER=$(echo "${{ matrix.provider }}" | tr '[:lower:]' '[:upper:]')
+          echo "ENABLE_${PROVIDER_UPPER}=true" >> $GITHUB_ENV
+          
+          # Set provider-specific env vars
+          case "${{ matrix.provider }}" in
+            postgres)
+              echo "POSTGRES_CONNECTION_STRING=postgresql://postgres:postgres@localhost:5432/test_db" >> $GITHUB_ENV
+              ;;
+            mongodb)
+              echo "MONGODB_CONNECTION_STRING=mongodb://mongodb:mongodb@localhost:27017/test_db" >> $GITHUB_ENV
+              ;;
+            supabase)
+              # Using mock server for tests
+              echo "SUPABASE_URL=http://localhost:54321" >> $GITHUB_ENV
+              echo "SUPABASE_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSJ9.vI9obAHOGyVVKa3pD--kJlyxp-Z2zV9UUMAhKpNLAcU" >> $GITHUB_ENV
+              ;;
+            cosmosdb)
+              # Using Azure Cosmos DB emulator for tests
+              echo "COSMOSDB_CONNECTION_STRING=AccountEndpoint=https://localhost:8081/;AccountKey=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==" >> $GITHUB_ENV
+              echo "COSMOSDB_DATABASE_NAME=test_db" >> $GITHUB_ENV
+              ;;
+            sqlserver)
+              # Using SQL Server on Docker for tests
+              echo "SQLSERVER_CONNECTION_STRING=Server=localhost;Database=test_db;User Id=sa;Password=Password123!;TrustServerCertificate=True;" >> $GITHUB_ENV
+              echo "SQLSERVER_SCHEMA=dbo" >> $GITHUB_ENV
+              ;;
+            ibmcloud)
+              # Using mock server for tests
+              echo "IBMCLOUD_CONNECTION_STRING=ibm:mock://localhost:50000/test_db" >> $GITHUB_ENV
+              ;;
+            firebase)
+              # Using Firebase emulator for tests
+              echo "FIREBASE_PROJECT_ID=test-project" >> $GITHUB_ENV
+              echo "FIREBASE_API_KEY=test-api-key" >> $GITHUB_ENV
+              echo "FIREBASE_AUTH_DOMAIN=test-project.firebaseapp.com" >> $GITHUB_ENV
+              echo "ENABLE_GCP=true" >> $GITHUB_ENV
+              ;;
+            aws-rds)
+              # Using local PostgreSQL as mock for AWS RDS
+              echo "AWS_REGION=us-east-1" >> $GITHUB_ENV
+              echo "AWS_ACCESS_KEY_ID=test" >> $GITHUB_ENV
+              echo "AWS_SECRET_ACCESS_KEY=test" >> $GITHUB_ENV
+              echo "AWS_RDS_CONNECTION_STRING=postgresql://postgres:postgres@localhost:5432/test_db" >> $GITHUB_ENV
+              echo "AWS_RDS_ENGINE_TYPE=postgres" >> $GITHUB_ENV
+              ;;
+            aws-s3)
+              # Using MinIO as mock for S3
+              echo "AWS_REGION=us-east-1" >> $GITHUB_ENV
+              echo "AWS_ACCESS_KEY_ID=test" >> $GITHUB_ENV
+              echo "AWS_SECRET_ACCESS_KEY=test" >> $GITHUB_ENV
+              echo "AWS_S3_BUCKET_NAME=test-bucket" >> $GITHUB_ENV
+              echo "AWS_S3_ENDPOINT=http://localhost:9000" >> $GITHUB_ENV
+              ;;
+          esac
+        shell: bash
+        
+      - name: Prepare database schema
+        if: steps.check-provider.outputs.run_test == 'true'
+        run: |
+          # Generate Prisma schema for the provider
+          yarn workspace shared-db generate-${{ matrix.provider }}
+          
+          # Additional setup steps per provider if needed
+          case "${{ matrix.provider }}" in
+            postgres|aws-rds)
+              # Create tables with proper schema isolation
+              PGPASSWORD=postgres psql -h localhost -U postgres -d test_db -c "
+                CREATE SCHEMA IF NOT EXISTS public;
+                CREATE TABLE IF NOT EXISTS public.\"PostgresUser\" (
+                  id TEXT PRIMARY KEY,
+                  data JSONB NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS public.\"PostgresPost\" (
+                  id TEXT PRIMARY KEY,
+                  data JSONB NOT NULL
+                );"
+              # For AWS RDS tables
+              if [ "${{ matrix.provider }}" = "aws-rds" ]; then
+                PGPASSWORD=postgres psql -h localhost -U postgres -d test_db -c "
+                  CREATE TABLE IF NOT EXISTS public.\"AwsRdsUser\" (
+                    id TEXT PRIMARY KEY,
+                    data JSONB NOT NULL
+                  );
+                  CREATE TABLE IF NOT EXISTS public.\"AwsRdsPost\" (
+                    id TEXT PRIMARY KEY,
+                    data JSONB NOT NULL
+                  );"
+              fi
+              ;;
+            supabase)
+              # Create Supabase tables with proper schema isolation
+              PGPASSWORD=postgres psql -h localhost -U postgres -d test_db -c "
+                CREATE SCHEMA IF NOT EXISTS public;
+                CREATE TABLE IF NOT EXISTS public.\"SupabaseUser\" (
+                  id TEXT PRIMARY KEY,
+                  data JSONB NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS public.\"SupabasePost\" (
+                  id TEXT PRIMARY KEY,
+                  data JSONB NOT NULL
+                );"
+              ;;
+          esac
+        shell: bash
+        
+      - name: Run adapter tests
+        if: steps.check-provider.outputs.run_test == 'true'
+        run: |
+          # Run specific tests for the provider
+          yarn test -- --testPathPattern=ditto-${{ matrix.provider }}-sync
+        
+      - name: Upload test coverage
+        if: steps.check-provider.outputs.run_test == 'true'
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN || '' }}
+          flags: ${{ matrix.provider }}-adapter
+
+  report:
+    name: Generate Test Report
+    needs: test-sync-adapters
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Download test results
+        uses: actions/download-artifact@v3
+        with:
+          path: test-results
+          
+      - name: Generate report
+        run: |
+          echo "# Multi-Cloud Sync Adapter Test Results" > test-report.md
+          echo "" >> test-report.md
+          echo "| Provider | Status | Coverage |" >> test-report.md
+          echo "|----------|--------|----------|" >> test-report.md
+          
+          for provider in postgres mongodb supabase cosmosdb sqlserver ibmcloud firebase aws-rds aws-s3; do
+            status="${{ needs.test-sync-adapters.result }}"
+            if [ -d "test-results/$provider" ]; then
+              coverage=$(cat test-results/$provider/coverage.txt | grep "All files" | awk '{print $4}')
+            else
+              coverage="N/A"
+            fi
+            
+            if [ "$status" = "success" ]; then
+              status_icon="✅"
+            else
+              status_icon="❌"
+            fi
+            
+            echo "| $provider | $status_icon | $coverage |" >> test-report.md
+          done
+          
+      - name: Create summary
+        run: cat test-report.md >> $GITHUB_STEP_SUMMARY

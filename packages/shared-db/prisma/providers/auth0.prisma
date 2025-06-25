@@ -1,0 +1,296 @@
+// Auth0 Provider Schema for CRA Account Center
+// This provider integrates with Auth0's Management API to manage user data and metadata
+// Uses Auth0's built-in user database as the data store
+
+generator auth0Client {
+  provider        = "prisma-client-js"
+  output          = "../../../node_modules/.prisma/client-auth0"
+  previewFeatures = ["relationJoins"]
+}
+
+// Auth0 doesn't expose direct database access, so we use PostgreSQL as the underlying storage
+// This will be managed by our Auth0 provider service that wraps the Management API
+datasource auth0 {
+  provider = "postgresql"
+  url      = env("AUTH0_DATABASE_URL")
+}
+
+// Core user model mapping to Auth0 user profile
+model Auth0User {
+  id                String              @id @map("user_id") // Auth0 user ID
+  email             String              @unique
+  emailVerified     Boolean             @default(false) @map("email_verified")
+  name              String?
+  nickname          String?
+  picture           String?
+  
+  // CRA specific fields
+  craVersion        String              @default("2.1.0") @map("cra_version")
+  primaryEmail      String              @map("primary_email")
+  displayName       String?             @map("display_name")
+  
+  // Timestamps
+  createdAt         DateTime            @default(now()) @map("created_at")
+  updatedAt         DateTime            @updatedAt @map("updated_at")
+  lastLogin         DateTime?           @map("last_login")
+  
+  // Relationships to metadata structures
+  appMetadata       Auth0AppMetadata?   @relation("UserAppMetadata")
+  userMetadata      Auth0UserMetadata?  @relation("UserUserMetadata")
+  connectedProviders Auth0ConnectedProvider[] @relation("UserConnectedProviders")
+  dataObjects       Auth0DataObject[]   @relation("UserDataObjects")
+  auditTrails       Auth0AuditTrail[]   @relation("UserAuditTrails")
+  
+  // Schema integrity
+  schemaIntegrity   Auth0SchemaIntegrity? @relation("UserSchemaIntegrity")
+  
+  @@map("auth0_users")
+  @@index([email])
+  @@index([primaryEmail])
+  @@index([createdAt])
+}
+
+// App Metadata - System data (roles, permissions, subscription)
+model Auth0AppMetadata {
+  id                String              @id @default(uuid())
+  userId            String              @unique @map("user_id")
+  user              Auth0User           @relation("UserAppMetadata", fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Role-based access control
+  roles             String[]            @default([])
+  permissions       String[]            @default([])
+  
+  // Subscription data
+  subscriptionPlan  String              @default("free") @map("subscription_plan") // free, premium, enterprise
+  subscriptionStatus String             @default("active") @map("subscription_status") // active, cancelled, past_due
+  featuresEnabled   String[]            @default([]) @map("features_enabled")
+  
+  // Security metadata
+  riskScore         Float               @default(0.0) @map("risk_score") // 0.0 to 1.0
+  failedLoginAttempts Int               @default(0) @map("failed_login_attempts")
+  accountLocked     Boolean             @default(false) @map("account_locked")
+  lastSecurityAudit DateTime?           @map("last_security_audit")
+  
+  // Multi-tenant support
+  tenantId          String?             @map("tenant_id")
+  databaseAccess    Json?               @map("database_access") // JSON object for database permissions
+  
+  // Timestamps
+  createdAt         DateTime            @default(now()) @map("created_at")
+  updatedAt         DateTime            @updatedAt @map("updated_at")
+  
+  @@map("auth0_app_metadata")
+  @@index([tenantId])
+  @@index([riskScore])
+}
+
+// User Metadata - Preferences and connected providers
+model Auth0UserMetadata {
+  id                     String              @id @default(uuid())
+  userId                 String              @unique @map("user_id")
+  user                   Auth0User           @relation("UserUserMetadata", fields: [userId], references: [id], onDelete: Cascade)
+  
+  // User preferences
+  defaultRetentionPolicy String              @default("keep") @map("default_retention_policy") // keep, delete
+  mfaEnabled             Boolean             @default(false) @map("mfa_enabled")
+  preferredMfaMethod     String              @default("none") @map("preferred_mfa_method") // sms, totp, webauthn, none
+  
+  // Notification preferences
+  emailAlerts            Boolean             @default(true) @map("email_alerts")
+  securityNotifications Boolean             @default(true) @map("security_notifications")
+  providerSyncNotifications Boolean          @default(false) @map("provider_sync_notifications")
+  
+  // Privacy settings
+  dataSharingConsent     Boolean             @default(false) @map("data_sharing_consent")
+  analyticsEnabled       Boolean             @default(true) @map("analytics_enabled")
+  gdprConsentGiven       Boolean?            @map("gdpr_consent_given")
+  gdprConsentDate        DateTime?           @map("gdpr_consent_date")
+  
+  // Connected providers linked list metadata
+  connectedProvidersHead String?             @map("connected_providers_head")
+  connectedProvidersCount Int                @default(0) @map("connected_providers_count")
+  
+  // Data objects linked list metadata
+  dataObjectsHead        String?             @map("data_objects_head")
+  dataObjectsCount       Int                @default(0) @map("data_objects_count")
+  dataObjectsSizeBytes   BigInt             @default(0) @map("data_objects_size_bytes")
+  
+  // Timestamps
+  createdAt              DateTime            @default(now()) @map("created_at")
+  updatedAt              DateTime            @updatedAt @map("updated_at")
+  
+  @@map("auth0_user_metadata")
+  @@index([connectedProvidersHead])
+  @@index([dataObjectsHead])
+}
+
+// Connected OAuth Providers (Linked List Structure)
+model Auth0ConnectedProvider {
+  id                    String              @id @default(uuid())
+  userId                String              @map("user_id")
+  user                  Auth0User           @relation("UserConnectedProviders", fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Provider information
+  provider              String              // google-oauth2, apple, facebook, etc.
+  providerUserId        String              @map("provider_user_id")
+  displayName           String              @map("display_name")
+  email                 String?
+  scopes                String[]            @default([])
+  
+  // Token data (stored in Vault)
+  accessTokenHash       String?             @map("access_token_hash")
+  refreshTokenHash      String?             @map("refresh_token_hash")
+  vaultReference        String              @map("vault_reference") // Reference to Vault storage
+  expiresAt             DateTime            @map("expires_at")
+  scopeGranted          String[]            @default([]) @map("scope_granted")
+  
+  // Status and tracking
+  status                String              @default("active") // active, disconnected, suspended, error
+  connectedAt           DateTime            @default(now()) @map("connected_at")
+  lastSync              DateTime?           @map("last_sync")
+  dataRetentionChoice   String              @default("keep") @map("data_retention_choice") // keep, delete
+  errorCount            Int                 @default(0) @map("error_count")
+  lastError             Json?               @map("last_error") // JSON object with error details
+  
+  // Linked list structure
+  nextProviderId        String?             @map("next_provider_id") // ID of next provider in linked list
+  
+  // Security
+  originSignature       String              @map("origin_signature") // HMAC-SHA256 signature
+  
+  // Timestamps
+  createdAt             DateTime            @default(now()) @map("created_at")
+  updatedAt             DateTime            @updatedAt @map("updated_at")
+  
+  @@map("auth0_connected_providers")
+  @@unique([userId, provider])
+  @@index([provider])
+  @@index([status])
+  @@index([nextProviderId])
+}
+
+// Data Objects (Linked List Structure)
+model Auth0DataObject {
+  id                    String              @id @default(uuid())
+  userId                String              @map("user_id")
+  user                  Auth0User           @relation("UserDataObjects", fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Object identification
+  objectId              String              @map("object_id")
+  objectType            String              @map("object_type")
+  
+  // Storage reference
+  storageType           String              @map("storage_type") // inline, external, encrypted
+  storageKey            String              @map("storage_key")
+  sizeBytes             BigInt              @map("size_bytes")
+  encryptionMethod      String              @default("aes-256-gcm") @map("encryption_method")
+  
+  // Origin tracking
+  originProvider        String              @map("origin_provider")
+  originProviderUserId  String              @map("origin_provider_user_id")
+  sourceType            String              @map("source_type")
+  importedAt            DateTime            @default(now()) @map("imported_at")
+  lastUpdated           DateTime            @updatedAt @map("last_updated")
+  retentionPolicy       String              @default("keep") @map("retention_policy") // keep, delete
+  syncEnabled           Boolean             @default(true) @map("sync_enabled")
+  qualityScore          Float               @default(1.0) @map("quality_score") // 0.0 to 1.0
+  trustLevel            String              @default("verified") @map("trust_level") // verified, unverified, suspicious
+  integrityHash         String              @map("integrity_hash") // SHA-256 hash
+  
+  // Access logging
+  accessLogHead         String?             @map("access_log_head")
+  accessLogCount        Int                 @default(0) @map("access_log_count")
+  
+  // Linked list structure
+  nextDataObjectId      String?             @map("next_data_object_id")
+  
+  // Timestamps
+  createdAt             DateTime            @default(now()) @map("created_at")
+  updatedAt             DateTime            @updatedAt @map("updated_at")
+  
+  // Relations
+  accessLogs            Auth0AccessLog[]    @relation("DataObjectAccessLogs")
+  
+  @@map("auth0_data_objects")
+  @@unique([userId, objectId])
+  @@index([objectType])
+  @@index([originProvider])
+  @@index([trustLevel])
+  @@index([nextDataObjectId])
+}
+
+// Access Logs for Data Objects
+model Auth0AccessLog {
+  id                    String              @id @default(uuid())
+  dataObjectId          String              @map("data_object_id")
+  dataObject            Auth0DataObject     @relation("DataObjectAccessLogs", fields: [dataObjectId], references: [id], onDelete: Cascade)
+  
+  // Access details
+  action                String              // read, write, delete, etc.
+  source                String              // service or user that accessed
+  ipAddress             String              @map("ip_address")
+  userAgent             String              @map("user_agent")
+  timestamp             DateTime            @default(now())
+  
+  @@map("auth0_access_logs")
+  @@index([dataObjectId])
+  @@index([timestamp])
+  @@index([action])
+}
+
+// Audit Trail (Linked List Structure)
+model Auth0AuditTrail {
+  id                    String              @id @default(uuid())
+  userId                String              @map("user_id")
+  user                  Auth0User           @relation("UserAuditTrails", fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Audit information
+  action                String
+  resourceType          String              @map("resource_type")
+  resourceId            String              @map("resource_id")
+  changes               Json?               // JSON object with before/after states
+  ipAddress             String              @map("ip_address")
+  userAgent             String              @map("user_agent")
+  
+  // Linked list structure
+  previousAuditId       String?             @map("previous_audit_id")
+  nextAuditId           String?             @map("next_audit_id")
+  
+  // Retention
+  retentionDays         Int                 @default(3653) @map("retention_days") // 10 years
+  compacted             Boolean             @default(false)
+  
+  // Timestamps
+  timestamp             DateTime            @default(now())
+  
+  @@map("auth0_audit_trails")
+  @@index([userId])
+  @@index([timestamp])
+  @@index([action])
+  @@index([resourceType])
+  @@index([compacted])
+}
+
+// Schema Integrity Tracking
+model Auth0SchemaIntegrity {
+  id                    String              @id @default(uuid())
+  userId                String              @unique @map("user_id")
+  user                  Auth0User           @relation("UserSchemaIntegrity", fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Integrity verification
+  checksum              String              // SHA-256 checksum of entire record
+  lastVerified          DateTime            @map("last_verified")
+  signature             String              // Digital signature for non-repudiation
+  
+  // Verification history
+  verificationCount     Int                 @default(0) @map("verification_count")
+  lastIntegrityFailure  DateTime?           @map("last_integrity_failure")
+  
+  // Timestamps
+  createdAt             DateTime            @default(now()) @map("created_at")
+  updatedAt             DateTime            @updatedAt @map("updated_at")
+  
+  @@map("auth0_schema_integrity")
+  @@index([lastVerified])
+  @@index([checksum])
+}

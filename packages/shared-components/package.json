@@ -1,14 +1,45 @@
 {
   "name": "@shared/components",
   "version": "0.1.0",
-  "main": "index.ts",
-  "types": "index.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "private": true,
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "react": "18.2.0",
-    "react-native": "0.72.4"
+    "@shared/ui": "workspace:*",
+    "@shared/hooks": "workspace:*",
+    "@shared/provider": "workspace:*",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-native": "0.73.2",
+    "solito": "^4.4.1"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-dom": "^18.3.1",
+    "react-native": "0.73.2"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@types/react-native": "^0.73.0",
+    "typescript": "^5.0.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
   }
 }

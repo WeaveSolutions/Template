@@ -1,0 +1,44 @@
+// Prisma Schema - Default/Placeholder Configuration
+// This is a placeholder schema to prevent IDE validation errors.
+// Each provider uses its own schema in the providers/ directory.
+//
+// To use provider-specific schemas:
+// - PostgreSQL: providers/postgres.prisma (use pgdb datasource)
+// - MongoDB: providers/mongodb.prisma (use mongodb datasource)  
+// - CosmosDB: providers/cosmosdb.prisma (use cosmosdb datasource)
+// - SQL Server: providers/sqlserver.prisma (use sqlserverdb datasource)
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../../node_modules/.prisma/client"
+}
+
+datasource defaultdb {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Default models - these are placeholders
+// Actual models are defined in provider-specific schemas
+
+model DefaultUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model DefaultPost {
+  id        String   @id @default(cuid())
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("posts")
+}

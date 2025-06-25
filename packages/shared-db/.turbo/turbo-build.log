@@ -1,0 +1,12 @@
+
+> @your-org/shared-db@0.1.0 prebuild E:\Workspace\Templates\Nexpo\packages\shared-db
+> pnpm run clean
+
+
+> @your-org/shared-db@0.1.0 clean E:\Workspace\Templates\Nexpo\packages\shared-db
+> rimraf dist
+
+
+> @your-org/shared-db@0.1.0 build E:\Workspace\Templates\Nexpo\packages\shared-db
+> tsc
+

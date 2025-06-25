@@ -1,0 +1,33 @@
+# DigitalOcean Development Environment Configuration
+
+# Provider Configuration
+digitalocean_access_token = "dop_v1_your_access_token_here"
+digitalocean_region       = "nyc3"
+
+# Network Configuration
+digitalocean_vpc_cidr = "10.10.0.0/16"
+enable_vpc           = true
+
+# App Platform Configuration
+enable_app_platform          = true
+app_platform_instance_count  = 1
+app_platform_instance_size   = "basic-xxs"
+app_platform_repo_url        = "https://github.com/your-username/next-solito-expo"
+app_platform_branch          = "development"
+
+# Database Configuration
+enable_managed_database = true
+database_cluster_size   = "db-s-1vcpu-1gb"
+
+# Storage Configuration
+enable_spaces = true
+
+# Domain Configuration
+domain_name = "your-domain.com"
+subdomain   = "dev"
+
+# Development Environment Features
+# - Small instance sizes for cost optimization
+# - Single database node
+# - Basic monitoring enabled
+# - Force destroy enabled for easy cleanup

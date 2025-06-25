@@ -1,0 +1,21 @@
+# Development Environment Variables
+# Copy this file to terraform.tfvars and fill in your values
+
+# Project Configuration
+project_name = "Nexpo"
+environment  = "dev"
+aws_region   = "us-east-1"
+
+# Supabase Configuration
+supabase_url      = "https://your-project.supabase.co"
+supabase_anon_key = "your-supabase-anon-key"
+
+# Auth0 Configuration (optional - remove if not using Auth0)
+auth0_secret          = "your-auth0-secret"
+auth0_base_url        = "http://localhost:3000"
+auth0_issuer_base_url = "https://your-domain.auth0.com"
+auth0_client_id       = "your-auth0-client-id"
+auth0_client_secret   = "your-auth0-client-secret"
+
+# Monitoring
+alarm_email_endpoints = ["your-email@example.com"]

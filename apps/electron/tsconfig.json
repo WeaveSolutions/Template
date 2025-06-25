@@ -1,0 +1,47 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2021",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "declaration": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "outDir": "./dist",
+    "strict": true,
+    "lib": ["es2020", "dom"],
+    "allowJs": true,
+    "removeComments": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react-jsx",
+    "declarationMap": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "rootDirs": [
+      "./src",
+      "../../packages/shared-components/src",
+      "../../packages/shared-ui/src",
+      "../../packages/shared-utils/src"
+    ],
+    "paths": {
+      "@nexpo/shared-components": ["../../packages/shared-components/src/index"],
+      "@nexpo/shared-ui": ["../../packages/shared-ui/src/index"],
+      "@nexpo/shared-utils": ["../../packages/shared-utils/src/index"],
+      "@/*": ["./src/*"],
+      "@nexpo/shared-components/*": ["../../packages/shared-components/src/*"]
+    }
+  },
+  "include": [
+    "src/**/*",
+    "../../packages/shared-components/src/**/*",
+    "../../packages/shared-ui/src/**/*",
+    "../../packages/shared-utils/src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts",
+    "dist"
+  ]
+}

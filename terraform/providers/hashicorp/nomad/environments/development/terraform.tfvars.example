@@ -1,0 +1,42 @@
+# HashiCorp Nomad Development Environment Configuration
+
+# Nomad Configuration
+nomad_address = "https://nomad-dev.example.com:4646"
+nomad_token   = "your-nomad-development-token"
+nomad_region  = "global"
+
+# Application Configuration
+enable_nextjs_app       = true
+enable_api_service      = true
+enable_background_worker = false  # Not needed in development
+enable_database_backup  = false  # Not needed in development
+
+# Namespace Configuration
+create_namespace = true
+enable_quota     = false  # No resource constraints in development
+namespace_quota  = "dev-quota"
+
+# Container Images
+nextjs_image_tag = "development"
+api_image_tag    = "development"
+worker_image_tag = "development"
+
+# Service Configuration
+nextjs_port = 3000
+api_port    = 8000
+api_url     = "http://api.service.consul:8000"
+
+# Database Configuration
+database_url = "postgresql://user:password@postgres.service.consul:5432/nextjs_dev"
+redis_url    = "redis://redis.service.consul:6379/0"
+
+# Backup Configuration (optional in development)
+backup_bucket   = "nextjs-dev-backups"
+backup_schedule = "0 6 * * *"  # Daily at 6 AM
+
+# Development Environment Features
+# - Single instance deployments for cost efficiency
+# - Lower resource limits
+# - No backup jobs by default
+# - Simplified networking
+# - Fast iteration and debugging

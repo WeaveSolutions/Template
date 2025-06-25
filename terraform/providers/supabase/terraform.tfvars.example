@@ -1,0 +1,163 @@
+# ==============================================================================
+# SUPABASE TERRAFORM CONFIGURATION EXAMPLE
+# ==============================================================================
+# Copy this file to terraform.tfvars and update the values according to your setup
+
+# ==============================================================================
+# PROVIDER CONFIGURATION
+# ==============================================================================
+
+# Supabase Management API Token (get from: https://app.supabase.com/account/tokens)
+supabase_access_token = "sbp_your_access_token_here"
+
+# ==============================================================================
+# ORGANIZATION CONFIGURATION
+# ==============================================================================
+
+# Set to true to create a new organization, false to use existing
+manage_organization = false
+organization_name   = "Nexpo Organization"
+
+# If using existing organization, provide the ID
+existing_organization_id = "your-org-id-here"
+
+# ==============================================================================
+# PROJECT CONFIGURATION
+# ==============================================================================
+
+project_name     = "nexpo"
+supabase_region  = "us-east-1"
+
+# Control which projects to create
+create_development_project = true
+create_staging_project     = true
+create_production_project  = true
+
+# Database passwords (use strong passwords in production)
+dev_database_password     = "dev_secure_password_123"
+staging_database_password = "staging_secure_password_123"
+prod_database_password    = "prod_secure_password_123"
+
+# If using existing projects instead of creating new ones
+# existing_dev_project_ref     = "your-dev-project-ref"
+# existing_staging_project_ref = "your-staging-project-ref"
+# existing_prod_project_ref    = "your-prod-project-ref"
+
+# ==============================================================================
+# AUTHENTICATION INTEGRATION
+# ==============================================================================
+# Authentication handled by Auth0, not Supabase Auth
+# Supabase provides PostgreSQL database and storage as data services only
+# 
+# Auth0 Configuration:
+# - Configure Auth0 tenant with OAuth providers
+# - Set up CRA service for token exchange
+# - Configure RLS policies to validate Auth0 JWT claims
+#
+# Example Auth0 Environment Variables for CRA Service:
+# AUTH0_DOMAIN="your-tenant.auth0.com"
+# AUTH0_CLIENT_ID="your-client-id"
+# AUTH0_CLIENT_SECRET="your-client-secret"
+# AUTH0_AUDIENCE="https://api.nexpo.com"
+# 
+# Example Row Level Security Policy:
+# CREATE POLICY "Users can access own data" ON user_profiles
+#   FOR ALL USING (auth.uid() = user_id AND 
+#                  auth.jwt()->>'custom:org_id' = organization_id);
+
+# ==============================================================================
+# DATABASE CONFIGURATION
+# ==============================================================================
+
+enable_db_config = true
+
+db_settings = {
+  db_schema            = "public,storage,graphql_public"
+  db_extra_search_path = "public,extensions"
+  max_rows             = 1000
+}
+
+# ==============================================================================
+# API CONFIGURATION
+# ==============================================================================
+
+api_settings = {
+  db_schema            = "public,storage,graphql_public"
+  db_extra_search_path = "public,extensions"
+  max_rows             = 1000
+  jwt_expiry           = 3600
+}
+
+# ==============================================================================
+# SECRETS CONFIGURATION
+# ==============================================================================
+
+project_secrets = {
+  openai_api_key = {
+    name  = "OPENAI_API_KEY"
+    value = "your-openai-api-key"
+  }
+  stripe_secret_key = {
+    name  = "STRIPE_SECRET_KEY"
+    value = "your-stripe-secret-key"
+  }
+  sendgrid_api_key = {
+    name  = "SENDGRID_API_KEY"
+    value = "your-sendgrid-api-key"
+  }
+}
+
+# ==============================================================================
+# STORAGE CONFIGURATION
+# ==============================================================================
+
+storage_buckets = {
+  avatars = {
+    name         = "avatars"
+    public       = true
+    file_size_limit = 5242880  # 5MB
+    allowed_mime_types = ["image/jpeg", "image/png", "image/webp"]
+  }
+  documents = {
+    name         = "documents"
+    public       = false
+    file_size_limit = 52428800  # 50MB
+    allowed_mime_types = ["application/pdf", "text/plain", "application/msword"]
+  }
+  uploads = {
+    name         = "uploads"
+    public       = false
+    file_size_limit = 104857600  # 100MB
+    allowed_mime_types = []  # Allow all types
+  }
+}
+
+# ==============================================================================
+# EDGE FUNCTIONS CONFIGURATION
+# ==============================================================================
+
+edge_functions = {
+  hello_world = {
+    name        = "hello-world"
+    source_code = file("${path.module}/functions/hello-world/index.ts")
+    import_map  = file("${path.module}/functions/hello-world/import_map.json")
+    verify_jwt  = false
+  }
+  send_email = {
+    name        = "send-email"
+    source_code = file("${path.module}/functions/send-email/index.ts")
+    import_map  = file("${path.module}/functions/send-email/import_map.json")
+    verify_jwt  = true
+  }
+}
+
+# ==============================================================================
+# CUSTOM DOMAINS (Optional)
+# ==============================================================================
+
+custom_domains = {
+  prod_api = {
+    domain_name = "api.yourapp.com"
+    project_ref = "your-prod-project-ref"
+  }
+}
