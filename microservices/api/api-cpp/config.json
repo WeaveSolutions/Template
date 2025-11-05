@@ -1,0 +1,218 @@
+{
+    "app": {
+        "threads_num": 4,
+        "enable_session": true,
+        "session_timeout": 3600,
+        "document_root": "./",
+        "max_connections": 1000,
+        "max_connections_per_ip": 50,
+        "load_dynamic_views": true,
+        "enable_unicode_escaping_in_json": false,
+        "float_precision_in_json": 0,
+        "enable_compression": true,
+        "enable_static_file_sending": true,
+        "max_memory_body_size": 1048576,
+        "max_file_size": 10485760,
+        "keepalive_requests": 1000,
+        "keepalive_timeout": 60,
+        "pipelining_requests": 0,
+        "enable_sendfile": true,
+        "server_header_field": "Nexpo-API/1.0",
+        "enable_server_header": true,
+        "enable_date_header": true,
+        "use_sendfile": true,
+        "file_types": [
+            "gif",
+            "png",
+            "jpg",
+            "jpeg",
+            "bmp",
+            "ico",
+            "js",
+            "css",
+            "html",
+            "htm",
+            "xml",
+            "json",
+            "txt",
+            "pdf",
+            "doc",
+            "docx",
+            "xls",
+            "xlsx",
+            "ppt",
+            "pptx",
+            "zip",
+            "rar",
+            "7z",
+            "tar",
+            "gz",
+            "mp3",
+            "mp4",
+            "wav",
+            "avi",
+            "mov",
+            "wmv",
+            "flv",
+            "webm",
+            "mkv"
+        ]
+    },
+    "listeners": [
+        {
+            "address": "0.0.0.0",
+            "port": 7090,
+            "https": false,
+            "cert": "",
+            "key": "",
+            "use_old_tls": false,
+            "proxy_trust_header": true,
+            "proxy_trust_ips": ["127.0.0.1", "::1"]
+        }
+    ],
+    "db_clients": [
+        {
+            "name": "default",
+            "rdbms": "postgresql",
+            "host": "localhost",
+            "port": 5432,
+            "dbname": "nexpo",
+            "user": "nexpo_user",
+            "passwd": "",
+            "is_fast": true,
+            "connection_number": 10,
+            "timeout": 5,
+            "client_encoding": "utf8"
+        }
+    ],
+    "redis_clients": [
+        {
+            "name": "default",
+            "host": "localhost",
+            "port": 6379,
+            "passwd": "",
+            "db": 0,
+            "is_fast": true,
+            "connection_number": 10,
+            "timeout": 5
+        }
+    ],
+    "plugins": [
+        {
+            "name": "drogon::plugin::AccessLogger",
+            "dependencies": [],
+            "config": {
+                "log_path": "./logs/access.log",
+                "log_format": "%h %l %u %t \"%r\" %s %b \"%{Referer}i\" \"%{User-Agent}i\"",
+                "log_size_limit": 100000000,
+                "use_local_time": true,
+                "log_index": 1
+            }
+        },
+        {
+            "name": "drogon::plugin::RealIpResolver",
+            "dependencies": [],
+            "config": {
+                "from_headers": ["X-Real-IP", "X-Forwarded-For"],
+                "trusted_proxies": ["127.0.0.1", "::1"]
+            }
+        },
+        {
+            "name": "drogon::plugin::SecureSSLRedirector",
+            "dependencies": [],
+            "config": {
+                "secure_ssl_host": "localhost:443",
+                "enable_hsts": true,
+                "hsts_max_age": 31536000,
+                "hsts_include_subdomains": true
+            }
+        },
+        {
+            "name": "drogon::plugin::SlashRemover",
+            "dependencies": [],
+            "config": {
+                "redirect": true,
+                "remove_trailing_slash": true
+            }
+        }
+    ],
+    "cors": {
+        "enabled": true,
+        "allow_origin": "*",
+        "allow_methods": "GET,POST,PUT,DELETE,OPTIONS,HEAD,PATCH",
+        "allow_headers": "Content-Type,Authorization,X-Requested-With,Accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers",
+        "expose_headers": "X-Total-Count,X-Page-Count,X-Per-Page,X-Current-Page",
+        "allow_credentials": true,
+        "max_age": 86400
+    },
+    "ssl": {
+        "cert": "",
+        "key": "",
+        "use_old_tls": false,
+        "session_timeout": 60,
+        "session_cache_size": 1024,
+        "ciphers": "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384",
+        "prefer_server_ciphers": true,
+        "protocols": ["TLSv1.2", "TLSv1.3"]
+    },
+    "log": {
+        "log_path": "./logs/",
+        "logfile_base_name": "nexpo-api",
+        "log_size_limit": 100000000,
+        "log_level": "INFO",
+        "log_index": 1,
+        "display_local_time": true,
+        "log_format": "%datetime %level %logger - %message"
+    },
+    "run_as_daemon": false,
+    "relaunch_on_error": false,
+    "use_sendfile": true,
+    "use_gzip": true,
+    "use_brotli": true,
+    "static_files_cache_time": 5,
+    "simple_controllers_map": {
+        "/": "IndexController",
+        "/health": "HealthController",
+        "/api/v1/cpp/users": "UserController",
+        "/api/v1/cpp/auth": "AuthController",
+        "/api/v1/cpp/admin": "AdminController"
+    },
+    "idle_connection_timeout": 60,
+    "server_header_field": "Nexpo-API/1.0",
+    "enable_server_header": true,
+    "enable_date_header": true,
+    "custom_config": {
+        "auth0": {
+            "domain": "",
+            "audience": "",
+            "client_id": "",
+            "client_secret": ""
+        },
+        "jwt": {
+            "secret": "",
+            "algorithm": "HS256",
+            "expiration": 3600
+        },
+        "kong": {
+            "admin_url": "http://kong-admin:8001",
+            "cache_ttl": 300,
+            "rate_limit": {
+                "minute": 100,
+                "hour": 1000
+            }
+        },
+        "posthog": {
+            "api_key": "",
+            "host": "https://app.posthog.com",
+            "project_id": "",
+            "enabled": false
+        },
+        "features": {
+            "enable_analytics": true,
+            "enable_caching": true,
+            "enable_rate_limiting": true,
+            "enable_compression": true,
+            "enable_monitoring": true
+        }
+    }
+}

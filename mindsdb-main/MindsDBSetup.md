@@ -25,16 +25,16 @@ From the project root directory:
 
 ```bash
 # Start MindsDB with automatic setup
-npm run start:mindsdb
+pnpm run start:mindsdb
 
 # View logs
-npm run logs:mindsdb
+pnpm run logs:mindsdb
 
 # Stop MindsDB
-npm run stop:mindsdb
+pnpm run stop:mindsdb
 
 # Full development environment (MindsDB + Frontend + Backend)
-npm run dev:full
+pnpm run dev:full
 ```
 
 ### Manual Setup

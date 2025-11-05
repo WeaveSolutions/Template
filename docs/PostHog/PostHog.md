@@ -1,7 +1,7 @@
 # PostHog Analytics Integration - Nexpo Template
 
 ## Overview
-PostHog is a comprehensive product analytics platform that provides event tracking, feature flags, session recordings, and A/B testing capabilities. This document outlines the generic implementation strategy for integrating PostHog into the Nexpo template, supporting both web (Next.js) and mobile (Expo) applications.
+PostHog is a comprehensive product analytics platform that provides event tracking, feature flags, session recordings, and A/B testing capabilities. This document outlines the generic implementation strategy for integrating PostHog into the Nexpo template, supporting web (Next.js), mobile (Expo), and desktop (Tauri) applications.
 
 **Key Features:**
 - **Event Tracking**: Custom events, user properties, and conversion funnels
@@ -26,6 +26,7 @@ PostHog is a comprehensive product analytics platform that provides event tracki
 ### 3. [Implementation](#implementation)
 - [Next.js Integration](#nextjs-integration)
 - [Expo Integration](#expo-integration)
+- [Tauri Integration](#tauri-integration)
 - [Event Tracking Strategy](#event-tracking-strategy)
 - [User Identification](#user-identification)
 

@@ -1,6 +1,6 @@
 # Stripe Setup Guide for Nexpo
 
-This guide provides instructions for setting up Stripe to handle payments in the Nexpo template, suitable for both web (Next.js) and mobile (Expo) platforms.
+This guide provides instructions for setting up Stripe to handle payments in the Nexpo template, suitable for web (Next.js), mobile (Expo), and desktop (Tauri) platforms.
 
 ## Overview
 

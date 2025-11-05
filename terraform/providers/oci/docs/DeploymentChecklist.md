@@ -145,7 +145,7 @@ kubectl apply -f k8s/services/
 ### ✅ Performance Testing
 ```bash
 # Run performance tests
-npm run test:performance
+pnpm run test:performance
 ```
 
 - [ ] Load testing completed

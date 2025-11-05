@@ -8,11 +8,18 @@ Continuous Integration (CI) runs automated tests and builds on every code change
 
 ## Prerequisites
 
-- GitHub repository for your project
-- Node.js and pnpm installed
+- GitHub repository for your project ([https://github.com/](https://github.com/))
+- Node.js and pnpm installed ([https://nodejs.org/](https://nodejs.org/))
+- Auth0 account for authentication and authorization ([https://auth0.com/](https://auth0.com/))
+- Supabase project for backend services ([https://supabase.com/](https://supabase.com/))
+- Firebase account for web app builds and deployment ([https://firebase.google.com/](https://firebase.google.com/))
+
+# Application Development
+
 - Vercel account for Next.js deployment ([https://vercel.com/](https://vercel.com/))
 - Expo account for mobile app builds and deployment ([https://expo.dev/](https://expo.dev/))
-- Supabase project for backend services
+- Tauri account for desktop app builds and deployment ([https://tauri.app/](https://tauri.app/))\
+- Cloudflare account for domain management ([https://cloudflare.com/](https://cloudflare.com/))
 
 ## Setting Up CI/CD with GitHub Actions
 

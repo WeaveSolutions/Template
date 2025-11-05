@@ -68,7 +68,7 @@ DB2_URL=postgresql://user:password@hostname:port/database  # DB2 via PostgreSQL 
 Generate clients for all providers:
 ```bash
 # From project root directory
-npm run prisma:generate:all
+pnpm run prisma:generate:all
 ```
 
 Or generate individual provider clients:
@@ -169,7 +169,7 @@ The mock data system provides:
 - Individual test files per database provider
 - Comprehensive test scenarios and integration examples
 
-## NPM Scripts
+## pnpm Scripts
 
 Add these scripts to your `package.json`:
 
@@ -232,7 +232,7 @@ cat .env.example | grep -E "(POSTGRES_|MONGODB_|COSMOSDB_|SQLSERVER_|DB2_)"
 **Solution**: Regenerate clients and check output paths:
 ```bash
 # Regenerate all clients
-npm run prisma:generate:all
+pnpm run prisma:generate:all
 
 # Check generated clients
 ls -la packages/node_modules/.prisma/

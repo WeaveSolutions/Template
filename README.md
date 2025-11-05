@@ -1,6 +1,21 @@
-# Nexpo Enterprise Template 
+<div align="center">
+
+# 🚀 Nexpo Enterprise Template
 
 **The Ultimate Cross-Platform Development Stack with Multi-Cloud Microservices Architecture**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Node](https://img.shields.io/badge/Node-22.x-green.svg)](https://nodejs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue.svg)](https://www.typescriptlang.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black.svg)](https://nextjs.org)
+[![React Native](https://img.shields.io/badge/React_Native-0.72-blue.svg)](https://reactnative.dev)
+[![Tauri](https://img.shields.io/badge/Tauri-2.0-orange.svg)](https://tauri.app)
+
+[Features](#-key-features) • [Quick Start](#-quick-start) • [Documentation](#-documentation) • [Tech Stack](#-complete-technology-stack) • [Contributing](#-contributing)
+
+</div>
+
+---
 
 ## Introduction
 
@@ -14,7 +29,98 @@ This enterprise-grade template revolutionizes cross-platform development by comb
 - **Developers** seeking modern stack with excellent developer experience
 - **Scale-focused teams** needing multi-cloud, multi-database architecture
 
-## Project Structure
+---
+
+## 🚀 Quick Start
+
+Get up and running in under 5 minutes:
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/WeaveSolutions/Template.git
+cd Template
+
+# 2. Install dependencies (uses pnpm workspace)
+pnpm install
+
+# 3. Copy environment template
+cp .env.example .env
+
+# 4. Start the development server
+pnpm dev
+```
+
+**🎉 That's it!** Your apps are now running:
+- 🌐 **Web App**: http://localhost:3000
+- 📱 **Mobile**: Expo DevTools will launch automatically
+- 🖥️ **Desktop**: Tauri app (if enabled)
+- 🔧 **API**: http://localhost:7000
+
+> **Note**: First-time startup may take 2-3 minutes as dependencies compile. Subsequent starts are instant with hot reload.
+
+### 📋 Prerequisites
+
+- **Node.js** 22.x or higher ([Download](https://nodejs.org))
+- **pnpm** 10.20.0 or higher (`npm install -g pnpm`)
+- **Git** ([Download](https://git-scm.com))
+
+**Optional (for specific platforms):**
+- **iOS Development**: macOS + Xcode
+- **Android Development**: Android Studio + Android SDK
+- **Desktop Development**: Rust toolchain for Tauri
+
+---
+
+## ✨ Key Features
+
+<table>
+<tr>
+<td width="50%">
+
+### 🌍 **Multi-Cloud Ready**
+- Deploy to AWS, GCP, Azure, OCI, IBM Cloud
+- Terraform IaC for all providers
+- Automatic scaling & load balancing
+
+### 🔒 **Bank-Grade Security**
+- Kong API Gateway with TLS 1.3
+- Auth0 authentication & JWT validation
+- Rate limiting & DDoS protection
+- Comprehensive security headers
+
+### 📱 **True Cross-Platform**
+- One codebase → Web + iOS + Android + Desktop
+- Shared components via Solito
+- Platform-specific optimizations
+
+</td>
+<td width="50%">
+
+### 🚀 **DevOps Automation**
+- CI/CD pipelines (GitHub Actions)
+- Docker containerization
+- Automated testing & deployments
+- Monitoring with Sentry
+
+### 🤖 **AI-Powered Tools**
+- MindsDB for ML integration
+- n8n workflow automation
+- CodeRabbit code reviews
+- Retool admin dashboards
+
+### 💳 **Production-Ready Billing**
+- Polar Payments (open-source)
+- Stripe integration (optional)
+- FTC-compliant subscriptions
+- Multi-currency support
+
+</td>
+</tr>
+</table>
+
+---
+
+## 📁 Project Structure
 
 ```
 Nexpo-main/
@@ -28,7 +134,7 @@ Nexpo-main/
 │   └── config/              # Shared configuration
 ├── terraform/
 │   ├── providers/           # Multi-cloud provider modules
-│   └── microservices/       # 9 production microservices
+│   └── microservices/       # Production microservices
 ├── mindsdb/             # AI/ML integration
 ├── server/              # Express.js backend
 ├── supabase/            # Supabase configuration
@@ -40,13 +146,18 @@ Nexpo-main/
 ## Development Workflow
 
 ### Local Development
-- **Full Stack**: `pnpm dev` - All services
-- **Web Only**: `pnpm dev:web` - Next.js application
+- **Web + APIs**: `pnpm dev` - Next.js web app + enabled API backends + MindsDB (if enabled)
+- **Web Only**: `pnpm dev:frontend` - Next.js application only
 - **Mobile Only**: `pnpm dev:mobile` - Expo application
-- **Backend**: `pnpm dev:backend` - Architecture for all services
-- **MindsDB**: `pnpm start:mindsdb` - AI/ML integration
-- **MindsDB**: `pnpm stop:mindsdb` - AI/ML integration
-- **MindsDB**: `pnpm logs:mindsdb` - AI/ML integration
+- **Desktop Only**: `cd apps/tauri && pnpm run desktop` - Tauri desktop app
+- **Backend APIs**: `pnpm dev:backend` - All enabled microservices (8 languages) + MindsDB
+- **Full Stack**: `pnpm dev:microservices` - Web + APIs + MindsDB
+
+### MindsDB AI/ML Integration
+- **Start**: `pnpm start:mindsdb` - Start MindsDB server
+- **Stop**: `pnpm stop:mindsdb` - Stop MindsDB server
+- **Restart**: `pnpm restart:mindsdb` - Restart MindsDB server
+- **Logs**: `pnpm logs:mindsdb` - View MindsDB logs
 
 ### Database Management
 - **Migrations**: `pnpm db:migrate` - Run database migrations
@@ -64,7 +175,7 @@ Nexpo-main/
 - **Start mobile application on Android**: `npx expo start --android`
 - **Start mobile application on iOS**: `npx expo start --ios`
 
-### Electron
+### Tauri
 - **Build for specific platforms**: `pnpm run make -- --platform=win32`
 - **Build for specific platforms**: `pnpm run make -- --platform=darwin`
 - **Build for specific platforms**: `pnpm run make -- --platform=linux`
@@ -84,7 +195,7 @@ Nexpo-main/
 ### Platform-Specific
 - **[Expo Deployment](./docs/Expo/Deployment.md)** - Mobile app deployment guide
 - **[Next.js Deployment](./docs/Nextjs/Deployment.md)** - Web app deployment guide
-- **[Electron Deployment](./docs/Electron/Deployment.md)** - Desktop app deployment guide
+- **[Tauri Deployment](./docs/Tauri/Deployment.md)** - Desktop app deployment guide
 
 ---
 
@@ -129,11 +240,11 @@ Nexpo-main/
 | Tool | Purpose |
 |------|---------|
 | **Docker** | Containerized deployments and development environments |
-| **Terraform** | Infrastructure as code for multi-cloud providers |
-| **AWS, GCP, Azure, OCI, IBM, DigitalOcean, Heroku,Cloudflare** | Multi-cloud support targets |
+| **Terraform** | HashiCorp's Infrastructure as Code (IaC) for multi-cloud providers |
+| **AWS, GCP, Azure, OCI, IBM, DigitalOcean, Heroku, Cloudflare** | Multi-cloud support targets |
 | **Nomad** | HashiCorp's workload orchestrator as Kubernetes alternative |
-| **Consul** | Service mesh for multi-cloud, multi-database, and multi-service architecture |
-| **Vault** | Secure secrets management for multi-cloud, multi-database, and multi-service architecture |
+| **Consul** | HashiCorp's service mesh for multi-cloud, multi-database, and multi-service architecture |
+| **Vault** | HashiCorp's secure secrets management for multi-cloud, multi-database, and multi-service architecture |
 | **Git** | Version control and collaboration |
 | **Vercel** | Frontend hosting and CI/CD for Next.js applications |
 | **Cloudflare** | CDN, DNS, WAF, and edge functions |
@@ -142,7 +253,7 @@ Nexpo-main/
 ### Billing / Licensing
 | Tool | Purpose |
 |------|---------|
-| **Polar ** | Open-source billing platform with MoR (Merchant of Record) support |
+| **Polar** | Open-source billing platform with MoR (Merchant of Record) support |
 
 ### Testing / Linting / Monitoring
 | Tool | Purpose |
@@ -244,6 +355,15 @@ Our infrastructure supports deployment across **6 major cloud providers** with c
 - **Auth0 Integration**: IBM Cloud IAM with Auth0 user mapping
 
 **DigitalOcean**
+- **Core Services**: App Platform, Droplets, Managed Databases, Spaces
+- **Database Services**:
+  - Managed Databases (PostgreSQL, MySQL, Redis)
+  - App Platform database integration
+  - Spaces (Object storage with presigned URLs)
+- **Best For**: Startups, developers, cost-effective solutions
+- **Auth0 Integration**: App Platform environment variables, connection pooling
+
+**Heroku**
 - **Core Services**: App Platform, Droplets, Managed Databases, Spaces
 - **Database Services**:
   - Managed Databases (PostgreSQL, MySQL, Redis)
@@ -661,7 +781,7 @@ Our enterprise template includes **9 production-ready microservices** that provi
 - **Purpose**: User authentication, authorization, and session management
 - **Technologies**: Node.js, Auth0, JWT, Kong Gateway
 - **Status**: Production Ready
-- **Documentation**: [View Details](./terraform/microservices/auth/AuthService.md)
+- **Documentation**: [View Details](./microservices/api/api-typescript/README.md)
 
 **User Management Service**
 - **Purpose**: User profiles, preferences, and social features

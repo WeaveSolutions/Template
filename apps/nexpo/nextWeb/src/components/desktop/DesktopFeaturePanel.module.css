@@ -1,0 +1,240 @@
+.featurePanel {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.toggleButton {
+  width: 100%;
+  padding: 16px;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.2s;
+}
+
+.toggleButton:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.chevron {
+  transition: transform 0.3s ease;
+}
+
+.chevron.expanded {
+  transform: rotate(180deg);
+}
+
+.panelContent {
+  padding: 0 16px 16px;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.featureSection {
+  margin-bottom: 24px;
+}
+
+.featureSection:last-child {
+  margin-bottom: 0;
+}
+
+.sectionTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #667eea;
+  margin-bottom: 12px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(102, 126, 234, 0.3);
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.featureButton {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.featureButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.featureButton:active {
+  transform: translateY(0);
+}
+
+.notificationForm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.notificationInput,
+.notificationTextarea {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 8px 12px;
+  color: inherit;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.notificationInput:focus,
+.notificationTextarea:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.notificationTextarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.systemInfoGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.infoItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.infoLabel {
+  font-weight: 500;
+  color: #667eea;
+}
+
+.infoValue {
+  font-family: monospace;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.windowStateGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.stateItem {
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  font-size: 14px;
+  text-align: center;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.stateItem.active {
+  background: rgba(102, 126, 234, 0.2);
+  border-color: #667eea;
+  color: #667eea;
+}
+
+/* Dark theme overrides */
+@media (prefers-color-scheme: dark) {
+  .featurePanel {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .notificationInput,
+  .notificationTextarea {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .infoItem,
+  .stateItem {
+    background: rgba(0, 0, 0, 0.3);
+  }
+  
+  .infoValue {
+    color: #e2e8f0;
+  }
+}
+
+/* Light theme overrides */
+@media (prefers-color-scheme: light) {
+  .featurePanel {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .toggleButton:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
+  
+  .notificationInput,
+  .notificationTextarea {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .infoItem,
+  .stateItem {
+    background: rgba(255, 255, 255, 0.8);
+  }
+  
+  .infoValue {
+    color: #4a5568;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .buttonGroup {
+    flex-direction: column;
+  }
+  
+  .featureButton {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .windowStateGrid {
+    grid-template-columns: 1fr;
+  }
+}

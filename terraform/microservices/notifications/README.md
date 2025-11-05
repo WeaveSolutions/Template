@@ -627,22 +627,22 @@ export TWILIO_AUTH_TOKEN="your-twilio-token"
 export FIREBASE_SERVER_KEY="your-firebase-key"
 
 # Run notifications service
-npm run dev
+pnpm run dev
 ```
 
 ### Testing
 ```bash
 # Unit tests
-npm run test
+pnpm run test
 
 # Integration tests with external services
-npm run test:integration
+pnpm run test:integration
 
 # Load tests for high-volume scenarios
-npm run test:load
+pnpm run test:load
 
 # Template rendering tests
-npm run test:templates
+pnpm run test:templates
 ```
 
 ## 🆘 Troubleshooting

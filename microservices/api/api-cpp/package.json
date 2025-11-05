@@ -1,0 +1,35 @@
+{
+  "name": "nexpo-api-cpp",
+  "version": "1.0.0",
+  "description": "C++ Drogon API service for Nexpo platform",
+  "main": "build/nexpo-api-cpp",
+  "scripts": {
+    "build": "powershell -ExecutionPolicy Bypass -File ./dev-run.ps1",
+    "build:linux": "bash ./dev-run.sh",
+    "start": "powershell -ExecutionPolicy Bypass -File ./dev-run.ps1",
+    "start:linux": "bash ./dev-run.sh",
+    "clean": "rm -rf build",
+    "docker:build": "docker build -t nexpo/api-cpp:latest .",
+    "docker:run": "docker run --rm -p 7090:7090 --name nexpo-cpp-api nexpo/api-cpp:latest",
+    "docker:dev": "docker run --rm -p 7090:7090 -v $(pwd):/app --name nexpo-cpp-api-dev nexpo/api-cpp:latest"
+  },
+  "keywords": [
+    "cpp",
+    "drogon",
+    "api",
+    "microservice",
+    "nexpo"
+  ],
+  "author": "Nexpo Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "os": [
+    "win32",
+    "linux",
+    "darwin"
+  ],
+  "devDependencies": {},
+  "dependencies": {}
+}

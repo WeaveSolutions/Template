@@ -1,0 +1,45 @@
+{
+  "name": "nexpo-api-typescript",
+  "version": "1.0.0",
+  "description": "Nexpo TypeScript API backend with Express and CRA Auth integration",
+  "main": "dist/cra-server.js",
+  "scripts": {
+    "dev": "tsx watch cra-server.ts",
+    "dev:auth": "tsx watch cra-server.ts",
+    "build": "tsc",
+    "start": "node dist/cra-server.js",
+    "lint": "tsc --noEmit",
+    "setup": "pnpm install"
+  },
+  "dependencies": {
+    "axios": "^1.6.2",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^5.0.1",
+    "express-openid-connect": "^2.17.1",
+    "express-rate-limit": "^7.4.1",
+    "express-session": "^1.18.1",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "jwks-rsa": "^3.1.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/compression": "^1.7.5",
+    "@types/cookie-parser": "^1.4.7",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/express-session": "^1.18.2",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/node": "^22.10.2",
+    "@types/swagger-jsdoc": "^6.0.1",
+    "@types/swagger-ui-express": "^4.1.6",
+    "@types/uuid": "^10.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

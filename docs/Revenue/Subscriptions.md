@@ -595,7 +595,7 @@ export const CancellationFlow: React.FC<CancellationFlowProps> = ({
 
 ### Frontend Components
 
-**Shared Components (Next.js + Expo):**
+**Shared Components (Next.js + Expo + Tauri):**
 ```typescript
 // packages/shared-components/src/subscription/
 export { SubscriptionDashboard } from './SubscriptionDashboard';
@@ -623,6 +623,15 @@ export const ExpoSubscriptionScreen = () => {
     <ScrollView>
       <SubscriptionDashboard userId={user.id} />
     </ScrollView>
+  );
+};
+
+// Tauri specific
+export const TauriSubscriptionPage = () => {
+  return (
+    <div className="desktop-layout">
+      <SubscriptionDashboard userId={user.id} />
+    </div>
   );
 };
 ```

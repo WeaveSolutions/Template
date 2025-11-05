@@ -1,0 +1,234 @@
+# Lua OpenResty API CI/CD Pipeline
+# Works on all cloud providers.
+
+name: Lua OpenResty API CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - microservices/api/api-lua/**
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - microservices/api/api-lua/**
+
+env:
+  BACKEND_NAME: LUA
+  BACKEND_PORT: 8120
+  DOCKER_IMAGE: nexpo/api-lua
+  REGISTRY: docker.io
+
+jobs:
+  test:
+    name: Test and Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: microservices/api/api-lua
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            libreadline-dev \
+            libncurses5-dev \
+            libpcre3-dev \
+            libssl-dev \
+            perl \
+            make \
+            curl \
+            wget
+      
+      - name: Setup Lua and LuaRocks
+        uses: leafo/gh-actions-lua@v10
+        with:
+          luaVersion: "5.1"
+      
+      - name: Setup LuaRocks
+        uses: leafo/gh-actions-luarocks@v4
+        with:
+          luarocksVersion: "3.9.2"
+      
+      - name: Install OpenResty
+        run: |
+          wget -qO - https://openresty.org/package/pubkey.gpg | sudo apt-key add -
+          echo "deb http://openresty.org/package/ubuntu $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/openresty.list
+          sudo apt-get update
+          sudo apt-get install -y openresty openresty-resty
+      
+      - name: Install Lua dependencies
+        run: |
+          luarocks install busted
+          luarocks install luacov
+          luarocks install lua-resty-http
+          luarocks install lua-resty-jwt
+          luarocks install lua-cjson
+          if [ -f "rockspec.lua" ]; then
+            luarocks make rockspec.lua
+          fi
+      
+      - name: Run linter
+        run: |
+          if command -v luacheck &> /dev/null; then
+            luacheck src/ --globals ngx
+          else
+            echo "Luacheck not available, skipping linting"
+          fi
+        continue-on-error: true
+      
+      - name: Run tests
+        run: |
+          if [ -d "spec" ] || [ -d "tests" ]; then
+            busted --verbose --coverage
+          else
+            echo "No test directory found, skipping tests"
+          fi
+        continue-on-error: true
+      
+      - name: Generate coverage report
+        run: |
+          if [ -f "luacov.stats.out" ]; then
+            luacov
+          fi
+        continue-on-error: true
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Login to Docker Hub
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.DOCKER_IMAGE }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: microservices/api/api-lua
+          file: microservices/api/api-lua/Dockerfile
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            BACKEND_NAME=${{ env.BACKEND_NAME }}
+            BACKEND_PORT=${{ env.BACKEND_PORT }}
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'push'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Lua and LuaRocks
+        uses: leafo/gh-actions-lua@v10
+        with:
+          luaVersion: "5.1"
+      
+      - name: Setup LuaRocks
+        uses: leafo/gh-actions-luarocks@v4
+        with:
+          luarocksVersion: "3.9.2"
+      
+      - name: Install security scanning tools
+        run: |
+          luarocks install luacheck
+        continue-on-error: true
+      
+      - name: Run security analysis
+        run: |
+          cd microservices/api/api-lua
+          if command -v luacheck &> /dev/null; then
+            luacheck src/ --globals ngx --formatter plain > luacheck-results.txt
+          fi
+        continue-on-error: true
+      
+      - name: Upload security scan results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lua-security-reports
+          path: |
+            microservices/api/api-lua/luacheck-results.txt
+            microservices/api/api-lua/luacov.report.out
+
+  deploy:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [test, security]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    environment: staging
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+      
+      - name: Update ECS service
+        run: |
+          aws ecs update-service \
+            --cluster ${{ vars.ECS_CLUSTER_NAME }} \
+            --service nexpo-lua-api \
+            --force-new-deployment \
+            --desired-count 1
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [test, security]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment: production
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+      
+      - name: Update ECS service
+        run: |
+          aws ecs update-service \
+            --cluster ${{ vars.ECS_CLUSTER_NAME }} \
+            --service nexpo-lua-api \
+            --force-new-deployment \
+            --desired-count 2

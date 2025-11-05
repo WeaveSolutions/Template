@@ -1,0 +1,86 @@
+{
+  "AUTH0_DOMAIN": "nexpo-prod.auth0.com",
+  "AUTH0_CLIENT_ID": "",
+  "AUTH0_CLIENT_SECRET": "",
+  "AUTH0_ALLOW_DELETE": false,
+  "AUTH0_API_MAX_RETRIES": 10,
+  "INCLUDED_PROPS": {
+    "clients": [
+      "name",
+      "allowed_clients", 
+      "allowed_logout_urls",
+      "allowed_origins",
+      "app_type",
+      "callbacks",
+      "client_metadata",
+      "cross_origin_auth",
+      "custom_login_page_on",
+      "description",
+      "grant_types",
+      "is_heroku_app",
+      "is_token_endpoint_ip_header_trusted",
+      "jwt_configuration",
+      "logo_uri",
+      "oidc_conformant",
+      "sso",
+      "sso_disabled",
+      "web_origins"
+    ],
+    "connections": [
+      "name",
+      "strategy",
+      "enabled_clients",
+      "options"
+    ],
+    "resource_servers": [
+      "name",
+      "identifier",
+      "allow_offline_access",
+      "audience",
+      "token_lifetime",
+      "token_lifetime_for_web",
+      "skip_consent_for_verifiable_first_party_clients",
+      "signing_alg",
+      "signing_secret",
+      "scopes"
+    ],
+    "rules": [
+      "name",
+      "script",
+      "stage",
+      "enabled",
+      "order"
+    ],
+    "hooks": [
+      "name",
+      "script",
+      "triggerId",
+      "enabled"
+    ],
+    "pages": [
+      "name",
+      "html",
+      "enabled"
+    ],
+    "tenant": [
+      "allowed_logout_urls",
+      "default_audience",
+      "default_directory",
+      "friendly_name",
+      "picture_url",
+      "support_email",
+      "support_url"
+    ]
+  },
+  "EXCLUDED_PROPS": {
+    "clients": [
+      "client_secret"
+    ]
+  },
+  "AUTH0_KEYWORD_REPLACE_MAPPINGS": {
+    "NEXPO_PROD_DOMAIN": "https://nexpo.com",
+    "NEXPO_APP_DOMAIN": "https://app.nexpo.com",
+    "NEXPO_API_IDENTIFIER": "https://api.nexpo.com",
+    "NEXPO_MOBILE_CALLBACK": "com.nexpo.app://callback"
+  }
+}

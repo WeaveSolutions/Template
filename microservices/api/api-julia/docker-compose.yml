@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  api-julia:
+    build: .
+    ports:
+      - "${JULIA_API_PORT:-7070}:7070"
+    environment:
+      - JULIA_API_PORT=${JULIA_API_PORT:-7070}
+      - AUTH0_DOMAIN=${AUTH0_DOMAIN}
+      - AUTH0_AUDIENCE=${AUTH0_AUDIENCE}
+      - AUTH0_CLIENT_ID=${AUTH0_CLIENT_ID}
+      - AUTH0_CLIENT_SECRET=${AUTH0_CLIENT_SECRET}
+      - MINDSDB_URL=${MINDSDB_URL:-http://mindsdb:47334}
+      - MINDSDB_TIMEOUT=${MINDSDB_TIMEOUT:-30}
+      - CORS_ORIGINS=${CORS_ORIGINS:-*}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - GENIE_ENV=${GENIE_ENV:-prod}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7070/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+networks:
+  default:
+    name: nexpo-network
+    external: true

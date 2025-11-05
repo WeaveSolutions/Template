@@ -1,0 +1,197 @@
+# Rust Actix API CI/CD Pipeline
+# Works on all cloud providers.
+
+name: Rust Actix API CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - microservices/api/api-rust/**
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - microservices/api/api-rust/**
+
+env:
+  BACKEND_NAME: RUST
+  BACKEND_PORT: 8050
+  DOCKER_IMAGE: nexpo/api-rust
+  REGISTRY: docker.io
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    name: Test and Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: microservices/api/api-rust
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          override: true
+          components: rustfmt, clippy
+      
+      - name: Cache Rust dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            microservices/api/api-rust/target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      
+      - name: Check formatting
+        run: cargo fmt -- --check
+      
+      - name: Run Clippy
+        run: cargo clippy -- -D warnings
+      
+      - name: Run tests
+        run: cargo test --verbose
+      
+      - name: Build application
+        run: cargo build --release --verbose
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: test
+    defaults:
+      run:
+        working-directory: microservices/api/api-rust
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Run cargo audit
+        uses: actions-rs/audit-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  docker:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: test
+    defaults:
+      run:
+        working-directory: microservices/api/api-rust
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.DOCKER_IMAGE }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha
+            type=raw,value=latest,enable={{is_default_branch}}
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: microservices/api/api-rust
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy_staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: docker
+    if: github.ref == 'refs/heads/develop'
+    environment: staging
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.0
+      
+      - name: Deploy to staging
+        run: |
+          cd terraform/microservices/api-rust
+          terraform init
+          terraform plan -var-file="staging.tfvars"
+          terraform apply -var-file="staging.tfvars" -auto-approve
+        env:
+          TF_VAR_docker_image: ${{ env.REGISTRY }}/${{ env.DOCKER_IMAGE }}:${{ github.sha }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+  deploy_production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: docker
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.0
+      
+      - name: Deploy to production
+        run: |
+          cd terraform/microservices/api-rust
+          terraform init
+          terraform plan -var-file="production.tfvars"
+          terraform apply -var-file="production.tfvars" -auto-approve
+        env:
+          TF_VAR_docker_image: ${{ env.REGISTRY }}/${{ env.DOCKER_IMAGE }}:${{ github.sha }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+  notify:
+    name: Notify Deployment
+    runs-on: ubuntu-latest
+    needs: [deploy_staging, deploy_production]
+    if: always()
+    
+    steps:
+      - name: Notify Slack
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          channel: '#deployments'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+        if: always()

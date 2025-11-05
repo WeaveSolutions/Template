@@ -1,0 +1,24 @@
+{
+  "name": "@nexpo/shared-pages",
+  "version": "0.1.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+
+    "solito": "^4.4.1",
+    "react": "^18.3.1",
+    "react-native": "0.73.2"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "0.73.2"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.17",
+    "typescript": "^5.0.0"
+  }
+}

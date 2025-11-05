@@ -1,0 +1,217 @@
+# Haskell Servant API CI/CD Pipeline
+# Works on all cloud providers.
+
+name: Haskell Servant API CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - microservices/api/api-haskell/**
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - microservices/api/api-haskell/**
+
+env:
+  BACKEND_NAME: HASKELL
+  BACKEND_PORT: 8110
+  DOCKER_IMAGE: nexpo/api-haskell
+  REGISTRY: docker.io
+
+jobs:
+  test:
+    name: Test and Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: microservices/api/api-haskell
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Haskell
+        uses: haskell/actions/setup@v2
+        with:
+          ghc-version: '9.4'
+          cabal-version: '3.8'
+          enable-stack: true
+          stack-version: 'latest'
+      
+      - name: Cache Haskell dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cabal/packages
+            ~/.cabal/store
+            ~/.stack
+            .stack-work
+          key: ${{ runner.os }}-haskell-${{ hashFiles('**/*.cabal', '**/stack.yaml', '**/stack.yaml.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-haskell-
+      
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libpq-dev \
+            libssl-dev \
+            zlib1g-dev \
+            pkg-config
+      
+      - name: Update package database
+        run: cabal update
+      
+      - name: Install dependencies
+        run: cabal install --only-dependencies --enable-tests --enable-benchmarks
+      
+      - name: Build application
+        run: cabal build --enable-tests --enable-benchmarks all
+      
+      - name: Run tests
+        run: cabal test --test-show-details=always all
+      
+      - name: Run benchmarks
+        run: cabal bench all
+        continue-on-error: true
+      
+      - name: Generate documentation
+        run: cabal haddock all
+        continue-on-error: true
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Login to Docker Hub
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.DOCKER_IMAGE }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: microservices/api/api-haskell
+          file: microservices/api/api-haskell/Dockerfile
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            BACKEND_NAME=${{ env.BACKEND_NAME }}
+            BACKEND_PORT=${{ env.BACKEND_PORT }}
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'push'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Haskell
+        uses: haskell/actions/setup@v2
+        with:
+          ghc-version: '9.4'
+          cabal-version: '3.8'
+      
+      - name: Install security scanning tools
+        run: |
+          cabal update
+          cabal install weeder hlint stan
+      
+      - name: Run HLint
+        run: hlint src/ --report=hlint-report.html
+        continue-on-error: true
+      
+      - name: Run Stan (static analysis)
+        run: stan --config-file=.stan.toml
+        continue-on-error: true
+      
+      - name: Run Weeder (dead code detection)
+        run: weeder --config=.weeder.dhall
+        continue-on-error: true
+      
+      - name: Upload security scan results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: haskell-security-reports
+          path: |
+            hlint-report.html
+            stan-report.html
+            weeder-report.txt
+
+  deploy:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [test, security]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    environment: staging
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+      
+      - name: Update ECS service
+        run: |
+          aws ecs update-service \
+            --cluster ${{ vars.ECS_CLUSTER_NAME }} \
+            --service nexpo-haskell-api \
+            --force-new-deployment \
+            --desired-count 1
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [test, security]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment: production
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+      
+      - name: Update ECS service
+        run: |
+          aws ecs update-service \
+            --cluster ${{ vars.ECS_CLUSTER_NAME }} \
+            --service nexpo-haskell-api \
+            --force-new-deployment \
+            --desired-count 2

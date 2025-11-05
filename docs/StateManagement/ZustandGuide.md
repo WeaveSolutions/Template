@@ -25,7 +25,7 @@ Zustand is already included in the `shared-ui` package for this template.
 
 ### 2. Define Stores
 
-Stores in Zustand are where you define your state and actions. In this template, stores are created in `packages/shared-ui/src/state/zustandStore.ts` to be reused across Next.js and Expo apps.
+Stores in Zustand are where you define your state and actions. In this template, stores are created in `packages/shared-ui/src/state/zustandStore.ts` to be reused across Next.js, Expo, and Tauri apps.
 
 ```typescript
 import { create } from 'zustand';

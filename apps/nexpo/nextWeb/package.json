@@ -1,0 +1,43 @@
+{
+  "name": "next-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "export": "next export"
+  },
+  "dependencies": {
+    "@auth0/nextjs-auth0": "^4.6.1",
+    "@expo/next-adapter": "^6.0.0",
+    "@nexpo/shared-components": "workspace:*",
+    "@nexpo/shared-pages": "workspace:*",
+    "@nexpo/shared-ui": "workspace:*",
+    "@nexpo/shared-utils": "workspace:*",
+    "@tailwindcss/postcss": "^4.1.7",
+    "autoprefixer": "^10.4.21",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "express-oauth2-jwt-bearer": "^1.6.1",
+    "mysql2": "^3.14.1",
+    "next": "16.0.2-canary.7",
+    "next-seo": "^6.8.0",
+    "postcss": "^8.4.31",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-native-web": "~0.19.6",
+    "solito": "^4.4.1",
+    "tailwindcss": "^4.1.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.30",
+    "@types/react": "18.3.17",
+    "eslint": "^9.19.0",
+    "eslint-config-next": "14.2.18",
+    "next-compose-plugins": "^2.2.1",
+    "next-transpile-modules": "^10.0.1",
+    "typescript": "^5.8.3"
+  }
+}

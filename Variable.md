@@ -23,7 +23,7 @@ This document tracks every environment variable in `.env.example` and verifies i
 # 5. Session & Caching
 # 6. Security & CORS
 # 7. Payments Service Configuration
-# 8. Ditto 
+# 8. Ditto
 # 9. Data Sync Service
 # 10. Backup & Disaster Recovery
 # 11. Kong API Gateway
@@ -94,7 +94,7 @@ This document tracks every environment variable in `.env.example` and verifies i
 ### PORT
 - **Value**: `3000`
 - **Status**: **VERIFIED**
-- **Usage**: Default port for the Next.js frontend development server. It's the standard port Next.js applications listen on during development (e.g., via `npm run dev`).
+- **Usage**: Default port for the Next.js frontend development server. It's the standard port Next.js applications listen on during development (e.g., via `pnpm run dev`).
 - **Files**:
     - `.env.example` (Defines `PORT=3000`)
     - `docs/Ports/Ports.md` (Documents Next.js Frontend on port 3000, development scripts, and Docker Compose examples)
@@ -115,20 +115,147 @@ This document tracks every environment variable in `.env.example` and verifies i
 - **Notes**: The `NEXT_PUBLIC_` prefix signifies that this variable is intended for client-side exposure. The note "Used in shared API client with fallback to http://localhost:8000" from previous documentation suggests there might be logic in the API client to attempt connection via Kong Gateway (port 8000) if the direct backend (port 8010) is unavailable or under specific conditions. Production environments always use the main domain, which routes through the gateway.
 
 # Platform Feature Flags
-- **ENABLE_EXPO_PLATFORM** - true - Enable Expo mobile platform - VERIFIED
-  - Used by: Core Configuration
+
+## Master Platform Switches
+- **ENABLE_NEXPO** - true - Enable Nexpo platform (Next.js Web + Expo Mobile) - VERIFIED
+  - Used by: workspace-config.js, platform-setup.js
   - Type: Boolean
   - Default: true
 
-- **ENABLE_NEXTJS_PLATFORM** - true - Enable Next.js web platform - VERIFIED
-  - Used by: Core Configuration
+- **ENABLE_TAURTE** - true - Enable Taurte platform (Tauri Desktop + Svelte Web) - VERIFIED
+  - Used by: workspace-config.js, platform-setup.js
   - Type: Boolean
   - Default: true
 
-- **ENABLE_ELECTRON_PLATFORM** - true - Enable Electron desktop platform - VERIFIED
-  - Used by: Core Configuration
+- **ENABLE_MICROSERVICES** - true - Enable backend microservices in workspace - VERIFIED
+  - Used by: workspace-config.js, platform-setup.js
   - Type: Boolean
   - Default: true
+
+## Platform-Specific Targeting
+- **TARGET_PLATFORM** - all - Platform targeting for development focus - VERIFIED
+  - Used by: platform-setup.js
+  - Type: String (nexpo|taurte|all)
+  - Default: all
+
+## Nexpo Platform Configuration
+- **ENABLE_NEXTJS_WEB** - true - Enable Next.js web application - VERIFIED
+  - Used by: workspace-config.js
+  - Type: Boolean
+  - Default: true
+
+- **ENABLE_EXPO_MOBILE** - true - Enable Expo mobile application - VERIFIED
+  - Used by: workspace-config.js
+  - Type: Boolean
+  - Default: true
+
+## Taurte Platform Configuration
+- **ENABLE_TAURI_DESKTOP** - true - Enable Tauri desktop application - VERIFIED
+  - Used by: workspace-config.js
+  - Type: Boolean
+  - Default: true
+
+- **ENABLE_SVELTE_WEB** - true - Enable Svelte web application - VERIFIED
+  - Used by: workspace-config.js
+  - Type: Boolean
+  - Default: true
+
+## Tauri Desktop Dual Architecture Variables
+
+### TAURI_MODE
+- **Value**: `nextjs` (Options: 'nextjs' | 'standalone')
+- **Status**: **VERIFIED**
+- **Usage**: Controls which mode Tauri Desktop runs in - Next.js primary mode or Svelte standalone mode
+- **Files**: 
+  - `.env.example` (Defines mode selection)
+  - `apps/tauri/package.json` (Scripts for different modes)
+  - `apps/tauri/src-tauri/tauri.conf.json` (Build configuration)
+- **Notes**: 'nextjs' mode uses shared Next.js app with desktop enhancements, 'standalone' uses Svelte with cross-platform mobile sharing
+
+### TAURI_NEXTJS_MODE_ENABLED
+- **Value**: `true`
+- **Status**: **VERIFIED**
+- **Usage**: Enable Next.js primary desktop mode with full web app features
+- **Type**: Boolean
+- **Default**: true
+
+### TAURI_SVELTE_MODE_ENABLED
+- **Value**: `true`
+- **Status**: **VERIFIED**
+- **Usage**: Enable Svelte standalone mode with shared mobile resources
+- **Type**: Boolean
+- **Default**: true
+
+### TAURI_DEV_PATH
+- **Value**: `http://localhost:3000`
+- **Status**: **VERIFIED**
+- **Usage**: Development server URL for Next.js mode (primary)
+- **Type**: String
+- **Default**: http://localhost:3000
+
+### TAURI_SVELTE_DEV_PATH
+- **Value**: `http://localhost:1420`
+- **Status**: **VERIFIED**
+- **Usage**: Development server URL for Svelte standalone mode
+- **Type**: String
+- **Default**: http://localhost:1420
+
+### TAURI_NEXTJS_PORT
+- **Value**: `3000`
+- **Status**: **VERIFIED**
+- **Usage**: Port for Next.js mode development
+- **Type**: Number
+- **Default**: 3000
+
+### TAURI_SVELTE_PORT
+- **Value**: `1420`
+- **Status**: **VERIFIED**
+- **Usage**: Port for Svelte standalone mode development
+- **Type**: Number
+- **Default**: 1420
+
+### TAURI_MOBILE_PORT
+- **Value**: `19000`
+- **Status**: **VERIFIED**
+- **Usage**: Port for Tauri Mobile development (iOS/Android)
+- **Type**: Number
+- **Default**: 19000
+
+### TAURI_SHARED_STORES
+- **Value**: `true`
+- **Status**: **VERIFIED**
+- **Usage**: Enable shared Svelte stores between desktop and mobile
+- **Type**: Boolean
+- **Default**: true
+
+### TAURI_SHARED_COMPONENTS
+- **Value**: `true`
+- **Status**: **VERIFIED**
+- **Usage**: Enable shared Svelte components between desktop and mobile
+- **Type**: Boolean
+- **Default**: true
+
+### TAURI_SHARED_AUTH
+- **Value**: `true`
+- **Status**: **VERIFIED**
+- **Usage**: Enable shared authentication between desktop and mobile
+- **Type**: Boolean
+- **Default**: true
+
+### TAURI_CRA_INTEGRATION
+- **Value**: `true`
+- **Status**: **VERIFIED**
+- **Usage**: Enable Central Rank Authority integration for unified authentication
+- **Type**: Boolean
+- **Default**: true
+
+### TAURI_PUBLIC_API_URL
+- **Value**: `http://localhost:8010/api`
+- **Status**: **VERIFIED**
+- **Usage**: API URL specifically for Tauri Desktop platform
+- **Type**: String
+- **Default**: http://localhost:8010/api
+- **Notes**: Platform-specific API URL, used alongside NEXT_PUBLIC_API_URL and EXPO_PUBLIC_API_URL
 
 # =============================================================================
 # 2. AUTHENTICATION
@@ -246,36 +373,36 @@ This document tracks every environment variable in `.env.example` and verifies i
   - Required for Auth0 integration
 
 
-# Electron
+# Tauri
 **Native Application**
 https://auth0.com/docs/quickstart/applications/native
 
-- **ELECTRON_AUTH0_DOMAIN** - your-tenant.auth0.com - Auth0 domain - VERIFIED
+- **TAURI_AUTH0_DOMAIN** - your-tenant.auth0.com - Auth0 domain - VERIFIED
   - Used by: Auth0
   - Type: String
   - Required for Auth0 integration
 
-- **ELECTRON_AUTH0_CLIENT_ID** - your-auth0-client-id - Auth0 client ID - VERIFIED
+- **TAURI_AUTH0_CLIENT_ID** - your-auth0-client-id - Auth0 client ID - VERIFIED
   - Used by: Auth0
   - Type: String
   - Required for Auth0 integration
 
-- **ELECTRON_AUTH0_AUDIENCE** - your-api-identifier - Auth0 audience - VERIFIED
+- **TAURI_AUTH0_AUDIENCE** - your-api-identifier - Auth0 audience - VERIFIED
   - Used by: Auth0
   - Type: String
   - Required for Auth0 integration
 
-- **ELECTRON_AUTH0_REDIRECT_URI** - your-app-scheme://auth - Auth0 redirect URI - VERIFIED
+- **TAURI_AUTH0_REDIRECT_URI** - your-app-scheme://auth - Auth0 redirect URI - VERIFIED
   - Used by: Auth0
   - Type: String
   - Required for Auth0 integration
 
-- **ELECTRON_AUTH0_LOGOUT_REDIRECT_URI** - your-app-scheme://logout - Auth0 logout redirect URI - VERIFIED
+- **TAURI_AUTH0_LOGOUT_REDIRECT_URI** - your-app-scheme://logout - Auth0 logout redirect URI - VERIFIED
   - Used by: Auth0
   - Type: String
   - Required for Auth0 integration
 
-- **ELECTRON_AUTH0_SCOPE** - openid profile email offline_access - Auth0 scope - VERIFIED
+- **TAURI_AUTH0_SCOPE** - openid profile email offline_access - Auth0 scope - VERIFIED
   - Used by: Auth0
   - Type: String
   - Required for Auth0 integration
@@ -383,6 +510,13 @@ https://auth0.com/docs/quickstart/applications/machine-to-machine
 - **Files**: `terraform/README.md`, `docs/CI-CD/GitHub-Secrets-Setup.md`
 - **Notes**: Used for DigitalOcean provider selection in deployment configurations
 
+### ENABLE_HEROKU
+- **Value**: `true`
+- **Status**: **VERIFIED**
+- **Usage**: Terraform configurations, CI/CD setup
+- **Files**: `terraform/README.md`, `docs/CI-CD/GitHub-Secrets-Setup.md`
+- **Notes**: Used for Heroku deployment enablement
+
 ### ENABLE_HASHICORP_NOMAD
 - **Value**: `true`
 - **Status**: **VERIFIED**
@@ -403,13 +537,6 @@ https://auth0.com/docs/quickstart/applications/machine-to-machine
 - **Usage**: Terraform configurations, CI/CD setup
 - **Files**: `terraform/README.md`, `docs/CI-CD/GitHub-Secrets-Setup.md`
 - **Notes**: Used for HashiCorp Consul service discovery enablement
-
-### ENABLE_HEROKU
-- **Value**: `true`
-- **Status**: **VERIFIED**
-- **Usage**: Terraform configurations, CI/CD setup
-- **Files**: `terraform/README.md`, `docs/CI-CD/GitHub-Secrets-Setup.md`
-- **Notes**: Used for Heroku deployment enablement
 
 ### ENABLE_CLOUDFLARE
 - **Value**: `false`
@@ -2577,6 +2704,67 @@ https://auth0.com/docs/quickstart/applications/machine-to-machine
   - Type: Boolean
   - Default: true
 
+# Polyglot API Backend Feature Flags
+- **ENABLE_API_TYPESCRIPT** - true - TypeScript Express API enabled - VERIFIED
+  - Used by: dev-backends.js script for development workflow
+  - Type: Boolean
+  - Default: true
+  - Purpose: Controls TypeScript Express API backend (port 7000)
+
+- **ENABLE_API_PYTHON** - false - Python FastAPI enabled - VERIFIED
+  - Used by: dev-backends.js script for development workflow
+  - Type: Boolean
+  - Default: false
+  - Purpose: Controls Python FastAPI backend (port 7010)
+
+- **ENABLE_API_GO** - false - Go Beego API enabled - VERIFIED
+  - Used by: dev-backends.js script for development workflow
+  - Type: Boolean
+  - Default: false
+  - Purpose: Controls Go Beego API backend (port 7020)
+
+- **ENABLE_API_RUST** - false - Rust Actix API enabled - VERIFIED
+  - Used by: dev-backends.js script for development workflow
+  - Type: Boolean
+  - Default: false
+  - Purpose: Controls Rust Actix API backend (port 7030)
+
+- **ENABLE_API_SCALA** - false - Scala Play API enabled - VERIFIED
+  - Used by: dev-backends.js script for development workflow
+  - Type: Boolean
+  - Default: false
+  - Purpose: Controls Scala Play API backend (port 7040)
+
+- **ENABLE_API_JAVA** - false - Java Play API enabled - VERIFIED
+  - Used by: dev-backends.js script for development workflow
+  - Type: Boolean
+  - Default: false
+  - Purpose: Controls Java Play API backend (port 7050)
+
+- **ENABLE_API_R** - false - R Plumber API enabled - VERIFIED
+  - Used by: dev-backends.js script for development workflow
+  - Type: Boolean
+  - Default: false
+  - Purpose: Controls R Plumber API backend (port 7060)
+
+- **ENABLE_API_JULIA** - false - Julia Genie API enabled - VERIFIED
+  - Used by: dev-backends.js script for development workflow
+  - Type: Boolean
+  - Default: false
+  - Purpose: Controls Julia Genie API backend (port 7070)
+
+- **ENABLE_API_PHP** - false - PHP Laravel API enabled - VERIFIED
+  - Used by: dev-backends.js script for development workflow
+  - Type: Boolean
+  - Default: false
+  - Purpose: Controls PHP Laravel API backend (port 7080)
+
+- **ENABLE_API_CPP** - false - C++ Drogon API enabled - VERIFIED
+  - Used by: dev-backends.js script for development workflow
+  - Type: Boolean
+  - Default: false
+  - Purpose: Controls C++ Drogon API backend (port 7090)
+
 # API Gateway Social Login Feature Flags
 - **ENABLE_GOOGLE_LOGIN** - true - Google login enabled - NEEDS_REVIEW
   - Used by: Google login configuration
@@ -2635,6 +2823,11 @@ https://auth0.com/docs/quickstart/applications/machine-to-machine
 
 - **ENABLE_REDDIT_LOGIN** - true - Reddit login enabled - NEEDS_REVIEW
   - Used by: Reddit login configuration
+  - Type: Boolean
+  - Default: true
+
+- **ENABLE_TAXAGI_LOGIN** - true - Taxagi login enabled - NEEDS_REVIEW
+  - Used by: Taxagi login configuration
   - Type: Boolean
   - Default: true
 
@@ -3059,10 +3252,11 @@ ASK ABOUT WHY THE KONG CERT PATH HAS TWO VARIABLES
   - Default: true
 
 # AI & Analytics Features
-- **AI_ENABLE_MINDSDB** - true - Enable MindsDB - NEEDS_REVIEW
-  - Used by: AI
+- **ENABLE_MINDSDB** - true - Enable MindsDB AI/ML integration - VERIFIED
+  - Used by: dev-backends.js script for development workflow
   - Type: Boolean
   - Default: true
+  - Purpose: Controls whether MindsDB starts automatically with pnpm dev
 
 - **ANALYTICS_ENABLE_TIMESCALEDB** - true - Enable TimescaleDB - NEEDS_REVIEW
   - Used by: Analytics
@@ -3267,10 +3461,10 @@ ASK ABOUT WHY THE KONG CERT PATH HAS TWO VARIABLES
   - Default: 10
 
 # Export Configuration
-- **PDF_GENERATOR_URL** - http://pdf-service:8020 - PDF generator URL - NEEDS_REVIEW
+- **PDF_GENERATOR_URL** - http://pdf-service:7000 - PDF generator URL - NEEDS_REVIEW
   - Used by: PDF export configuration
   - Type: String
-  - Default: http://pdf-service:8020
+  - Default: http://pdf-service:7000
 
 - **EXCEL_EXPORT_ENABLED** - true - Excel export enabled - NEEDS_REVIEW
   - Used by: Excel export configuration
@@ -3546,6 +3740,239 @@ ASK ABOUT WHY THE KONG CERT PATH HAS TWO VARIABLES
   - Default: 900000
 
 - **RATE_LIMIT_MAX_REQUESTS** - 100 - Rate limit max requests - NEEDS_REVIEW
+  - Used by: Rate limiting configuration
+  - Type: Number
+  - Default: 100
+
+# Security Headers
+- **ENABLE_SECURITY_HEADERS** - true - Enable security headers - NEEDS_REVIEW
+  - Used by: Security headers configuration
+  - Type: Boolean
+  - Default: true
+
+- **ENABLE_CSP** - true - Enable Content Security Policy - NEEDS_REVIEW
+  - Used by: Security headers configuration
+  - Type: Boolean
+  - Default: true
+
+# =============================================================================
+# 19. NOTIFICATIONS & COMMUNICATION
+# =============================================================================
+
+# Notification Service Provider Feature Flags
+- **ENABLE_BREVO_EMAIL** - true - Enable Brevo email service - VERIFIED
+  - Used by: Email service configuration
+  - Type: Boolean
+  - Default: true
+  - Files: packages/email-service/src/email-service.ts, microservices/email-verification/src/bulk-verification.ts
+
+- **ENABLE_TWILIO_SMS** - true - Enable Twilio SMS service - VERIFIED
+  - Used by: SMS service configuration
+  - Type: Boolean
+  - Default: true
+
+- **ENABLE_FIREBASE_PUSH** - true - Enable Firebase push notifications - VERIFIED
+  - Used by: Push notification configuration
+  - Type: Boolean
+  - Default: true
+
+- **ENABLE_APNS_PUSH** - true - Enable Apple Push Notification Service - VERIFIED
+  - Used by: iOS push notification configuration
+  - Type: Boolean
+  - Default: true
+
+- **ENABLE_WEBHOOK_NOTIFICATIONS** - true - Enable webhook notifications - VERIFIED
+  - Used by: Webhook notification configuration
+  - Type: Boolean
+  - Default: true
+
+- **ENABLE_IN_APP_NOTIFICATIONS** - true - Enable in-app notifications - VERIFIED
+  - Used by: In-app notification configuration
+  - Type: Boolean
+  - Default: true
+
+- **ENABLE_PUSH_NOTIFICATIONS** - true - Enable push notifications - VERIFIED
+  - Used by: Push notification configuration
+  - Type: Boolean
+  - Default: true
+
+# Email Configuration (Brevo)
+- **BREVO_API_KEY** - your-brevo-key - Brevo API key for email services - VERIFIED
+  - Used by: Brevo client configuration
+  - Type: String
+  - Sensitive: Yes
+  - Files: packages/email-service/src/brevo-client.ts, packages/email-service/src/email-service.ts, microservices/email-verification/src/bulk-verification.ts
+  - Notes: Required for Brevo email marketing and transactional email integration
+
+- **BREVO_SENDER_EMAIL** - noreply@example.com - Default sender email address - VERIFIED
+  - Used by: Email sender configuration
+  - Type: Email
+  - Default: noreply@example.com
+  - Files: packages/email-service/src/brevo-client.ts, packages/email-service/src/email-service.ts
+  - Notes: Must be a verified sender in Brevo account
+
+- **BREVO_SENDER_NAME** - Your App - Default sender name - VERIFIED
+  - Used by: Email sender configuration
+  - Type: String
+  - Default: Your App
+  - Files: packages/email-service/src/brevo-client.ts, packages/email-service/src/email-service.ts
+
+# Email Verification Configuration (Zero Bounce)
+- **ZEROBOUNCE_API_KEY** - your-zerobounce-api-key - Zero Bounce API key for email verification - VERIFIED
+  - Used by: Zero Bounce client configuration
+  - Type: String
+  - Sensitive: Yes
+  - Files: packages/email-service/src/zerobounce-client.ts, packages/email-service/src/email-service.ts, microservices/email-verification/src/bulk-verification.ts
+  - Notes: Required for bulk email verification before sending campaigns
+
+- **ZEROBOUNCE_AUTO_VERIFY** - true - Enable automatic email verification before sending - VERIFIED
+  - Used by: Email service auto-verification feature
+  - Type: Boolean
+  - Default: true
+  - Files: packages/email-service/src/email-service.ts
+  - Notes: When enabled, emails are automatically verified before sending
+
+- **ZEROBOUNCE_BATCH_SIZE** - 100 - Batch size for bulk email verification - VERIFIED
+  - Used by: Bulk verification batch processing
+  - Type: Number
+  - Default: 100
+  - Files: packages/email-service/src/email-service.ts, microservices/email-verification/src/bulk-verification.ts
+  - Notes: Controls how many emails are verified in each batch to respect API rate limits
+
+- **ZEROBOUNCE_DELAY_MS** - 1000 - Delay between batches in milliseconds - VERIFIED
+  - Used by: Rate limiting for bulk verification
+  - Type: Number
+  - Default: 1000
+  - Files: packages/email-service/src/email-service.ts, microservices/email-verification/src/bulk-verification.ts
+  - Notes: Prevents hitting Zero Bounce API rate limits during bulk verification
+
+# SMS Configuration (Twilio)
+- **TWILIO_ACCOUNT_SID** - your-twilio-sid - Twilio account SID - VERIFIED
+  - Used by: Twilio SMS configuration
+  - Type: String
+  - Sensitive: Yes
+
+- **TWILIO_AUTH_TOKEN** - your-twilio-token - Twilio authentication token - VERIFIED
+  - Used by: Twilio SMS configuration
+  - Type: String
+  - Sensitive: Yes
+
+- **TWILIO_PHONE_NUMBER** - +1234567890 - Twilio phone number - VERIFIED
+  - Used by: SMS sender configuration
+  - Type: Phone
+  - Default: +1234567890
+
+- **TWILIO_MESSAGING_SERVICE_SID** - your-messaging-service-sid - Twilio messaging service SID - VERIFIED
+  - Used by: Twilio messaging service configuration
+  - Type: String
+
+# Push Notification Configuration
+- **FIREBASE_SERVER_KEY** - your-firebase-key - Firebase server key - VERIFIED
+  - Used by: Firebase push notification configuration
+  - Type: String
+  - Sensitive: Yes
+
+- **FIREBASE_PROJECT_ID** - your-firebase-project - Firebase project ID - VERIFIED
+  - Used by: Firebase configuration
+  - Type: String
+
+- **FIREBASE_SENDER_ID** - your-firebase-sender-id - Firebase sender ID - VERIFIED
+  - Used by: Firebase push notification configuration
+  - Type: String
+
+- **APNS_KEY_ID** - your-apns-key-id - Apple Push Notification Service key ID - VERIFIED
+  - Used by: APNS configuration
+  - Type: String
+
+- **APNS_TEAM_ID** - your-apns-team-id - Apple developer team ID - VERIFIED
+  - Used by: APNS configuration
+  - Type: String
+
+- **APNS_BUNDLE_ID** - com.example.app - iOS app bundle identifier - VERIFIED
+  - Used by: APNS configuration
+  - Type: String
+  - Default: com.example.app
+
+# =============================================================================
+# 20. INTERNATIONALIZATION
+# =============================================================================
+
+# Language Configuration
+- **DEFAULT_LOCALE** - en-US - Default application locale - NEEDS_REVIEW
+  - Used by: Internationalization configuration
+  - Type: String
+  - Default: en-US
+
+- **SUPPORTED_LOCALES** - en-US,es-ES,fr-FR,de-DE - Supported locales - NEEDS_REVIEW
+  - Used by: Internationalization configuration
+  - Type: String (comma-separated)
+  - Default: en-US,es-ES,fr-FR,de-DE
+
+- **LOCALE_DETECTION_ENABLED** - true - Enable automatic locale detection - NEEDS_REVIEW
+  - Used by: Locale detection configuration
+  - Type: Boolean
+  - Default: true
+
+- **LOCALE_COOKIE_NAME** - nexpo-locale - Locale cookie name - NEEDS_REVIEW
+  - Used by: Locale persistence configuration
+  - Type: String
+  - Default: nexpo-locale
+
+# Time Zone
+- **DEFAULT_TIMEZONE** - UTC - Default timezone - NEEDS_REVIEW
+  - Used by: Timezone configuration
+  - Type: String
+  - Default: UTC
+
+- **TIMEZONE_DETECTION_ENABLED** - true - Enable automatic timezone detection - NEEDS_REVIEW
+  - Used by: Timezone detection configuration
+  - Type: Boolean
+  - Default: true
+
+# =============================================================================
+# 21. TESTING
+# =============================================================================
+
+# Testing Configuration
+- **TEST_DATABASE_URL** - postgresql://test:test@localhost:5432/test_db - Test database URL - NEEDS_REVIEW
+  - Used by: Test database configuration
+  - Type: Connection string
+  - Default: postgresql://test:test@localhost:5432/test_db
+
+- **TEST_API_KEY** - test-api-key - Test API key - NEEDS_REVIEW
+  - Used by: Test configuration
+  - Type: String
+  - Default: test-api-key
+
+- **MOCK_EXTERNAL_SERVICES** - true - Mock external services in tests - NEEDS_REVIEW
+  - Used by: Test configuration
+  - Type: Boolean
+  - Default: true
+
+# Development Tools
+- **ENABLE_HOT_RELOAD** - true - Enable hot reload in development - NEEDS_REVIEW
+  - Used by: Development configuration
+  - Type: Boolean
+  - Default: true
+
+- **ENABLE_DEBUG_MODE** - false - Enable debug mode - NEEDS_REVIEW
+  - Used by: Debug configuration
+  - Type: Boolean
+  - Default: false
+
+- **ENABLE_PROFILING** - false - Enable performance profiling - NEEDS_REVIEW
+  - Used by: Profiling configuration
+  - Type: Boolean
+  - Default: false
+
+# Rate Limiting
+- **RATE_LIMIT_WINDOW_MS** - 900000 - Rate limit window in milliseconds - NEEDS_REVIEW
+  - Used by: Rate limiting configuration
+  - Type: Number
+  - Default: 900000
+  - Notes: 15 minutes
+
+- **RATE_LIMIT_MAX_REQUESTS** - 100 - Maximum requests per window - NEEDS_REVIEW
   - Used by: Rate limiting configuration
   - Type: Number
   - Default: 100

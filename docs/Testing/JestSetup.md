@@ -4,7 +4,7 @@ This guide provides instructions for setting up and using Jest for unit testing 
 
 ## Overview
 
-Jest is a delightful JavaScript testing framework with a focus on simplicity. It's used in this template for unit testing React components and logic across both web (Next.js) and mobile (Expo) platforms.
+Jest is a delightful JavaScript testing framework with a focus on simplicity. It's used in this template for unit testing React components and logic across web (Next.js), mobile (Expo), and desktop (Tauri) platforms.
 
 ## Prerequisites
 

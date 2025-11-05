@@ -289,6 +289,9 @@ CRA supports comprehensive OAuth provider integration, allowing users to connect
 - **Slack**: Workspace access, channel management, direct messages
 - **Reddit**: Profile information, subreddit subscriptions, post history
 - **CodeRabbit**: Code review integration, repository analysis, AI insights
+- **Snapchat**: Profile information, friend connections, snap history
+- **Instagram**: Profile information, media access, hashtag data
+- **TikTok**: Profile information, video content access, hashtag data
 
 **Google Authentication**
 - **Feature Flag**: `ENABLE_GOOGLE_LOGIN`
@@ -321,6 +324,134 @@ CRA supports comprehensive OAuth provider integration, allowing users to connect
 - **Default Status**: Disabled
 - **Use Case**: Social media integration, consumer applications
 - **Benefits**: Large user base, social graph access
+
+**Snapchat Authentication**
+- **Feature Flag**: `ENABLE_SNAPCHAT_LOGIN`
+- **Default Status**: Disabled
+- **Use Case**: Social media integration, AR/camera applications, young demographics
+- **Benefits**: Bitmoji integration, AR lens creation, Stories API access
+- **Supported Scopes**:
+  - `user.display_name` - Basic profile information and display name
+  - `user.bitmoji.avatar` - Access to user's Bitmoji avatar
+  - `https://auth.snapchat.com/oauth2/api/user.external_id` - Unique user identifier
+- **OAuth 2.0 Flow**: Authorization Code with PKCE for enhanced security
+- **Token Management**: Automatic token refresh with Snapchat-specific refresh policies
+- **API Integration**: Snap Kit SDK integration for enhanced features
+- **Privacy Considerations**: Minimal data collection, user consent required
+
+**Instagram Authentication**
+- **Feature Flag**: `ENABLE_INSTAGRAM_LOGIN`
+- **Default Status**: Disabled
+- **Use Case**: Social media integration, content creators, visual applications, brand engagement
+- **Benefits**: Media access, Instagram Basic Display API, creator insights, hashtag data
+- **Supported Scopes**:
+  - `user_profile` - Access to basic profile information (username, account type)
+  - `user_media` - Access to user's media (photos, videos, albums)
+  - `instagram_graph_user_profile` - Extended profile information via Instagram Graph API
+  - `instagram_graph_user_media` - Enhanced media access with metadata
+- **OAuth 2.0 Flow**: Authorization Code with PKCE for enhanced security
+- **Token Management**: Automatic token refresh with Instagram-specific policies (60-day expiration)
+- **API Integration**: Instagram Basic Display API and Instagram Graph API support
+- **Privacy Considerations**: Media access requires explicit user consent, GDPR compliant
+
+**TikTok Authentication**
+- **Feature Flag**: `ENABLE_TIKTOK_LOGIN`
+- **Default Status**: Disabled
+- **Use Case**: Social media integration, content creators, short-form video applications, Gen Z engagement
+- **Benefits**: Video content access, TikTok for Developers API, user engagement data, trending content insights
+- **Supported Scopes**:
+  - `user.info.basic` - Basic profile information (display name, avatar, bio)
+  - `user.info.profile` - Extended profile information and verification status
+  - `user.info.stats` - User statistics (followers, following, likes count)
+  - `video.list` - Access to user's published videos
+  - `video.upload` - Upload videos on behalf of user (requires special approval)
+- **OAuth 2.0 Flow**: Authorization Code with PKCE for enhanced security
+- **Token Management**: Automatic token refresh with TikTok-specific policies (24-hour expiration for some scopes)
+- **API Integration**: TikTok for Developers API with comprehensive video and user data access
+- **Privacy Considerations**: Video content access requires explicit consent, compliance with TikTok's privacy policies
+
+#### Environment Configuration
+
+To enable Snapchat authentication, configure the following environment variables:
+
+**Web Applications (Next.js):**
+```bash
+# Enable Snapchat OAuth2 authentication
+NEXT_PUBLIC_ENABLE_SNAPCHAT_LOGIN=true
+
+# Snapchat OAuth2 credentials (obtained from Snapchat Developer Portal)
+SNAPCHAT_CLIENT_ID=your_snapchat_client_id
+SNAPCHAT_CLIENT_SECRET=your_snapchat_client_secret
+SNAPCHAT_REDIRECT_URI=https://yourdomain.com/callback/snapchat
+```
+
+**Mobile Applications (Expo):**
+```bash
+# Enable Snapchat OAuth2 authentication
+EXPO_PUBLIC_ENABLE_SNAPCHAT_LOGIN=true
+
+# Snapchat OAuth2 credentials
+EXPO_PUBLIC_SNAPCHAT_CLIENT_ID=your_snapchat_client_id
+SNAPCHAT_CLIENT_SECRET=your_snapchat_client_secret
+SNAPCHAT_REDIRECT_URI=your.app.scheme://oauth/snapchat
+```
+
+**Auth0 Configuration:**
+Snapchat authentication is handled through Auth0's social connections. Configure a Snapchat social connection in your Auth0 dashboard with the above credentials.
+
+To enable Instagram authentication, configure the following environment variables:
+
+**Web Applications (Next.js):**
+```bash
+# Enable Instagram OAuth2 authentication
+NEXT_PUBLIC_ENABLE_INSTAGRAM_LOGIN=true
+
+# Instagram OAuth2 credentials (obtained from Meta for Developers)
+INSTAGRAM_CLIENT_ID=your_instagram_client_id
+INSTAGRAM_CLIENT_SECRET=your_instagram_client_secret
+INSTAGRAM_REDIRECT_URI=https://yourdomain.com/callback/instagram
+```
+
+**Mobile Applications (Expo):**
+```bash
+# Enable Instagram OAuth2 authentication
+EXPO_PUBLIC_ENABLE_INSTAGRAM_LOGIN=true
+
+# Instagram OAuth2 credentials
+EXPO_PUBLIC_INSTAGRAM_CLIENT_ID=your_instagram_client_id
+INSTAGRAM_CLIENT_SECRET=your_instagram_client_secret
+INSTAGRAM_REDIRECT_URI=your.app.scheme://oauth/instagram
+```
+
+**Auth0 Configuration:**
+Instagram authentication is handled through Auth0's social connections. Configure an Instagram social connection in your Auth0 dashboard with the above credentials.
+
+To enable TikTok authentication, configure the following environment variables:
+
+**Web Applications (Next.js):**
+```bash
+# Enable TikTok OAuth2 authentication
+NEXT_PUBLIC_ENABLE_TIKTOK_LOGIN=true
+
+# TikTok OAuth2 credentials (obtained from TikTok for Developers)
+TIKTOK_CLIENT_ID=your_tiktok_client_id
+TIKTOK_CLIENT_SECRET=your_tiktok_client_secret
+TIKTOK_REDIRECT_URI=https://yourdomain.com/callback/tiktok
+```
+
+**Mobile Applications (Expo):**
+```bash
+# Enable TikTok OAuth2 authentication
+EXPO_PUBLIC_ENABLE_TIKTOK_LOGIN=true
+
+# TikTok OAuth2 credentials
+EXPO_PUBLIC_TIKTOK_CLIENT_ID=your_tiktok_client_id
+TIKTOK_CLIENT_SECRET=your_tiktok_client_secret
+TIKTOK_REDIRECT_URI=your.app.scheme://oauth/tiktok
+```
+
+**Auth0 Configuration:**
+TikTok authentication is handled through Auth0's social connections. Configure a TikTok social connection in your Auth0 dashboard with the above credentials.
 
 ### Enterprise & Professional Providers
 

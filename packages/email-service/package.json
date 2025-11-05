@@ -1,0 +1,32 @@
+{
+  "name": "@weave/email-service",
+  "version": "1.0.0",
+  "description": "Email service integration with Brevo and Zero Bounce",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "jest",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@getbrevo/brevo": "^2.2.0",
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "jest": "^29.0.0",
+    "@types/jest": "^29.0.0"
+  },
+  "keywords": [
+    "email",
+    "brevo",
+    "zerobounce",
+    "email-verification",
+    "marketing"
+  ],
+  "author": "Weave Team",
+  "license": "MIT"
+}

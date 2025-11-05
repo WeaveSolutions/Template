@@ -1,0 +1,243 @@
+# PHP Laravel API CI/CD Pipeline
+# Works on all cloud providers.
+
+name: PHP Laravel API CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - microservices/api/api-php/**
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - microservices/api/api-php/**
+
+env:
+  BACKEND_NAME: PHP
+  BACKEND_PORT: 8080
+  DOCKER_IMAGE: nexpo/api-php
+  REGISTRY: docker.io
+
+jobs:
+  test:
+    name: Test and Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: microservices/api/api-php
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: testing
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: bcmath, ctype, fileinfo, json, mbstring, openssl, pdo, pdo_pgsql, tokenizer, xml, zip
+          coverage: xdebug
+          ini-values: memory_limit=-1
+      
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache/files
+          key: dependencies-composer-${{ hashFiles('microservices/api/api-php/composer.lock') }}
+          restore-keys: dependencies-composer-
+      
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress --optimize-autoloader
+      
+      - name: Copy environment file
+        run: cp .env.example .env
+      
+      - name: Generate application key
+        run: php artisan key:generate
+      
+      - name: Set up database
+        run: |
+          php artisan config:clear
+          php artisan migrate --force
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_DATABASE: testing
+          DB_USERNAME: postgres
+          DB_PASSWORD: postgres
+      
+      - name: Run PHPUnit tests
+        run: php artisan test --coverage --coverage-clover=coverage.xml
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_DATABASE: testing
+          DB_USERNAME: postgres
+          DB_PASSWORD: postgres
+      
+      - name: Run Laravel Pint (code style)
+        run: ./vendor/bin/pint --test
+        continue-on-error: true
+      
+      - name: Run PHPStan (static analysis)
+        run: ./vendor/bin/phpstan analyse --error-format=github
+        continue-on-error: true
+      
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v4
+        with:
+          file: microservices/api/api-php/coverage.xml
+          flags: php
+          name: php-coverage
+          fail_ci_if_error: false
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Login to Docker Hub
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.DOCKER_IMAGE }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: microservices/api/api-php
+          file: microservices/api/api-php/Dockerfile
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            BACKEND_NAME=${{ env.BACKEND_NAME }}
+            BACKEND_PORT=${{ env.BACKEND_PORT }}
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'push'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: bcmath, ctype, fileinfo, json, mbstring, openssl, pdo, tokenizer, xml, zip
+      
+      - name: Install Composer dependencies
+        run: |
+          cd microservices/api/api-php
+          composer install --prefer-dist --no-interaction --no-progress
+      
+      - name: Run security audit
+        run: |
+          cd microservices/api/api-php
+          composer audit --format=json > security-audit.json
+        continue-on-error: true
+      
+      - name: Run Psalm (security analysis)
+        run: |
+          cd microservices/api/api-php
+          ./vendor/bin/psalm --show-info=false --output-format=github
+        continue-on-error: true
+      
+      - name: Upload security scan results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: php-security-reports
+          path: |
+            microservices/api/api-php/security-audit.json
+            microservices/api/api-php/psalm-report.json
+
+  deploy:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [test, security]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    environment: staging
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+      
+      - name: Update ECS service
+        run: |
+          aws ecs update-service \
+            --cluster ${{ vars.ECS_CLUSTER_NAME }} \
+            --service nexpo-php-api \
+            --force-new-deployment \
+            --desired-count 1
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [test, security]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment: production
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+      
+      - name: Update ECS service
+        run: |
+          aws ecs update-service \
+            --cluster ${{ vars.ECS_CLUSTER_NAME }} \
+            --service nexpo-php-api \
+            --force-new-deployment \
+            --desired-count 2

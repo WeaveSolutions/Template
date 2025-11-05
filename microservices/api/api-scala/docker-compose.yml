@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  api-scala:
+    build: .
+    ports:
+      - "7040:7040"
+    environment:
+      - SCALA_API_PORT=7040
+      - PLAY_HTTP_SECRET_KEY=${PLAY_HTTP_SECRET_KEY:-changeme}
+      - AUTH0_DOMAIN=${AUTH0_DOMAIN}
+      - AUTH0_AUDIENCE=${AUTH0_AUDIENCE}
+      - AUTH0_CLIENT_ID=${AUTH0_CLIENT_ID}
+      - AUTH0_CLIENT_SECRET=${AUTH0_CLIENT_SECRET}
+      - MINDSDB_URL=${MINDSDB_URL:-http://mindsdb:47334}
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    env_file:
+      - .env
+    networks:
+      - nexpo-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7040/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 40s
+
+networks:
+  nexpo-network:
+    external: true

@@ -1,0 +1,29 @@
+{
+  "name": "nexpo-api-r",
+  "version": "1.0.0",
+  "description": "Nexpo R API backend with Plumber",
+  "scripts": {
+    "start": "Rscript api.R",
+    "dev": "Rscript api.R",
+    "docker:build": "docker build -t nexpo-api-r .",
+    "docker:run": "docker run -p 7060:7060 --env-file .env nexpo-api-r",
+    "docker:compose": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "test": "Rscript -e 'testthat::test_dir(\"tests/\")'",
+    "lint": "Rscript -e 'lintr::lint_dir(\".\")'",
+    "install": "Rscript -e 'install.packages(c(\"plumber\", \"jose\", \"httr\", \"jsonlite\", \"logger\"))'"
+  },
+  "keywords": [
+    "nexpo",
+    "api",
+    "r",
+    "plumber",
+    "auth0",
+    "mindsdb"
+  ],
+  "author": "Nexpo Team",
+  "license": "MIT",
+  "engines": {
+    "r": ">=4.3.0"
+  }
+}

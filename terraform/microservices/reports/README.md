@@ -784,22 +784,22 @@ export LOOKER_STUDIO_API_KEY="your-looker-studio-api-key"
 export DATABASE_URL="postgresql://localhost:5432/reports"
 
 # Run reports service
-npm run dev
+pnpm run dev
 ```
 
 ### Testing
 ```bash
 # Unit tests
-npm run test
+pnpm run test
 
 # Integration tests with data sources
-npm run test:integration
+pnpm run test:integration
 
 # Report generation tests
-npm run test:reports
+pnpm run test:reports
 
 # Performance tests
-npm run test:performance
+pnpm run test:performance
 ```
 
 ## 🆘 Troubleshooting

@@ -7,7 +7,7 @@ This guide provides instructions for setting up and using Tailwind CSS and Shadc
 - **Tailwind CSS**: A utility-first CSS framework for rapid UI development.
 - **Shadcn UI**: A collection of reusable components built on Tailwind CSS and Radix UI, designed for web applications.
 
-This template already has Tailwind CSS configured for both Next.js and Expo apps. Shadcn UI components can be added for web-focused UI elements.
+This template already has Tailwind CSS configured for Next.js, Expo, and Tauri apps. Shadcn UI components can be added for web-focused UI elements.
 
 ## Prerequisites
 
@@ -16,13 +16,14 @@ This template already has Tailwind CSS configured for both Next.js and Expo apps
 
 ## Tailwind CSS Setup
 
-Tailwind CSS is pre-configured in this template for both web (Next.js) and mobile (Expo) platforms.
+Tailwind CSS is pre-configured in this template for web (Next.js), mobile (Expo), and desktop (Tauri) platforms.
 
 ### Configuration Files
 
 - **Root `tailwind.config.js`**: Central configuration for Tailwind CSS used across the monorepo.
 - **Next.js**: Tailwind is set up in `apps/next/postcss.config.js`.
 - **Expo**: Tailwind is integrated via `babel.config.js` using `nativewind` for React Native compatibility.
+- **Tauri**: Tailwind is configured via the shared Next.js configuration for the desktop frontend.
 
 ### Using Tailwind CSS
 
@@ -158,6 +159,7 @@ Since Shadcn UI components are copied into your project for customization, here'
 Since Shadcn UI components are web-focused:
 - Use them primarily in Next.js components.
 - For mobile (Expo), rely on React Native components styled with Tailwind via NativeWind.
+- For desktop (Tauri), use standard Tailwind classes similar to Next.js.
 - Create platform-specific rendering logic if a component needs to appear on both web and mobile:
   ```tsx
   import { Platform } from 'react-native';
@@ -203,7 +205,7 @@ Since Shadcn UI components are web-focused:
 
 ## Troubleshooting
 
-- **Tailwind Not Applying**: Ensure Tailwind is correctly imported in your entry files (`apps/next/pages/_app.tsx` and `apps/expo/App.tsx`). Check if `nativewind` is configured in `babel.config.js` for Expo.
+- **Tailwind Not Applying**: Ensure Tailwind is correctly imported in your entry files (`apps/next/pages/_app.tsx`, `apps/expo/App.tsx`, and `apps/tauri/src/App.tsx`). Check if `nativewind` is configured in `babel.config.js` for Expo.
 - **Shadcn Components Not Rendering**: Verify dependencies (`@radix-ui/*`, `clsx`, `tailwind-merge`) are installed. Check browser console for errors related to missing CSS variables.
 - **Styling Differences Between Platforms**: Use tools like `react-native-debugger` for mobile or browser dev tools for web to inspect rendered styles and adjust accordingly.
 

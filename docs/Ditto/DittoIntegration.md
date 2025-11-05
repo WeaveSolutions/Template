@@ -1,6 +1,6 @@
 # Ditto Integration with Multi-Cloud Databases
 
-This document provides instructions on how to use Ditto with your Next.js and Expo applications, enabling a local-first architecture with synchronization capabilities to multiple cloud databases simultaneously.
+This document provides instructions on how to use Ditto with your Next.js, Expo, and Tauri applications, enabling a local-first architecture with synchronization capabilities to multiple cloud databases simultaneously.
 
 ## Table of Contents
 
@@ -9,6 +9,7 @@ This document provides instructions on how to use Ditto with your Next.js and Ex
   - [Environment Variables](#environment-variables)
   - [Next.js Setup](#nextjs-setup)
   - [Expo Setup](#expo-setup)
+  - [Tauri Setup](#tauri-setup)
 - [Multi-Cloud Synchronization](#multi-cloud-synchronization)
   - [How It Works](#how-it-works)
   - [Sync Flow](#sync-flow)
@@ -25,7 +26,7 @@ This document provides instructions on how to use Ditto with your Next.js and Ex
 
 Ditto is a local-first database that enables real-time synchronization between devices and cloud databases. This integration provides:
 
-- Cross-platform support for both Next.js and Expo
+- Cross-platform support for Next.js, Expo, and Tauri
 - Offline-first capabilities with seamless syncing
 - **True multi-cloud synchronization** with multiple database providers simultaneously
 - Bidirectional data flow between Ditto and all cloud databases

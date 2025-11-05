@@ -1,5 +1,7 @@
 # NVIDIA Omniverse
 
+Listen to 1 Omni whereever you want to.
+
 ## Overview
 
 NVIDIA Omniverse is a revolutionary real-time collaboration and simulation platform that enables the creation of 3D digital twins, immersive experiences, and collaborative workflows across industries. Built on Universal Scene Description (USD), Omniverse provides a unified ecosystem for 3D content creation, simulation, and AI-powered applications.

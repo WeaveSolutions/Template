@@ -1,0 +1,131 @@
+name: Deploy Tauri Mobile
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'apps/taurte/tauriMobile/**'
+      - 'packages/shared-**/**'
+      - '.github/workflows/deploy-tauri-mobile.yml'
+  pull_request:
+    branches: [main, master]
+    paths:
+      - 'apps/taurte/tauriMobile/**'
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  build-and-deploy:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: 'ios'
+            os: 'macos-latest'
+          - platform: 'android'
+            os: 'ubuntu-22.04'
+
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: '10.13.1'
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.platform == 'ios' && 'aarch64-apple-ios,x86_64-apple-ios' || 'aarch64-linux-android,armv7-linux-androideabi,x86_64-linux-android,i686-linux-android' }}
+
+      - name: Setup Android SDK (Android only)
+        if: matrix.platform == 'android'
+        id: setup-android
+        uses: android-actions/setup-android@v3
+
+      - name: Setup Android NDK (Android only)
+        if: matrix.platform == 'android'
+        id: setup-ndk
+        uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: r25c
+
+      - name: Setup Java (Android only)
+        if: matrix.platform == 'android'
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Xcode (iOS only)
+        if: matrix.platform == 'ios'
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Tauri CLI
+        run: pnpm add -g @tauri-apps/cli
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: apps/taurte/tauriMobile/src-tauri
+
+      - name: Build Tauri Mobile App (Android)
+        if: matrix.platform == 'android'
+        env:
+          ANDROID_HOME: ${{ steps.setup-android.outputs.android-home }}
+          ANDROID_SDK_ROOT: ${{ steps.setup-android.outputs.android-home }}
+          NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+        run: |
+          cd apps/taurte/tauriMobile
+          pnpm tauri android build --target aarch64
+
+      - name: Build Tauri Mobile App (iOS)
+        if: matrix.platform == 'ios'
+        run: |
+          cd apps/taurte/tauriMobile
+          pnpm tauri ios build
+
+      - name: Upload Android APK
+        if: matrix.platform == 'android'
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: apps/taurte/tauriMobile/src-tauri/gen/android/app/build/outputs/apk/universal/release/*.apk
+
+      - name: Upload iOS IPA
+        if: matrix.platform == 'ios'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa
+          path: apps/taurte/tauriMobile/src-tauri/gen/apple/*.ipa
+
+      - name: Create Release (on main branch)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: mobile-v${{ github.run_number }}
+          name: Tauri Mobile Release v${{ github.run_number }}
+          draft: false
+          prerelease: false
+          files: |
+            apps/taurte/tauriMobile/src-tauri/gen/android/app/build/outputs/apk/universal/release/*.apk
+            apps/taurte/tauriMobile/src-tauri/gen/apple/*.ipa
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,25 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Health check
+GET     /                           controllers.HealthController.index
+GET     /health                     controllers.HealthController.health
+
+# Swagger UI
+GET     /swagger                    controllers.Assets.at(path="/public/swagger-ui", file="index.html")
+GET     /swagger/*file              controllers.Assets.at(path="/public/swagger-ui", file)
+GET     /api-docs                   controllers.ApiDocController.swagger
+
+# Authentication endpoints
+POST    /api/auth/token             controllers.AuthController.exchangeToken
+
+# User endpoints (requires authentication)
+GET     /api/user/profile           controllers.UserController.getProfile
+GET     /api/user/linked-accounts   controllers.UserController.getLinkedAccounts
+
+# Data endpoints (requires authentication)
+POST    /api/data/query             controllers.DataController.queryMindsDB
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

@@ -454,22 +454,22 @@ export TIMESCALE_URL="postgresql://localhost:5432/timescale"
 export REDIS_URL="redis://localhost:6379"
 
 # Run KPI engine
-npm run dev
+pnpm run dev
 ```
 
 ### Testing
 ```bash
 # Unit tests
-npm run test
+pnpm run test
 
 # Integration tests (with test databases)
-npm run test:integration
+pnpm run test:integration
 
 # Data quality tests
-npm run test:data-quality
+pnpm run test:data-quality
 
 # Performance tests
-npm run test:performance
+pnpm run test:performance
 ```
 
 ## 🆘 Troubleshooting

@@ -40,7 +40,7 @@ Client App → Auth0 → CRA Service → Supabase (Data Services)
 ```bash
 # Install Terraform
 # Install Supabase CLI (for migrations)
-npm install -g @supabase/cli
+pnpm install -g @supabase/cli
 
 # Get Supabase Management API token
 # Go to: https://app.supabase.com/account/tokens

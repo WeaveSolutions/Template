@@ -1,0 +1,27 @@
+{
+  "name": "nexpo-api-scala",
+  "version": "1.0.0",
+  "description": "Nexpo API backend built with Scala Play Framework",
+  "scripts": {
+    "start": "sbt run",
+    "test": "sbt test",
+    "build": "sbt dist",
+    "docker:build": "docker build -t nexpo-api-scala .",
+    "docker:run": "docker run -p 7040:7040 --env-file .env nexpo-api-scala",
+    "docker:compose": "docker-compose up -d",
+    "clean": "sbt clean"
+  },
+  "keywords": [
+    "nexpo",
+    "api",
+    "scala",
+    "play-framework",
+    "auth0",
+    "mindsdb"
+  ],
+  "author": "Nexpo Team",
+  "license": "MIT",
+  "engines": {
+    "java": ">=17"
+  }
+}

@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  api-typescript:
+    build: .
+    ports:
+      - "${TS_API_PORT:-7000}:7000"
+    environment:
+      - PORT=${PORT:-7000}
+      - TS_API_PORT=${TS_API_PORT:-7000}
+      - NODE_ENV=${NODE_ENV:-production}
+      - AUTH0_SECRET=${AUTH0_SECRET}
+      - AUTH0_CLIENT_ID=${AUTH0_CLIENT_ID}
+      - AUTH0_CLIENT_SECRET=${AUTH0_CLIENT_SECRET}
+      - AUTH0_ISSUER_BASE_URL=${AUTH0_ISSUER_BASE_URL}
+      - AUTH0_AUDIENCE=${AUTH0_AUDIENCE}
+      - AUTH0_BASE_URL=${AUTH0_BASE_URL:-http://localhost:7000}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:3000}
+      - MINDSDB_URL=${MINDSDB_URL:-http://mindsdb:47334}
+      - MINDSDB_TIMEOUT=${MINDSDB_TIMEOUT:-30}
+      - CORS_ORIGINS=${CORS_ORIGINS:-*}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+networks:
+  default:
+    name: nexpo-network
+    external: true

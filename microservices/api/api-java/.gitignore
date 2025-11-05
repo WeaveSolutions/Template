@@ -1,0 +1,40 @@
+# Play Framework
+logs
+target
+/.idea
+/.idea_modules
+/.classpath
+/.project
+/.settings
+/RUNNING_PID
+/.g8
+/.bsp
+
+# Environment files
+.env
+.env.local
+
+# SBT
+/project/project/
+/project/target/
+
+# Compiled files
+*.class
+
+# Log files
+*.log
+
+# Package files
+*.jar
+*.war
+*.ear
+
+# IDE
+.vscode
+*.iml
+.metals
+.bloop
+
+# OS files
+.DS_Store
+Thumbs.db

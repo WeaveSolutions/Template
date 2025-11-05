@@ -116,7 +116,7 @@ export const getThemeClassName = (theme: 'light' | 'dark', lightClass: string, d
 
 ### 3. Wrapping Your App with ThemeProvider
 
-Ensure your app is wrapped with the `ThemeProvider` to make theme information available throughout your application. Update both `apps/next/pages/_app.tsx` and `apps/expo/App.tsx`:
+Ensure your app is wrapped with the `ThemeProvider` to make theme information available throughout your application. Update `apps/next/pages/_app.tsx`, `apps/expo/App.tsx`, and `apps/tauri/src/App.tsx`:
 
 #### For Next.js (`_app.tsx`):
 
@@ -143,6 +143,20 @@ export default function App() {
   return (
     <ThemeProvider>
       {/* Your app content */}
+    </ThemeProvider>
+  );
+}
+```
+
+#### For Tauri (`App.tsx`):
+
+```tsx
+import { ThemeProvider } from 'shared-ui';
+
+function App() {
+  return (
+    <ThemeProvider>
+      {/* Your desktop app content */}
     </ThemeProvider>
   );
 }

@@ -1,0 +1,488 @@
+_format_version: "3.0"
+_transform: true
+
+services:
+  # TypeScript Express API
+  - name: typescript-api
+    url: http://nexpo-typescript-api-staging:8020
+    tags:
+      - nexpo
+      - staging
+      - typescript
+    routes:
+      - name: typescript-api-route
+        paths:
+          - /api/v1/typescript
+        strip_path: true
+        preserve_host: false
+    plugins:
+      - name: cors
+        config:
+          origins:
+            - "https://staging.nexpo.com"
+            - "http://localhost:3000"
+          methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - OPTIONS
+          headers:
+            - Accept
+            - Accept-Version
+            - Content-Length
+            - Content-MD5
+            - Content-Type
+            - Date
+            - Authorization
+          exposed_headers:
+            - X-Auth-Token
+          credentials: true
+          max_age: 3600
+      - name: jwt
+        config:
+          uri_param_names:
+            - token
+          header_names:
+            - authorization
+          claims_to_verify:
+            - exp
+            - iss
+          key_claim_name: iss
+          secret_is_base64: false
+          run_on_preflight: true
+      - name: rate-limiting
+        config:
+          minute: 100
+          hour: 1000
+          policy: local
+          fault_tolerant: true
+          hide_client_headers: false
+
+  # Python FastAPI
+  - name: python-api
+    url: http://nexpo-python-api-staging:8030
+    tags:
+      - nexpo
+      - staging
+      - python
+    routes:
+      - name: python-api-route
+        paths:
+          - /api/v1/python
+        strip_path: true
+        preserve_host: false
+    plugins:
+      - name: cors
+        config:
+          origins:
+            - "https://staging.nexpo.com"
+            - "http://localhost:3000"
+          methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - OPTIONS
+          headers:
+            - Accept
+            - Accept-Version
+            - Content-Length
+            - Content-MD5
+            - Content-Type
+            - Date
+            - Authorization
+          exposed_headers:
+            - X-Auth-Token
+          credentials: true
+          max_age: 3600
+      - name: jwt
+        config:
+          uri_param_names:
+            - token
+          header_names:
+            - authorization
+          claims_to_verify:
+            - exp
+            - iss
+          key_claim_name: iss
+          secret_is_base64: false
+          run_on_preflight: true
+      - name: rate-limiting
+        config:
+          minute: 100
+          hour: 1000
+          policy: local
+          fault_tolerant: true
+          hide_client_headers: false
+
+  # Go Beego API
+  - name: go-api
+    url: http://nexpo-go-api-staging:8040
+    tags:
+      - nexpo
+      - staging
+      - go
+    routes:
+      - name: go-api-route
+        paths:
+          - /api/v1/go
+        strip_path: true
+        preserve_host: false
+    plugins:
+      - name: cors
+        config:
+          origins:
+            - "https://staging.nexpo.com"
+            - "http://localhost:3000"
+          methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - OPTIONS
+          headers:
+            - Accept
+            - Accept-Version
+            - Content-Length
+            - Content-MD5
+            - Content-Type
+            - Date
+            - Authorization
+          exposed_headers:
+            - X-Auth-Token
+          credentials: true
+          max_age: 3600
+      - name: jwt
+        config:
+          uri_param_names:
+            - token
+          header_names:
+            - authorization
+          claims_to_verify:
+            - exp
+            - iss
+          key_claim_name: iss
+          secret_is_base64: false
+          run_on_preflight: true
+      - name: rate-limiting
+        config:
+          minute: 100
+          hour: 1000
+          policy: local
+          fault_tolerant: true
+          hide_client_headers: false
+
+  # Rust Actix API
+  - name: rust-api
+    url: http://nexpo-rust-api-staging:8050
+    tags:
+      - nexpo
+      - staging
+      - rust
+    routes:
+      - name: rust-api-route
+        paths:
+          - /api/v1/rust
+        strip_path: true
+        preserve_host: false
+    plugins:
+      - name: cors
+        config:
+          origins:
+            - "https://staging.nexpo.com"
+            - "http://localhost:3000"
+          methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - OPTIONS
+          headers:
+            - Accept
+            - Accept-Version
+            - Content-Length
+            - Content-MD5
+            - Content-Type
+            - Date
+            - Authorization
+          exposed_headers:
+            - X-Auth-Token
+          credentials: true
+          max_age: 3600
+      - name: jwt
+        config:
+          uri_param_names:
+            - token
+          header_names:
+            - authorization
+          claims_to_verify:
+            - exp
+            - iss
+          key_claim_name: iss
+          secret_is_base64: false
+          run_on_preflight: true
+      - name: rate-limiting
+        config:
+          minute: 100
+          hour: 1000
+          policy: local
+          fault_tolerant: true
+          hide_client_headers: false
+
+  # Scala Play API
+  - name: scala-api
+    url: http://nexpo-scala-api-staging:8060
+    tags:
+      - nexpo
+      - staging
+      - scala
+    routes:
+      - name: scala-api-route
+        paths:
+          - /api/v1/scala
+        strip_path: true
+        preserve_host: false
+    plugins:
+      - name: cors
+        config:
+          origins:
+            - "https://staging.nexpo.com"
+            - "http://localhost:3000"
+          methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - OPTIONS
+          headers:
+            - Accept
+            - Accept-Version
+            - Content-Length
+            - Content-MD5
+            - Content-Type
+            - Date
+            - Authorization
+          exposed_headers:
+            - X-Auth-Token
+          credentials: true
+          max_age: 3600
+      - name: jwt
+        config:
+          uri_param_names:
+            - token
+          header_names:
+            - authorization
+          claims_to_verify:
+            - exp
+            - iss
+          key_claim_name: iss
+          secret_is_base64: false
+          run_on_preflight: true
+      - name: rate-limiting
+        config:
+          minute: 100
+          hour: 1000
+          policy: local
+          fault_tolerant: true
+          hide_client_headers: false
+
+  # Java Play API
+  - name: java-api
+    url: http://nexpo-java-api-staging:8070
+    tags:
+      - nexpo
+      - staging
+      - java
+    routes:
+      - name: java-api-route
+        paths:
+          - /api/v1/java
+        strip_path: true
+        preserve_host: false
+    plugins:
+      - name: cors
+        config:
+          origins:
+            - "https://staging.nexpo.com"
+            - "http://localhost:3000"
+          methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - OPTIONS
+          headers:
+            - Accept
+            - Accept-Version
+            - Content-Length
+            - Content-MD5
+            - Content-Type
+            - Date
+            - Authorization
+          exposed_headers:
+            - X-Auth-Token
+          credentials: true
+          max_age: 3600
+      - name: jwt
+        config:
+          uri_param_names:
+            - token
+          header_names:
+            - authorization
+          claims_to_verify:
+            - exp
+            - iss
+          key_claim_name: iss
+          secret_is_base64: false
+          run_on_preflight: true
+      - name: rate-limiting
+        config:
+          minute: 100
+          hour: 1000
+          policy: local
+          fault_tolerant: true
+          hide_client_headers: false
+
+  # R Plumber API
+  - name: r-api
+    url: http://nexpo-r-api-staging:8080
+    tags:
+      - nexpo
+      - staging
+      - r
+    routes:
+      - name: r-api-route
+        paths:
+          - /api/v1/r
+        strip_path: true
+        preserve_host: false
+    plugins:
+      - name: cors
+        config:
+          origins:
+            - "https://staging.nexpo.com"
+            - "http://localhost:3000"
+          methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - OPTIONS
+          headers:
+            - Accept
+            - Accept-Version
+            - Content-Length
+            - Content-MD5
+            - Content-Type
+            - Date
+            - Authorization
+          exposed_headers:
+            - X-Auth-Token
+          credentials: true
+          max_age: 3600
+      - name: jwt
+        config:
+          uri_param_names:
+            - token
+          header_names:
+            - authorization
+          claims_to_verify:
+            - exp
+            - iss
+          key_claim_name: iss
+          secret_is_base64: false
+          run_on_preflight: true
+      - name: rate-limiting
+        config:
+          minute: 100
+          hour: 1000
+          policy: local
+          fault_tolerant: true
+          hide_client_headers: false
+
+  # Julia Genie API
+  - name: julia-api
+    url: http://nexpo-julia-api-staging:8090
+    tags:
+      - nexpo
+      - staging
+      - julia
+    routes:
+      - name: julia-api-route
+        paths:
+          - /api/v1/julia
+        strip_path: true
+        preserve_host: false
+    plugins:
+      - name: cors
+        config:
+          origins:
+            - "https://staging.nexpo.com"
+            - "http://localhost:3000"
+          methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - OPTIONS
+          headers:
+            - Accept
+            - Accept-Version
+            - Content-Length
+            - Content-MD5
+            - Content-Type
+            - Date
+            - Authorization
+          exposed_headers:
+            - X-Auth-Token
+          credentials: true
+          max_age: 3600
+      - name: jwt
+        config:
+          uri_param_names:
+            - token
+          header_names:
+            - authorization
+          claims_to_verify:
+            - exp
+            - iss
+          key_claim_name: iss
+          secret_is_base64: false
+          run_on_preflight: true
+      - name: rate-limiting
+        config:
+          minute: 100
+          hour: 1000
+          policy: local
+          fault_tolerant: true
+          hide_client_headers: false
+
+# Global plugins
+plugins:
+  - name: prometheus
+    config:
+      per_consumer: true
+      status_code_metrics: true
+      latency_metrics: true
+      bandwidth_metrics: true
+  - name: request-id
+    config:
+      header_name: "Kong-Request-ID"
+      generator: "uuid#counter"
+      echo_downstream: false
+  - name: correlation-id
+    config:
+      header_name: "Kong-Request-ID"
+      generator: "uuid#counter"
+      echo_downstream: true
+
+consumers:
+  - username: nexpo-staging-admin
+    tags:
+      - admin
+      - staging
+  - username: nexpo-staging-api
+    tags:
+      - api
+      - staging

@@ -1,0 +1,171 @@
+tenant:
+  friendly_name: "Nexpo Development"
+  picture_url: "https://nexpo.com/logo.png"
+  support_email: "support@nexpo.com"
+  support_url: "https://nexpo.com/support"
+  allowed_logout_urls:
+    - "http://localhost:3000"
+    - "https://staging.nexpo.com"
+  default_audience: "https://api.nexpo.com"
+  default_directory: "Username-Password-Authentication"
+
+clients:
+  - name: "Nexpo Web App (Staging)"
+    description: "Main web application for Nexpo platform"
+    app_type: "spa"
+    logo_uri: "https://nexpo.com/logo.png"
+    callbacks:
+      - "http://localhost:3000/callback"
+      - "https://staging.nexpo.com/callback"
+    allowed_logout_urls:
+      - "http://localhost:3000"
+      - "https://staging.nexpo.com"
+    allowed_origins:
+      - "http://localhost:3000"
+      - "https://staging.nexpo.com"
+    web_origins:
+      - "http://localhost:3000"
+      - "https://staging.nexpo.com"
+    grant_types:
+      - "authorization_code"
+      - "implicit"
+      - "refresh_token"
+    jwt_configuration:
+      alg: "RS256"
+      lifetime_in_seconds: 36000
+    
+  - name: "Nexpo API (Staging)"
+    description: "Backend API for Nexpo platform"
+    app_type: "non_interactive"
+    grant_types:
+      - "client_credentials"
+    jwt_configuration:
+      alg: "RS256"
+      lifetime_in_seconds: 36000
+
+resource_servers:
+  - name: "Nexpo API"
+    identifier: "https://api.nexpo.com"
+    allow_offline_access: false
+    skip_consent_for_verifiable_first_party_clients: true
+    token_lifetime: 86400
+    token_lifetime_for_web: 7200
+    signing_alg: "RS256"
+    scopes:
+      - value: "read:profile"
+        description: "Read user profile information"
+      - value: "write:profile"
+        description: "Update user profile information"
+      - value: "read:data"
+        description: "Read application data"
+      - value: "write:data"
+        description: "Write application data"
+      - value: "admin:users"
+        description: "Manage users (admin only)"
+
+connections:
+  - name: "Username-Password-Authentication"
+    strategy: "auth0"
+    enabled_clients:
+      - "Nexpo Web App (Staging)"
+    options:
+      password_policy: "good"
+      password_complexity_options:
+        min_length: 8
+      password_no_personal_info:
+        enable: true
+      password_dictionary:
+        enable: true
+        dictionary:
+          - "password"
+          - "nexpo"
+          - "admin"
+      brute_force_protection: true
+      import_mode: false
+      disable_signup: false
+      requires_username: false
+      custom_scripts:
+        login: ""
+      configuration: {}
+
+rules:
+  - name: "Add user metadata to tokens"
+    script: |
+      function addUserMetadata(user, context, callback) {
+        const namespace = 'https://nexpo.com/';
+        context.idToken[namespace + 'user_metadata'] = user.user_metadata;
+        context.idToken[namespace + 'app_metadata'] = user.app_metadata;
+        context.accessToken[namespace + 'user_metadata'] = user.user_metadata;
+        context.accessToken[namespace + 'app_metadata'] = user.app_metadata;
+        callback(null, user, context);
+      }
+    enabled: true
+    order: 1
+
+  - name: "Force email verification"
+    script: |
+      function forceEmailVerification(user, context, callback) {
+        if (!user.email_verified) {
+          return callback(new UnauthorizedError('Please verify your email before logging in.'));
+        } else {
+          return callback(null, user, context);
+        }
+      }
+    enabled: true
+    order: 2
+
+hooks:
+  - name: "Add custom claims"
+    script: |
+      module.exports = function(user, context, cb) {
+        const namespace = 'https://nexpo.com/';
+        const assignedRoles = (context.authorization || {}).roles;
+        
+        let idTokenClaims = context.idToken || {};
+        let accessTokenClaims = context.accessToken || {};
+        
+        idTokenClaims[namespace + 'roles'] = assignedRoles;
+        accessTokenClaims[namespace + 'roles'] = assignedRoles;
+        
+        context.idToken = idTokenClaims;
+        context.accessToken = accessTokenClaims;
+        
+        cb(null, { user, context });
+      };
+    triggerId: "credentials-exchange"
+    enabled: true
+
+pages:
+  - name: "login"
+    html: |
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Sign In | Nexpo</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </head>
+      <body>
+        <div id="lock-container"></div>
+        <script src="https://cdn.auth0.com/js/lock/12.x/lock.min.js"></script>
+        <script>
+          var lock = new Auth0Lock(config.clientID, config.auth0Domain, {
+            auth: {
+              redirectUrl: config.callbackURL,
+              responseType: 'code',
+              params: config.internalOptions
+            },
+            theme: {
+              logo: 'https://nexpo.com/logo.png',
+              primaryColor: '#0066cc'
+            },
+            languageDictionary: {
+              title: 'Nexpo'
+            }
+          });
+          lock.show();
+        </script>
+      </body>
+      </html>
+    enabled: true

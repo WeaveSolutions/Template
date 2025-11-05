@@ -1,10 +1,10 @@
-# Packaging Strategy: pnpm over npm in Nexpo
+# Packaging Strategy: pnpm over pnpm in Nexpo
 
 ## Why pnpm is Critical for Nexpo
 
 ### 🎯 **Core Benefits**
 1. **Disk Space Efficiency**: ~70% reduction through hard linking and deduplication
-2. **Install Speed**: 2-3x faster than npm with parallel dependency resolution  
+2. **Install Speed**: 2-3x faster than pnpm with parallel dependency resolution  
 3. **Workspace Management**: Superior monorepo support with proper hoisting
 4. **Security**: Stricter dependency resolution prevents phantom dependencies
 5. **React Native Compatibility**: Flat node_modules structure via `shamefully-hoist=true`
@@ -52,6 +52,7 @@
 | `@shared/db` | `packages/shared-db/` | Database models, Prisma |
 | `next-app` | `apps/next/` | Next.js app with Expo adapter |
 | `expo-app` | `apps/expo/` | Native Expo application |
+| `tauri-app` | `apps/tauri/` | Tauri desktop application |
 | `server` | `server/` | Backend API server |
 
 ---

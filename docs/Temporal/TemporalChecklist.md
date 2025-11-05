@@ -2,6 +2,8 @@
 
 This document provides a comprehensive checklist for integrating Temporal.io into the Nexpo multi-cloud template.
 
+[] - Go Temporal Workers for CRA
+
 ## Overview
 
 Temporal.io provides durable execution for complex workflows across our multi-database, multi-cloud architecture. This integration enhances reliability, fault tolerance, and enables sophisticated AI-powered workflows.

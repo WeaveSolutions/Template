@@ -755,10 +755,10 @@ FROM node:18-alpine
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci --only=production
+RUN pnpm ci --only=production
 
 COPY . .
-RUN npm run build
+RUN pnpm run build
 
 EXPOSE 3006
 CMD ["node", "dist/index.js"]

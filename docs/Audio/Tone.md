@@ -6,7 +6,7 @@
 3. [UX Sound Design Principles](#ux-sound-design-principles)
 4. [Expo Mobile Integration](#expo-mobile-integration)
 5. [Next.js Web Implementation](#nextjs-web-implementation)
-6. [Electron Desktop Integration](#electron-desktop-integration)
+6. [Tauri Desktop Integration](#tauri-desktop-integration)
 7. [Audio Asset Management](#audio-asset-management)
 8. [Performance Optimization](#performance-optimization)
 9. [Accessibility & User Preferences](#accessibility--user-preferences)
@@ -99,10 +99,10 @@ Service workers cache audio assets for offline functionality and improved perfor
 
 ---
 
-## Electron Desktop Integration
+## Tauri Desktop Integration
 
 ### Native Audio Processing
-Electron's native capabilities enable advanced audio processing features unavailable in web environments. Desktop implementations leverage system audio APIs for enhanced performance and lower latency.
+Tauri's native capabilities enable advanced audio processing features unavailable in web environments. Desktop implementations leverage system audio APIs for enhanced performance and lower latency.
 
 ### System Integration
 Desktop audio integrates with system volume controls, audio routing, and notification sounds. Users can control application audio through standard system interfaces while maintaining application-specific preferences.

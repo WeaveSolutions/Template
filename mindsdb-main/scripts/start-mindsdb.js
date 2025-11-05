@@ -126,8 +126,8 @@ class MindsDBStarter {
     console.log(`🐬 MySQL API:   localhost:${mysqlPort}`);
     console.log(`🍃 MongoDB API: localhost:${mongoPort}`);
     console.log('='.repeat(60));
-    console.log('\n💡 To stop MindsDB: npm run stop:mindsdb');
-    console.log('💡 To view logs: npm run logs:mindsdb\n');
+    console.log('\n💡 To stop MindsDB: pnpm run stop:mindsdb');
+    console.log('💡 To view logs: pnpm run logs:mindsdb\n');
   }
 
   async stop() {

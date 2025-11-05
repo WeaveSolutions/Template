@@ -323,7 +323,7 @@ async function main() {
   
   if (!provider) {
     console.error('❌ Please specify a provider');
-    console.log('Usage: npm run seed:provider <provider>');
+    console.log('Usage: pnpm run seed:provider <provider>');
     console.log('Available providers: postgres, mongodb, supabase, cosmosdb, sqlserver, ibmcloud');
     process.exit(1);
   }
@@ -343,7 +343,7 @@ async function main() {
 main().catch(console.error);
 ```
 
-## NPM Scripts
+## pnpm Scripts
 
 ### Package.json Integration
 
@@ -362,12 +362,12 @@ main().catch(console.error);
     "test:db:cosmosdb": "ts-node packages/shared-db/scripts/test-cosmosdb.ts",
     "test:db:sqlserver": "ts-node packages/shared-db/scripts/test-sqlserver.ts",
     "test:db:ibmcloud": "ts-node packages/shared-db/scripts/test-ibmcloud-provider.ts",
-    "seed:postgres": "npm run seed:provider postgres",
-    "seed:mongodb": "npm run seed:provider mongodb",
-    "seed:supabase": "npm run seed:provider supabase",
-    "seed:cosmosdb": "npm run seed:provider cosmosdb",
-    "seed:sqlserver": "npm run seed:provider sqlserver",
-    "seed:ibmcloud": "npm run seed:provider ibmcloud",
+    "seed:postgres": "pnpm run seed:provider postgres",
+    "seed:mongodb": "pnpm run seed:provider mongodb",
+    "seed:supabase": "pnpm run seed:provider supabase",
+    "seed:cosmosdb": "pnpm run seed:provider cosmosdb",
+    "seed:sqlserver": "pnpm run seed:provider sqlserver",
+    "seed:ibmcloud": "pnpm run seed:provider ibmcloud",
     "test:postgres": "ts-node packages/shared-db/scripts/test-postgres.ts",
     "test:mongodb": "ts-node packages/shared-db/scripts/test-mongodb.ts",
     "test:supabase": "ts-node packages/shared-db/scripts/test-supabase.ts",
@@ -817,16 +817,16 @@ async function main() {
 
 ```bash
 # Run all enabled provider tests
-npm run test:db:all
+pnpm run test:db:all
 ts-node packages/shared-db/scripts/test-all-providers.ts
 
 # Test individual providers
-npm run test:db:postgres
-npm run test:db:mongodb
-npm run test:db:supabase
-npm run test:db:cosmosdb
-npm run test:db:sqlserver
-npm run test:db:ibmcloud
+pnpm run test:db:postgres
+pnpm run test:db:mongodb
+pnpm run test:db:supabase
+pnpm run test:db:cosmosdb
+pnpm run test:db:sqlserver
+pnpm run test:db:ibmcloud
 
 # With options
 ts-node packages/shared-db/scripts/test-all-providers.ts --dry-run
@@ -979,8 +979,8 @@ beforeEach(async () => {
 Enable verbose logging:
 
 ```bash
-DEBUG=prisma:* npm run seed:all
-DATABASE_LOG_LEVEL=debug npm run seed:provider postgres
+DEBUG=prisma:* pnpm run seed:all
+DATABASE_LOG_LEVEL=debug pnpm run seed:provider postgres
 ```
 
 This comprehensive mock data system ensures consistent, reliable testing across all supported database providers while respecting feature flag configurations.

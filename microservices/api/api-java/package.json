@@ -1,0 +1,27 @@
+{
+  "name": "nexpo-api-java",
+  "version": "1.0.0",
+  "description": "Nexpo API backend built with Java Play Framework",
+  "scripts": {
+    "start": "sbt run",
+    "test": "sbt test",
+    "build": "sbt dist",
+    "docker:build": "docker build -t nexpo-api-java .",
+    "docker:run": "docker run -p 7050:7050 --env-file .env nexpo-api-java",
+    "docker:compose": "docker-compose up -d",
+    "clean": "sbt clean"
+  },
+  "keywords": [
+    "nexpo",
+    "api",
+    "java",
+    "play-framework",
+    "auth0",
+    "mindsdb"
+  ],
+  "author": "Nexpo Team",
+  "license": "MIT",
+  "engines": {
+    "java": ">=17"
+  }
+}

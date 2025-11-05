@@ -1,30 +1,21 @@
-# Multi-Cloud Provider Selection
-# Enable the cloud providers you want to deploy to
-enable_aws        = false
-enable_gcp        = false
-enable_azure      = false
-enable_oci        = false
-enable_cloudflare = false
-enable_ibm        = false
+# Terraform Variables
+# Configure your deployment settings
 
-# Common Configuration
-project_name = "Nexpo"
-environment  = "dev"  # Options: dev, staging, prod
+# AWS Configuration
+aws_region = "us-west-2"
+environment = "staging"
+project_name = "nexpo"
 
-# Note: Provider-specific configurations should be set in:
-# - aws.tfvars (for AWS configuration)
-# - gcp.tfvars (for GCP configuration)  
-# - azure.tfvars (for Azure configuration)
-# - oci.tfvars (for OCI configuration)
-# - cloudflare.tfvars (for Cloudflare configuration)
-# - ibm.tfvars (for IBM Cloud configuration)
+# Backend Feature Flags - Enable/Disable specific backends
+enable_typescript_api = false  # TypeScript Express API (Port 8020)
+enable_python_api = false  # Python FastAPI (Port 8030)
+enable_go_api = false  # Go Beego API (Port 8040)
+enable_rust_api = false  # Rust Actix API (Port 8050)
+enable_scala_api = false  # Scala Play API (Port 8060)
+enable_java_api = false  # Java Play API (Port 8070)
+enable_r_api = false  # R Plumber API (Port 8080)
+enable_julia_api = false  # Julia Genie API (Port 8090)
 
-# Cloudflare Configuration (only needed if enable_cloudflare = true)
-# cloudflare_api_token   = "your-cloudflare-api-token"
-# cloudflare_email       = "your-email@example.com"
-# cloudflare_account_id  = "your-cloudflare-account-id"
-
-# IBM Cloud Configuration (only needed if enable_ibm = true)
-# ibmcloud_api_key      = "your-ibm-cloud-api-key"
-# ibm_region            = "us-south"  # Options: us-south, us-east, eu-de, eu-gb, jp-tok, etc.
-# ibm_zone              = "us-south-1"  # Zone within the selected region
+# Example: Enable only TypeScript and Python backends
+# enable_typescript_api = true
+# enable_python_api = true

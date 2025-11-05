@@ -542,22 +542,22 @@ export GEMINI_API_KEY="your-gemini-key"
 export VECTOR_STORE_URL="http://localhost:8080"
 
 # Run AI advisor service
-npm run dev
+pnpm run dev
 ```
 
 ### Testing
 ```bash
 # Unit tests
-npm run test
+pnpm run test
 
 # AI model integration tests
-npm run test:ai-models
+pnpm run test:ai-models
 
 # Performance tests
-npm run test:performance
+pnpm run test:performance
 
 # Cost simulation tests
-npm run test:cost-simulation
+pnpm run test:cost-simulation
 ```
 
 ## 🆘 Troubleshooting

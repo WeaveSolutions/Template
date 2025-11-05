@@ -1,0 +1,28 @@
+{
+  "name": "nexpo-api-julia",
+  "version": "1.0.0",
+  "description": "Nexpo Julia API backend with Genie.jl",
+  "scripts": {
+    "start": "julia app.jl",
+    "dev": "julia app.jl",
+    "docker:build": "docker build -t nexpo-api-julia .",
+    "docker:run": "docker run -p 7070:7070 --env-file .env nexpo-api-julia",
+    "docker:compose": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "test": "julia -e 'using Pkg; Pkg.test()'",
+    "install": "julia -e 'using Pkg; Pkg.activate(\".\"); Pkg.instantiate()'"
+  },
+  "keywords": [
+    "nexpo",
+    "api",
+    "julia",
+    "genie",
+    "auth0",
+    "mindsdb"
+  ],
+  "author": "Nexpo Team",
+  "license": "MIT",
+  "engines": {
+    "julia": ">=1.9.0"
+  }
+}

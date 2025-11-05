@@ -1,0 +1,281 @@
+tenant:
+  friendly_name: "Nexpo Production"
+  picture_url: "https://nexpo.com/logo.png"
+  support_email: "support@nexpo.com"
+  support_url: "https://nexpo.com/support"
+  allowed_logout_urls:
+    - "https://nexpo.com"
+    - "https://app.nexpo.com"
+  default_audience: "https://api.nexpo.com"
+  default_directory: "Username-Password-Authentication"
+
+clients:
+  - name: "Nexpo Web App (Production)"
+    description: "Main web application for Nexpo platform"
+    app_type: "spa"
+    logo_uri: "https://nexpo.com/logo.png"
+    callbacks:
+      - "https://nexpo.com/callback"
+      - "https://app.nexpo.com/callback"
+    allowed_logout_urls:
+      - "https://nexpo.com"
+      - "https://app.nexpo.com"
+    allowed_origins:
+      - "https://nexpo.com"
+      - "https://app.nexpo.com"
+    web_origins:
+      - "https://nexpo.com"
+      - "https://app.nexpo.com"
+    grant_types:
+      - "authorization_code"
+      - "implicit"
+      - "refresh_token"
+    jwt_configuration:
+      alg: "RS256"
+      lifetime_in_seconds: 36000
+    
+  - name: "Nexpo API (Production)"
+    description: "Backend API for Nexpo platform"
+    app_type: "non_interactive"
+    grant_types:
+      - "client_credentials"
+    jwt_configuration:
+      alg: "RS256"
+      lifetime_in_seconds: 36000
+
+  - name: "Nexpo Mobile App"
+    description: "Mobile application for Nexpo platform"
+    app_type: "native"
+    logo_uri: "https://nexpo.com/logo.png"
+    callbacks:
+      - "com.nexpo.app://callback"
+    allowed_logout_urls:
+      - "com.nexpo.app://logout"
+    grant_types:
+      - "authorization_code"
+      - "refresh_token"
+    jwt_configuration:
+      alg: "RS256"
+      lifetime_in_seconds: 36000
+
+resource_servers:
+  - name: "Nexpo API"
+    identifier: "https://api.nexpo.com"
+    allow_offline_access: false
+    skip_consent_for_verifiable_first_party_clients: true
+    token_lifetime: 86400
+    token_lifetime_for_web: 7200
+    signing_alg: "RS256"
+    scopes:
+      - value: "read:profile"
+        description: "Read user profile information"
+      - value: "write:profile"
+        description: "Update user profile information"
+      - value: "read:data"
+        description: "Read application data"
+      - value: "write:data"
+        description: "Write application data"
+      - value: "admin:users"
+        description: "Manage users (admin only)"
+      - value: "admin:system"
+        description: "System administration (super admin only)"
+
+connections:
+  - name: "Username-Password-Authentication"
+    strategy: "auth0"
+    enabled_clients:
+      - "Nexpo Web App (Production)"
+      - "Nexpo Mobile App"
+    options:
+      password_policy: "excellent"
+      password_complexity_options:
+        min_length: 12
+      password_no_personal_info:
+        enable: true
+      password_dictionary:
+        enable: true
+        dictionary:
+          - "password"
+          - "nexpo"
+          - "admin"
+          - "123456"
+          - "qwerty"
+      brute_force_protection: true
+      import_mode: false
+      disable_signup: false
+      requires_username: false
+      mfa:
+        active: true
+        return_enroll_settings: true
+
+  - name: "google-oauth2"
+    strategy: "google-oauth2"
+    enabled_clients:
+      - "Nexpo Web App (Production)"
+      - "Nexpo Mobile App"
+    options:
+      email: true
+      scope:
+        - "email"
+        - "profile"
+      profile: true
+
+  - name: "github"
+    strategy: "github"
+    enabled_clients:
+      - "Nexpo Web App (Production)"
+    options:
+      email: true
+      scope:
+        - "user:email"
+      profile: true
+
+rules:
+  - name: "Add user metadata to tokens"
+    script: |
+      function addUserMetadata(user, context, callback) {
+        const namespace = 'https://nexpo.com/';
+        context.idToken[namespace + 'user_metadata'] = user.user_metadata;
+        context.idToken[namespace + 'app_metadata'] = user.app_metadata;
+        context.accessToken[namespace + 'user_metadata'] = user.user_metadata;
+        context.accessToken[namespace + 'app_metadata'] = user.app_metadata;
+        callback(null, user, context);
+      }
+    enabled: true
+    order: 1
+
+  - name: "Force email verification"
+    script: |
+      function forceEmailVerification(user, context, callback) {
+        if (!user.email_verified) {
+          return callback(new UnauthorizedError('Please verify your email before logging in.'));
+        } else {
+          return callback(null, user, context);
+        }
+      }
+    enabled: true
+    order: 2
+
+  - name: "Rate limiting"
+    script: |
+      function rateLimit(user, context, callback) {
+        const rateLimitStore = global.rateLimitStore = global.rateLimitStore || {};
+        const key = user.user_id + ':' + context.clientID;
+        const now = Date.now();
+        const windowSize = 60 * 1000; // 1 minute
+        const maxRequests = 10;
+        
+        if (!rateLimitStore[key]) {
+          rateLimitStore[key] = { requests: [], blocked_until: 0 };
+        }
+        
+        const userStore = rateLimitStore[key];
+        
+        if (now < userStore.blocked_until) {
+          return callback(new UnauthorizedError('Rate limit exceeded. Try again later.'));
+        }
+        
+        userStore.requests = userStore.requests.filter(timestamp => now - timestamp < windowSize);
+        
+        if (userStore.requests.length >= maxRequests) {
+          userStore.blocked_until = now + windowSize;
+          return callback(new UnauthorizedError('Rate limit exceeded. Try again later.'));
+        }
+        
+        userStore.requests.push(now);
+        callback(null, user, context);
+      }
+    enabled: true
+    order: 3
+
+hooks:
+  - name: "Add custom claims"
+    script: |
+      module.exports = function(user, context, cb) {
+        const namespace = 'https://nexpo.com/';
+        const assignedRoles = (context.authorization || {}).roles;
+        
+        let idTokenClaims = context.idToken || {};
+        let accessTokenClaims = context.accessToken || {};
+        
+        idTokenClaims[namespace + 'roles'] = assignedRoles;
+        accessTokenClaims[namespace + 'roles'] = assignedRoles;
+        
+        context.idToken = idTokenClaims;
+        context.accessToken = accessTokenClaims;
+        
+        cb(null, { user, context });
+      };
+    triggerId: "credentials-exchange"
+    enabled: true
+
+pages:
+  - name: "login"
+    html: |
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Sign In | Nexpo</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/png" href="https://nexpo.com/favicon.png">
+      </head>
+      <body>
+        <div id="lock-container"></div>
+        <script src="https://cdn.auth0.com/js/lock/12.x/lock.min.js"></script>
+        <script>
+          var lock = new Auth0Lock(config.clientID, config.auth0Domain, {
+            auth: {
+              redirectUrl: config.callbackURL,
+              responseType: 'code',
+              params: config.internalOptions
+            },
+            theme: {
+              logo: 'https://nexpo.com/logo.png',
+              primaryColor: '#0066cc'
+            },
+            languageDictionary: {
+              title: 'Nexpo'
+            },
+            socialButtonStyle: 'big',
+            allowedConnections: ['Username-Password-Authentication', 'google-oauth2', 'github']
+          });
+          lock.show();
+        </script>
+      </body>
+      </html>
+    enabled: true
+
+  - name: "password_reset"
+    html: |
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Change Password | Nexpo</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/png" href="https://nexpo.com/favicon.png">
+      </head>
+      <body>
+        <div id="lock-password-reset-container"></div>
+        <script src="https://cdn.auth0.com/js/lock-passwordless/12.x/lock-passwordless.min.js"></script>
+        <script>
+          var lock = new Auth0LockPasswordless(config.clientID, config.auth0Domain, {
+            allowedConnections: config.connection,
+            passwordlessMethod: 'code',
+            passwordPolicy: 'excellent',
+            theme: {
+              logo: 'https://nexpo.com/logo.png',
+              primaryColor: '#0066cc'
+            },
+            languageDictionary: {
+              title: 'Nexpo - Reset Password'
+            }
+          });
+          lock.show();
+        </script>
+      </body>
+      </html>
+    enabled: true

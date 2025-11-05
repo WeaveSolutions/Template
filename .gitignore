@@ -24,7 +24,7 @@ build
 *.pem
 
 # debug
-npm-debug.log*
+pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
@@ -47,3 +47,11 @@ yarn-error.log*
 .vscode
 *.swp
 *.swo
+
+# Lock file backups
+pnpm-lock.yaml.*
+*.lock.*
+
+# Temporary files
+_tmp_*
+*.tmp

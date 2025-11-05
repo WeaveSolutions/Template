@@ -1,0 +1,200 @@
+# Works on all cloud providers except Digital Ocean and CloudFlare.
+
+name: Scala Play API CI/CD
+on:
+  push:
+    branches:
+    - main
+    - develop
+    paths:
+    - microservices/api-scala/**
+  pull_request:
+    branches:
+    - main
+    - develop
+    paths:
+    - microservices/api-scala/**
+env:
+  BACKEND_NAME: SCALA
+  BACKEND_PORT: 8060
+  DOCKER_IMAGE: nexpo/api-scala
+  REGISTRY: docker.io
+jobs:
+  test:
+    name: Test and Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: microservices/api-scala
+    steps:
+    - name: Checkout code
+          uses: actions/checkout@v4
+    - name: Setup JDK
+          uses: actions/setup-java@v4
+          with:
+            java-version: 17
+            distribution: temurin
+    - name: Cache SBT
+          uses: actions/cache@v4
+          with:
+            path: |
+              ~/.sbt
+              ~/.ivy2/cache
+            key: ${{ runner.os }}-sbt-${{ hashFiles('microservices/api-scala/build.sbt') }}
+    - name: Run tests
+          run: sbt test
+    - name: Build application
+          run: sbt compile
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: test
+    defaults:
+      run:
+        working-directory: microservices/api-scala
+    steps:
+    - name: Checkout code
+          uses: actions/checkout@v4
+    - name: Setup JDK
+          uses: actions/setup-java@v4
+          with:
+            java-version: 17
+            distribution: temurin
+    - name: Run security scan
+          run: echo "Security scan for scala"
+  docker:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    needs:
+    - test
+    - security
+    if: github.ref == 'refs/heads/main'
+    defaults:
+      run:
+        working-directory: microservices/api-scala
+    steps:
+    - name: Checkout code
+          uses: actions/checkout@v4
+    - name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@v3
+    - name: Login to Docker Hub
+          uses: docker/login-action@v3
+          with:
+            username: ${{ secrets.DOCKER_USERNAME }}
+            password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Extract metadata
+          id: meta
+          uses: docker/metadata-action@v5
+          with:
+            images: ${{ env.REGISTRY }}/${{ env.DOCKER_IMAGE }}
+            tags: |
+                              type=ref,event=branch
+                              type=ref,event=pr
+                              type=sha,prefix=main-{{branch}}-
+                              type=raw,value=latest,enable={{is_default_branch}}
+    - name: Build and push Docker image
+          uses: docker/build-push-action@v5
+          with:
+            context: microservices/api-scala
+            push: true
+            tags: ${{ steps.meta.outputs.tags }}
+            labels: ${{ steps.meta.outputs.labels }}
+            platforms: linux/amd64,linux/arm64
+            cache-from: type=gha
+            cache-to: type=gha,mode=max
+  deploy_staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: docker
+    if: github.ref == 'refs/heads/develop'
+    environment: staging
+    steps:
+    - name: Checkout code
+          uses: actions/checkout@v4
+    - name: Setup Node.js for tooling
+          uses: actions/setup-node@v4
+          with:
+            node-version: 20
+    - name: Install Auth0 Deploy CLI
+          run: pnpm install -g auth0-deploy-cli
+    - name: Install Kong decK
+          run: |
+            curl -sL https://github.com/Kong/deck/releases/latest/download/deck_linux_amd64.tar.gz -o deck.tar.gz
+            tar -xf deck.tar.gz -C /tmp
+            sudo cp /tmp/deck /usr/local/bin/
+    - name: Deploy Auth0 Configuration
+          run: |
+            echo "Deploying Auth0 configuration for Scala Play API..."
+            a0deploy import --input_file=.auth0/tenant.yaml --config_file=.auth0/config.json
+          env:
+            AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+            AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+            AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
+    - name: Deploy Kong API Gateway Config
+          run: |
+            echo "Configuring Kong Gateway for Scala Play API..."
+            deck gateway sync kong-staging.yaml --kong-addr=${{ secrets.KONG_STAGING_URL }}
+          env:
+            KONG_ADMIN_TOKEN: ${{ secrets.KONG_ADMIN_TOKEN_STAGING }}
+    - name: Deploy to ECS Staging
+          run: |
+            echo "Deploying Scala Play API to staging ECS..."
+            aws ecs update-service --cluster nexpo-staging --service scala-api-staging --force-new-deployment
+          env:
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            AWS_REGION: ${{ secrets.AWS_REGION }}
+    - name: Verify deployment
+          run: |
+            echo "Verifying Scala Play API staging deployment..."
+            curl -f https://staging-api.nexpo.com/scala/health || exit 1
+  deploy_production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: docker
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    steps:
+    - name: Checkout code
+          uses: actions/checkout@v4
+    - name: Setup Node.js for tooling
+          uses: actions/setup-node@v4
+          with:
+            node-version: 20
+    - name: Install Auth0 Deploy CLI
+          run: pnpm install -g auth0-deploy-cli
+    - name: Install Kong decK
+          run: |
+            curl -sL https://github.com/Kong/deck/releases/latest/download/deck_linux_amd64.tar.gz -o deck.tar.gz
+            tar -xf deck.tar.gz -C /tmp
+            sudo cp /tmp/deck /usr/local/bin/
+    - name: Deploy Auth0 Production Configuration
+          run: |
+            echo "Deploying Auth0 production configuration for Scala Play API..."
+            a0deploy import --input_file=.auth0/tenant-prod.yaml --config_file=.auth0/config-prod.json
+          env:
+            AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN_PROD }}
+            AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID_PROD }}
+            AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET_PROD }}
+    - name: Deploy Kong Production Gateway Config
+          run: |
+            echo "Configuring Kong production gateway for Scala Play API..."
+            deck gateway sync kong-production.yaml --kong-addr=${{ secrets.KONG_PRODUCTION_URL }}
+          env:
+            KONG_ADMIN_TOKEN: ${{ secrets.KONG_ADMIN_TOKEN_PROD }}
+    - name: Deploy to ECS Production
+          run: |
+            echo "Deploying Scala Play API to production ECS..."
+            aws ecs update-service --cluster nexpo-production --service scala-api-production --force-new-deployment
+          env:
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            AWS_REGION: ${{ secrets.AWS_REGION }}
+    - name: Verify production deployment
+          run: |
+            echo "Verifying Scala Play API production deployment..."
+            curl -f https://api.nexpo.com/scala/health || exit 1
+    - name: Notify deployment success
+          run: |
+            echo "✅ Scala Play API successfully deployed to production!"
+            # Add Slack/Discord notification here if needed

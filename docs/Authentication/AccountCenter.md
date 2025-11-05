@@ -24,6 +24,7 @@
   - [Slack](#slack)
   - [Reddit](#reddit)
   - [CodeRabbit](#coderabbit)
+  - [Taxagi](#taxagi)
 - [Technical Implementation](#technical-implementation)
   - [Conditional Formatting](#conditional-formatting)
   - [Schema to Properties Visualization](#schema-to-properties-visualization)
@@ -283,6 +284,23 @@ profile:read         # Basic profile information
 repositories:read    # Repository access
 reviews:read         # Code review data
 ```
+
+### TaxAGI
+
+**Auth0 Setup**:
+```
+Name: taxagi
+Client ID: [From TaxAGI Dashboard]
+Client Secret: [From TaxAGI Dashboard]
+```
+
+**Required Scopes**:
+```
+profile:read         # Basic profile information
+repositories:read    # Repository access
+reviews:read         # Code review data
+```
+
 
 ## Technical Implementation
 

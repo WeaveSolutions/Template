@@ -601,22 +601,22 @@ export POLAR_ACCESS_TOKEN="polar_..."
 export PAYPAL_CLIENT_ID="your-paypal-client-id"
 
 # Run payments service
-npm run dev
+pnpm run dev
 ```
 
 ### Testing
 ```bash
 # Unit tests
-npm run test
+pnpm run test
 
 # Integration tests with payment providers
-npm run test:integration
+pnpm run test:integration
 
 # End-to-end payment flow tests
-npm run test:e2e
+pnpm run test:e2e
 
 # Load testing
-npm run test:load
+pnpm run test:load
 ```
 
 ## 🆘 Troubleshooting

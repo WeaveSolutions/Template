@@ -2,6 +2,8 @@
 
 This guide provides instructions for setting up push notifications for the mobile app using Expo's push notification system and Supabase Edge Functions for sending notifications.
 
+[] - Rust Based Tauri Mobile Notification Service Svelte
+
 ## Overview
 
 Push notifications allow you to engage users by sending messages directly to their devices. Expo provides a robust push notification service that works for both iOS and Android. We'll integrate this with Supabase Edge Functions to send notifications from your backend.

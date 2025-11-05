@@ -1,3 +1,14 @@
 packages:
+  # Apps
   - 'apps/*'
+  - 'apps/nexpo/*'
+  - 'apps/taurte/*'
+  
+  # Packages (including nested shared packages)
   - 'packages/*'
+  - 'packages/shared-nexpo/*'
+  - 'packages/shared-taurte/*'
+  
+  # Microservices (including nested API services)
+  - 'microservices/*'
+  - 'microservices/api/*'

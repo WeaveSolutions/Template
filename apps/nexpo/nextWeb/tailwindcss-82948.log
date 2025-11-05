@@ -1,0 +1,187 @@
+2025-10-31T20:36:29.366273Z  INFO tailwindcss_oxide::scanner: Provided sources:
+2025-10-31T20:36:29.366398Z  INFO tailwindcss_oxide::scanner: Source: PublicSourceEntry { base: "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb", pattern: "**/*", negated: false }
+2025-10-31T20:36:29.366679Z  INFO tailwindcss_oxide::scanner: Optimized sources:
+2025-10-31T20:36:29.366705Z  INFO tailwindcss_oxide::scanner: Source: Auto { base: "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb" }
+2025-10-31T20:36:29.369704Z  INFO scan_sources: tailwindcss_oxide::scanner: enter
+2025-10-31T20:36:29.371420Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\components"
+2025-10-31T20:36:29.593527Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\components\\WebExclusiveScreen.tsx"
+2025-10-31T20:36:29.593655Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\components\\WebHeader.tsx"
+2025-10-31T20:36:29.593760Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\middleware.ts"
+2025-10-31T20:36:29.593848Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\next-env.d.ts"
+2025-10-31T20:36:29.593977Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\next-sitemap.config.js"
+2025-10-31T20:36:29.594074Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\next.config.js"
+2025-10-31T20:36:29.594435Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\package.json"
+2025-10-31T20:36:29.594615Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages"
+2025-10-31T20:36:29.594901Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\api"
+2025-10-31T20:36:29.595140Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\api\\auth"
+2025-10-31T20:36:29.595339Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\api\\auth\\token.ts"
+2025-10-31T20:36:29.595448Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\api\\auth\\[...auth0].ts"
+2025-10-31T20:36:29.595616Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\dashboard.tsx"
+2025-10-31T20:36:29.595708Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\forgot-password.tsx"
+2025-10-31T20:36:29.595795Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\index.tsx"
+2025-10-31T20:36:29.595874Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\login.tsx"
+2025-10-31T20:36:29.595970Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\profile.tsx"
+2025-10-31T20:36:29.596072Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\signin.tsx"
+2025-10-31T20:36:29.596223Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\web-exclusive"
+2025-10-31T20:36:29.596443Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\web-exclusive\\index.tsx"
+2025-10-31T20:36:29.596591Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\_app.tsx"
+2025-10-31T20:36:29.596776Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\postcss.config.js"
+2025-10-31T20:36:29.596941Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\public"
+2025-10-31T20:36:29.597114Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\public\\robots.txt"
+2025-10-31T20:36:29.597311Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\SEO"
+2025-10-31T20:36:29.597533Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\SEO\\default-seo.config.ts"
+2025-10-31T20:36:29.597718Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src"
+2025-10-31T20:36:29.597934Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\components"
+2025-10-31T20:36:29.598162Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\components\\desktop"
+2025-10-31T20:36:29.598332Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\components\\desktop\\DesktopFeaturePanel.module.css"
+2025-10-31T20:36:29.598417Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\components\\desktop\\DesktopFeaturePanel.tsx"
+2025-10-31T20:36:29.598520Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\components\\desktop\\DesktopLayout.module.css"
+2025-10-31T20:36:29.598620Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\components\\desktop\\DesktopLayout.tsx"
+2025-10-31T20:36:29.598706Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\components\\desktop\\index.ts"
+2025-10-31T20:36:29.598887Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\hooks"
+2025-10-31T20:36:29.599048Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\hooks\\useDesktopFeatures.ts"
+2025-10-31T20:36:29.599167Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\pages"
+2025-10-31T20:36:29.599295Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\pages\\desktop.tsx"
+2025-10-31T20:36:29.599385Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\supabaseClient.ts"
+2025-10-31T20:36:29.599509Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\TauriDesktopApp.md"
+2025-10-31T20:36:29.599657Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\styles"
+2025-10-31T20:36:29.599813Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\styles\\globals.css"
+2025-10-31T20:36:29.599910Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\tailwind.config.js"
+2025-10-31T20:36:29.600042Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\tsconfig.json"
+2025-10-31T20:36:29.600190Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\types"
+2025-10-31T20:36:29.600494Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\types\\jsx.d.ts"
+2025-10-31T20:36:29.600584Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\types\\react-native.d.ts"
+2025-10-31T20:36:29.600676Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\types.d.ts"
+2025-10-31T20:36:29.600824Z  INFO scan_sources: tailwindcss_oxide::scanner: exit
+2025-10-31T20:36:29.600845Z  INFO extract_candidates: tailwindcss_oxide::scanner: enter
+2025-10-31T20:36:29.600865Z  INFO extract_candidates:read_all_files: tailwindcss_oxide::scanner: enter
+2025-10-31T20:36:29.600877Z  INFO extract_candidates:read_all_files: tailwindcss_oxide::scanner: Reading 32 file(s)
+2025-10-31T20:36:29.602206Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\middleware.ts"
+2025-10-31T20:36:29.602230Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\api\\auth\\[...auth0].ts"
+2025-10-31T20:36:29.602265Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\package.json"
+2025-10-31T20:36:29.602291Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\next-sitemap.config.js"
+2025-10-31T20:36:29.602304Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\components\\desktop\\index.ts"
+2025-10-31T20:36:29.602265Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\pages\\desktop.tsx"
+2025-10-31T20:36:29.602358Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\postcss.config.js"
+2025-10-31T20:36:29.602374Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\next-env.d.ts"
+2025-10-31T20:36:29.602408Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\dashboard.tsx"
+2025-10-31T20:36:29.602444Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\next.config.js"
+2025-10-31T20:36:29.602464Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\api\\auth\\token.ts"
+2025-10-31T20:36:29.602309Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\components\\WebHeader.tsx"
+2025-10-31T20:36:29.602515Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\login.tsx"
+2025-10-31T20:36:29.602541Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\forgot-password.tsx"
+2025-10-31T20:36:29.602292Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\components\\desktop\\DesktopFeaturePanel.tsx"
+2025-10-31T20:36:29.602605Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\index.tsx"
+2025-10-31T20:36:29.602215Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\_app.tsx"
+2025-10-31T20:36:29.602688Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\web-exclusive\\index.tsx"
+2025-10-31T20:36:29.602501Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\SEO\\default-seo.config.ts"
+2025-10-31T20:36:29.602501Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\supabaseClient.ts"
+2025-10-31T20:36:29.602766Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\types\\react-native.d.ts"
+2025-10-31T20:36:29.602802Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\TauriDesktopApp.md"
+2025-10-31T20:36:29.602530Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\components\\desktop\\DesktopLayout.tsx"
+2025-10-31T20:36:29.602646Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\profile.tsx"
+2025-10-31T20:36:29.602646Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\tsconfig.json"
+2025-10-31T20:36:29.602464Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\hooks\\useDesktopFeatures.ts"
+2025-10-31T20:36:29.602728Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\types.d.ts"
+2025-10-31T20:36:29.602733Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\signin.tsx"
+2025-10-31T20:36:29.602265Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\components\\WebExclusiveScreen.tsx"
+2025-10-31T20:36:29.602300Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\public\\robots.txt"
+2025-10-31T20:36:29.602831Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\types\\jsx.d.ts"
+2025-10-31T20:36:29.602859Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\tailwind.config.js"
+2025-10-31T20:36:29.603329Z  INFO extract_candidates:read_all_files: tailwindcss_oxide::scanner: exit
+2025-10-31T20:36:29.603394Z  INFO extract_candidates:parse_all_blobs: tailwindcss_oxide::scanner: enter
+2025-10-31T20:36:29.603416Z  INFO extract_candidates:parse_all_blobs:extract: tailwindcss_oxide::scanner: enter
+2025-10-31T20:36:29.605134Z  INFO extract_candidates:parse_all_blobs:extract: tailwindcss_oxide::scanner: exit
+2025-10-31T20:36:29.605183Z  INFO extract_candidates:parse_all_blobs: tailwindcss_oxide::scanner: exit
+2025-10-31T20:36:29.605200Z  INFO extract_candidates:read_all_files: tailwindcss_oxide::scanner: enter
+2025-10-31T20:36:29.605212Z  INFO extract_candidates:read_all_files: tailwindcss_oxide::scanner: Reading 3 file(s)
+2025-10-31T20:36:29.605389Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\styles\\globals.css"
+2025-10-31T20:36:29.605393Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\components\\desktop\\DesktopFeaturePanel.module.css"
+2025-10-31T20:36:29.605396Z  INFO tailwindcss_oxide::scanner: Reading "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\components\\desktop\\DesktopLayout.module.css"
+2025-10-31T20:36:29.605518Z  INFO extract_candidates:read_all_files: tailwindcss_oxide::scanner: exit
+2025-10-31T20:36:29.605555Z  INFO extract_candidates:extract_css_variables: tailwindcss_oxide::scanner: enter
+2025-10-31T20:36:29.605569Z  INFO extract_candidates:extract_css_variables:extract: tailwindcss_oxide::scanner: enter
+2025-10-31T20:36:29.606244Z  INFO extract_candidates:extract_css_variables:extract: tailwindcss_oxide::scanner: exit
+2025-10-31T20:36:29.606278Z  INFO extract_candidates:extract_css_variables: tailwindcss_oxide::scanner: exit
+2025-10-31T20:36:29.607945Z  INFO extract_candidates: tailwindcss_oxide::scanner: exit
+2025-10-31T20:36:29.608505Z  INFO get_files: tailwindcss_oxide::scanner: enter
+2025-10-31T20:36:29.608538Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: enter
+2025-10-31T20:36:29.610622Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\components"
+2025-10-31T20:36:29.611665Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages"
+2025-10-31T20:36:29.611981Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\api"
+2025-10-31T20:36:29.612325Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\api\\auth"
+2025-10-31T20:36:29.613133Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\web-exclusive"
+2025-10-31T20:36:29.613665Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\public"
+2025-10-31T20:36:29.614003Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\SEO"
+2025-10-31T20:36:29.614352Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src"
+2025-10-31T20:36:29.614619Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\components"
+2025-10-31T20:36:29.614889Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\components\\desktop"
+2025-10-31T20:36:29.615754Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\hooks"
+2025-10-31T20:36:29.616008Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\pages"
+2025-10-31T20:36:29.616333Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\styles"
+2025-10-31T20:36:29.616633Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\types"
+2025-10-31T20:36:29.617048Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: exit
+2025-10-31T20:36:29.618013Z  INFO get_files: tailwindcss_oxide::scanner: exit
+2025-10-31T20:36:29.618314Z  INFO get_globs: tailwindcss_oxide::scanner: enter
+2025-10-31T20:36:29.618348Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: enter
+2025-10-31T20:36:29.620790Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\components"
+2025-10-31T20:36:29.621746Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages"
+2025-10-31T20:36:29.622011Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\api"
+2025-10-31T20:36:29.622435Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\api\\auth"
+2025-10-31T20:36:29.623516Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\web-exclusive"
+2025-10-31T20:36:29.623995Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\public"
+2025-10-31T20:36:29.624324Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\SEO"
+2025-10-31T20:36:29.624854Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src"
+2025-10-31T20:36:29.625044Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\components"
+2025-10-31T20:36:29.625206Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\components\\desktop"
+2025-10-31T20:36:29.625634Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\hooks"
+2025-10-31T20:36:29.625948Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\pages"
+2025-10-31T20:36:29.626497Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\styles"
+2025-10-31T20:36:29.626944Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\types"
+2025-10-31T20:36:29.627343Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: exit
+2025-10-31T20:36:29.632790Z  INFO get_globs: tailwindcss_oxide::scanner: exit
+2025-10-31T20:36:38.239122Z  INFO scan_sources: tailwindcss_oxide::scanner: enter
+2025-10-31T20:36:38.240719Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\components"
+2025-10-31T20:36:38.241282Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages"
+2025-10-31T20:36:38.241440Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\api"
+2025-10-31T20:36:38.241584Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\api\\auth"
+2025-10-31T20:36:38.242080Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\web-exclusive"
+2025-10-31T20:36:38.242380Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\public"
+2025-10-31T20:36:38.242586Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\SEO"
+2025-10-31T20:36:38.242794Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src"
+2025-10-31T20:36:38.242939Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\components"
+2025-10-31T20:36:38.243079Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\components\\desktop"
+2025-10-31T20:36:38.243422Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\hooks"
+2025-10-31T20:36:38.243609Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\pages"
+2025-10-31T20:36:38.243885Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\styles"
+2025-10-31T20:36:38.244152Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\types"
+2025-10-31T20:36:38.244419Z  INFO scan_sources: tailwindcss_oxide::scanner: exit
+2025-10-31T20:36:38.244436Z  INFO extract_candidates: tailwindcss_oxide::scanner: enter
+2025-10-31T20:36:38.244445Z  INFO extract_candidates:read_all_files: tailwindcss_oxide::scanner: enter
+2025-10-31T20:36:38.244452Z  INFO extract_candidates:read_all_files: tailwindcss_oxide::scanner: Reading 0 file(s)
+2025-10-31T20:36:38.244460Z  INFO extract_candidates:read_all_files: tailwindcss_oxide::scanner: exit
+2025-10-31T20:36:38.244467Z  INFO extract_candidates:parse_all_blobs: tailwindcss_oxide::scanner: enter
+2025-10-31T20:36:38.244474Z  INFO extract_candidates:parse_all_blobs:extract: tailwindcss_oxide::scanner: enter
+2025-10-31T20:36:38.244482Z  INFO extract_candidates:parse_all_blobs:extract: tailwindcss_oxide::scanner: exit
+2025-10-31T20:36:38.244489Z  INFO extract_candidates:parse_all_blobs: tailwindcss_oxide::scanner: exit
+2025-10-31T20:36:38.244497Z  INFO extract_candidates: tailwindcss_oxide::scanner: exit
+2025-10-31T20:36:38.244873Z  INFO get_files: tailwindcss_oxide::scanner: enter
+2025-10-31T20:36:38.244886Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: enter
+2025-10-31T20:36:38.246261Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\components"
+2025-10-31T20:36:38.246892Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages"
+2025-10-31T20:36:38.247062Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\api"
+2025-10-31T20:36:38.247200Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\api\\auth"
+2025-10-31T20:36:38.247639Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\pages\\web-exclusive"
+2025-10-31T20:36:38.247931Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\public"
+2025-10-31T20:36:38.248132Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\SEO"
+2025-10-31T20:36:38.248316Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src"
+2025-10-31T20:36:38.248459Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\components"
+2025-10-31T20:36:38.248601Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\components\\desktop"
+2025-10-31T20:36:38.248935Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\hooks"
+2025-10-31T20:36:38.249117Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\src\\pages"
+2025-10-31T20:36:38.249377Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\styles"
+2025-10-31T20:36:38.249635Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "E:\\Workspace\\Templates\\Weave\\apps\\nexpo\\nextWeb\\types"
+2025-10-31T20:36:38.249918Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: exit
+2025-10-31T20:36:38.250421Z  INFO get_files: tailwindcss_oxide::scanner: exit
+2025-10-31T20:36:38.250632Z  INFO get_globs: tailwindcss_oxide::scanner: enter
+2025-10-31T20:36:38.250648Z  INFO get_globs: tailwindcss_oxide::scanner: exit

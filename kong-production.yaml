@@ -1,0 +1,569 @@
+_format_version: "3.0"
+_transform: true
+
+services:
+  # TypeScript Express API
+  - name: typescript-api
+    url: http://nexpo-typescript-api-production:8020
+    tags:
+      - nexpo
+      - production
+      - typescript
+    routes:
+      - name: typescript-api-route
+        paths:
+          - /api/v1/typescript
+        strip_path: true
+        preserve_host: false
+    plugins:
+      - name: cors
+        config:
+          origins:
+            - "https://nexpo.com"
+            - "https://app.nexpo.com"
+          methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - OPTIONS
+          headers:
+            - Accept
+            - Accept-Version
+            - Content-Length
+            - Content-MD5
+            - Content-Type
+            - Date
+            - Authorization
+          exposed_headers:
+            - X-Auth-Token
+          credentials: true
+          max_age: 3600
+      - name: jwt
+        config:
+          uri_param_names:
+            - token
+          header_names:
+            - authorization
+          claims_to_verify:
+            - exp
+            - iss
+          key_claim_name: iss
+          secret_is_base64: false
+          run_on_preflight: true
+      - name: rate-limiting
+        config:
+          minute: 200
+          hour: 5000
+          day: 50000
+          policy: redis
+          redis_host: nexpo-redis-cluster
+          redis_port: 6379
+          fault_tolerant: false
+          hide_client_headers: false
+      - name: request-size-limiting
+        config:
+          allowed_payload_size: 10
+
+  # Python FastAPI
+  - name: python-api
+    url: http://nexpo-python-api-production:8030
+    tags:
+      - nexpo
+      - production
+      - python
+    routes:
+      - name: python-api-route
+        paths:
+          - /api/v1/python
+        strip_path: true
+        preserve_host: false
+    plugins:
+      - name: cors
+        config:
+          origins:
+            - "https://nexpo.com"
+            - "https://app.nexpo.com"
+          methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - OPTIONS
+          headers:
+            - Accept
+            - Accept-Version
+            - Content-Length
+            - Content-MD5
+            - Content-Type
+            - Date
+            - Authorization
+          exposed_headers:
+            - X-Auth-Token
+          credentials: true
+          max_age: 3600
+      - name: jwt
+        config:
+          uri_param_names:
+            - token
+          header_names:
+            - authorization
+          claims_to_verify:
+            - exp
+            - iss
+          key_claim_name: iss
+          secret_is_base64: false
+          run_on_preflight: true
+      - name: rate-limiting
+        config:
+          minute: 200
+          hour: 5000
+          day: 50000
+          policy: redis
+          redis_host: nexpo-redis-cluster
+          redis_port: 6379
+          fault_tolerant: false
+          hide_client_headers: false
+      - name: request-size-limiting
+        config:
+          allowed_payload_size: 10
+
+  # Go Beego API
+  - name: go-api
+    url: http://nexpo-go-api-production:8040
+    tags:
+      - nexpo
+      - production
+      - go
+    routes:
+      - name: go-api-route
+        paths:
+          - /api/v1/go
+        strip_path: true
+        preserve_host: false
+    plugins:
+      - name: cors
+        config:
+          origins:
+            - "https://nexpo.com"
+            - "https://app.nexpo.com"
+          methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - OPTIONS
+          headers:
+            - Accept
+            - Accept-Version
+            - Content-Length
+            - Content-MD5
+            - Content-Type
+            - Date
+            - Authorization
+          exposed_headers:
+            - X-Auth-Token
+          credentials: true
+          max_age: 3600
+      - name: jwt
+        config:
+          uri_param_names:
+            - token
+          header_names:
+            - authorization
+          claims_to_verify:
+            - exp
+            - iss
+          key_claim_name: iss
+          secret_is_base64: false
+          run_on_prefright: true
+      - name: rate-limiting
+        config:
+          minute: 200
+          hour: 5000
+          day: 50000
+          policy: redis
+          redis_host: nexpo-redis-cluster
+          redis_port: 6379
+          fault_tolerant: false
+          hide_client_headers: false
+      - name: request-size-limiting
+        config:
+          allowed_payload_size: 10
+
+  # Rust Actix API
+  - name: rust-api
+    url: http://nexpo-rust-api-production:8050
+    tags:
+      - nexpo
+      - production
+      - rust
+    routes:
+      - name: rust-api-route
+        paths:
+          - /api/v1/rust
+        strip_path: true
+        preserve_host: false
+    plugins:
+      - name: cors
+        config:
+          origins:
+            - "https://nexpo.com"
+            - "https://app.nexpo.com"
+          methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - OPTIONS
+          headers:
+            - Accept
+            - Accept-Version
+            - Content-Length
+            - Content-MD5
+            - Content-Type
+            - Date
+            - Authorization
+          exposed_headers:
+            - X-Auth-Token
+          credentials: true
+          max_age: 3600
+      - name: jwt
+        config:
+          uri_param_names:
+            - token
+          header_names:
+            - authorization
+          claims_to_verify:
+            - exp
+            - iss
+          key_claim_name: iss
+          secret_is_base64: false
+          run_on_preflight: true
+      - name: rate-limiting
+        config:
+          minute: 200
+          hour: 5000
+          day: 50000
+          policy: redis
+          redis_host: nexpo-redis-cluster
+          redis_port: 6379
+          fault_tolerant: false
+          hide_client_headers: false
+      - name: request-size-limiting
+        config:
+          allowed_payload_size: 10
+
+  # Scala Play API
+  - name: scala-api
+    url: http://nexpo-scala-api-production:8060
+    tags:
+      - nexpo
+      - production
+      - scala
+    routes:
+      - name: scala-api-route
+        paths:
+          - /api/v1/scala
+        strip_path: true
+        preserve_host: false
+    plugins:
+      - name: cors
+        config:
+          origins:
+            - "https://nexpo.com"
+            - "https://app.nexpo.com"
+          methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - OPTIONS
+          headers:
+            - Accept
+            - Accept-Version
+            - Content-Length
+            - Content-MD5
+            - Content-Type
+            - Date
+            - Authorization
+          exposed_headers:
+            - X-Auth-Token
+          credentials: true
+          max_age: 3600
+      - name: jwt
+        config:
+          uri_param_names:
+            - token
+          header_names:
+            - authorization
+          claims_to_verify:
+            - exp
+            - iss
+          key_claim_name: iss
+          secret_is_base64: false
+          run_on_preflight: true
+      - name: rate-limiting
+        config:
+          minute: 200
+          hour: 5000
+          day: 50000
+          policy: redis
+          redis_host: nexpo-redis-cluster
+          redis_port: 6379
+          fault_tolerant: false
+          hide_client_headers: false
+      - name: request-size-limiting
+        config:
+          allowed_payload_size: 10
+
+  # Java Play API
+  - name: java-api
+    url: http://nexpo-java-api-production:8070
+    tags:
+      - nexpo
+      - production
+      - java
+    routes:
+      - name: java-api-route
+        paths:
+          - /api/v1/java
+        strip_path: true
+        preserve_host: false
+    plugins:
+      - name: cors
+        config:
+          origins:
+            - "https://nexpo.com"
+            - "https://app.nexpo.com"
+          methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - OPTIONS
+          headers:
+            - Accept
+            - Accept-Version
+            - Content-Length
+            - Content-MD5
+            - Content-Type
+            - Date
+            - Authorization
+          exposed_headers:
+            - X-Auth-Token
+          credentials: true
+          max_age: 3600
+      - name: jwt
+        config:
+          uri_param_names:
+            - token
+          header_names:
+            - authorization
+          claims_to_verify:
+            - exp
+            - iss
+          key_claim_name: iss
+          secret_is_base64: false
+          run_on_preflight: true
+      - name: rate-limiting
+        config:
+          minute: 200
+          hour: 5000
+          day: 50000
+          policy: redis
+          redis_host: nexpo-redis-cluster
+          redis_port: 6379
+          fault_tolerant: false
+          hide_client_headers: false
+      - name: request-size-limiting
+        config:
+          allowed_payload_size: 10
+
+  # R Plumber API
+  - name: r-api
+    url: http://nexpo-r-api-production:8080
+    tags:
+      - nexpo
+      - production
+      - r
+    routes:
+      - name: r-api-route
+        paths:
+          - /api/v1/r
+        strip_path: true
+        preserve_host: false
+    plugins:
+      - name: cors
+        config:
+          origins:
+            - "https://nexpo.com"
+            - "https://app.nexpo.com"
+          methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - OPTIONS
+          headers:
+            - Accept
+            - Accept-Version
+            - Content-Length
+            - Content-MD5
+            - Content-Type
+            - Date
+            - Authorization
+          exposed_headers:
+            - X-Auth-Token
+          credentials: true
+          max_age: 3600
+      - name: jwt
+        config:
+          uri_param_names:
+            - token
+          header_names:
+            - authorization
+          claims_to_verify:
+            - exp
+            - iss
+          key_claim_name: iss
+          secret_is_base64: false
+          run_on_preflight: true
+      - name: rate-limiting
+        config:
+          minute: 200
+          hour: 5000
+          day: 50000
+          policy: redis
+          redis_host: nexpo-redis-cluster
+          redis_port: 6379
+          fault_tolerant: false
+          hide_client_headers: false
+      - name: request-size-limiting
+        config:
+          allowed_payload_size: 10
+
+  # Julia Genie API
+  - name: julia-api
+    url: http://nexpo-julia-api-production:8090
+    tags:
+      - nexpo
+      - production
+      - julia
+    routes:
+      - name: julia-api-route
+        paths:
+          - /api/v1/julia
+        strip_path: true
+        preserve_host: false
+    plugins:
+      - name: cors
+        config:
+          origins:
+            - "https://nexpo.com"
+            - "https://app.nexpo.com"
+          methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - OPTIONS
+          headers:
+            - Accept
+            - Accept-Version
+            - Content-Length
+            - Content-MD5
+            - Content-Type
+            - Date
+            - Authorization
+          exposed_headers:
+            - X-Auth-Token
+          credentials: true
+          max_age: 3600
+      - name: jwt
+        config:
+          uri_param_names:
+            - token
+          header_names:
+            - authorization
+          claims_to_verify:
+            - exp
+            - iss
+          key_claim_name: iss
+          secret_is_base64: false
+          run_on_preflight: true
+      - name: rate-limiting
+        config:
+          minute: 200
+          hour: 5000
+          day: 50000
+          policy: redis
+          redis_host: nexpo-redis-cluster
+          redis_port: 6379
+          fault_tolerant: false
+          hide_client_headers: false
+      - name: request-size-limiting
+        config:
+          allowed_payload_size: 10
+
+# Global plugins for production
+plugins:
+  - name: prometheus
+    config:
+      per_consumer: true
+      status_code_metrics: true
+      latency_metrics: true
+      bandwidth_metrics: true
+  - name: request-id
+    config:
+      header_name: "Kong-Request-ID"
+      generator: "uuid#counter"
+      echo_downstream: false
+  - name: correlation-id
+    config:
+      header_name: "Kong-Request-ID"
+      generator: "uuid#counter"
+      echo_downstream: true
+  - name: datadog
+    config:
+      host: nexpo-datadog-agent
+      port: 8125
+      metrics:
+        - name: request_count
+          stat_type: counter
+          sample_rate: 1
+        - name: latency
+          stat_type: timer
+          sample_rate: 1
+        - name: request_size
+          stat_type: histogram
+          sample_rate: 0.1
+        - name: status_count
+          stat_type: counter
+          sample_rate: 1
+        - name: response_size
+          stat_type: histogram
+          sample_rate: 0.1
+  - name: ip-restriction
+    config:
+      allow:
+        - "10.0.0.0/8"
+        - "172.16.0.0/12"
+        - "192.168.0.0/16"
+      deny: []
+  - name: bot-detection
+    config:
+      allow: []
+      deny:
+        - "BadBot"
+        - "MaliciousBot"
+
+consumers:
+  - username: nexpo-production-admin
+    tags:
+      - admin
+      - production
+  - username: nexpo-production-api
+    tags:
+      - api
+      - production

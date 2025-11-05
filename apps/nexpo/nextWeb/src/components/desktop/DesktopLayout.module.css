@@ -1,0 +1,183 @@
+.desktopLayout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.titleBar {
+  height: 32px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  user-select: none;
+  -webkit-app-region: drag;
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 1000;
+}
+
+.titleBarContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 16px;
+}
+
+.titleBarLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.appTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+}
+
+.appVersion {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.titleBarRight {
+  display: flex;
+  gap: 2px;
+  -webkit-app-region: no-drag;
+}
+
+.titleBarButton {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.titleBarButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.closeButton:hover {
+  background: #ff5555;
+}
+
+.content {
+  flex: 1;
+  overflow: auto;
+  position: relative;
+}
+
+.systemInfo {
+  height: 24px;
+  background: linear-gradient(90deg, #2d3748 0%, #4a5568 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.systemInfoContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.windowControls {
+  display: flex;
+  gap: 8px;
+}
+
+.controlButton {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  transition: background-color 0.2s;
+}
+
+.controlButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Dark theme overrides */
+@media (prefers-color-scheme: dark) {
+  .desktopLayout {
+    background: #0a0a0a;
+    color: #ffffff;
+  }
+  
+  .titleBar {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .systemInfo {
+    background: linear-gradient(90deg, #1a1a1a 0%, #2d2d2d 100%);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}
+
+/* Light theme overrides */
+@media (prefers-color-scheme: light) {
+  .desktopLayout {
+    background: #ffffff;
+    color: #000000;
+  }
+  
+  .titleBar {
+    background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .appTitle {
+    color: #2d3748;
+  }
+  
+  .appVersion {
+    color: #4a5568;
+    background: rgba(0, 0, 0, 0.05);
+  }
+  
+  .titleBarButton {
+    color: #2d3748;
+  }
+  
+  .titleBarButton:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
+  
+  .systemInfo {
+    background: linear-gradient(90deg, #f7fafc 0%, #edf2f7 100%);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    color: #4a5568;
+  }
+  
+  .controlButton {
+    color: #4a5568;
+  }
+  
+  .controlButton:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
+}

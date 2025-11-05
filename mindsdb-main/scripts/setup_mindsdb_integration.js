@@ -225,7 +225,7 @@ function generateDockerComposeOverride(enabledProviders) {
 }
 
 /**
- * Install required npm packages
+ * Install required pnpm packages
  */
 function installDependencies() {
   console.log('\n📦 Installing dependencies...');
