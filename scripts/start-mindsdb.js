@@ -96,6 +96,7 @@ function startMindsDB() {
   const cleanEnv = { ...process.env };
   delete cleanEnv.DEBUG; // Remove Next.js DEBUG flag that conflicts with MindsDB
   delete cleanEnv.LOG_LEVEL; // Remove any LOG_LEVEL that might conflict
+  delete cleanEnv.VITE_DEBUG; // Remove Vite debug flags
   
   const mindsdbProcess = spawn('python', ['-m', 'mindsdb', ...mindsdbArgs], {
     stdio: 'inherit',
@@ -103,7 +104,11 @@ function startMindsDB() {
     env: {
       ...cleanEnv,
       MINDSDB_STORAGE_PATH: path.join(__dirname, '..', 'data', 'mindsdb'),
-      MINDSDB_CACHE_PATH: path.join(__dirname, '..', 'data', 'mindsdb_cache')
+      MINDSDB_CACHE_PATH: path.join(__dirname, '..', 'data', 'mindsdb_cache'),
+      // Suppress verbose NumExpr warnings
+      NUMEXPR_MAX_THREADS: '16',
+      // Set Python warnings to minimal
+      PYTHONWARNINGS: 'ignore::UserWarning,ignore::DeprecationWarning'
     }
   });
 
