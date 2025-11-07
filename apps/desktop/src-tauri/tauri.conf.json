@@ -19,5 +19,20 @@
       "icons/icon.ico"
     ]
   },
+  "app": {
+    "windows": [
+      {
+        "title": "Taurte Desktop",
+        "width": 1200,
+        "height": 800,
+        "resizable": true,
+        "fullscreen": false,
+        "center": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
   "plugins": {}
 }
