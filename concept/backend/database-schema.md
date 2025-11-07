@@ -2,90 +2,50 @@
 
 ## User Schema
 
-```typescript
-// Prisma Example
-model User {
-  id            String    @id @default(uuid())
-  email         String    @unique
-  name          String?
-  passwordHash  String?
-  role          Role      @default(USER)
-  
-  // OAuth
-  oauthProvider String?
-  oauthId       String?
-  
-  // Timestamps
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  lastLoginAt   DateTime?
-  
-  // Relations
-  profile       Profile?
-  posts         Post[]
-  
-  @@index([email])
-}
+Core user model should include:
 
-model Profile {
-  id         String   @id @default(uuid())
-  bio        String?
-  avatar     String?
-  website    String?
-  
-  userId     String   @unique
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-}
+**User Table:**
+- `id` (UUID, primary key)
+- `email` (string, unique, indexed)
+- `name` (string, optional)
+- `passwordHash` (string, optional for OAuth users)
+- `role` (enum: USER, ADMIN, MODERATOR)
+- `oauthProvider` (string, optional)
+- `oauthId` (string, optional)
+- `createdAt`, `updatedAt`, `lastLoginAt` (timestamps)
 
-model Post {
-  id          String   @id @default(uuid())
-  title       String
-  content     String
-  published   Boolean  @default(false)
-  
-  authorId    String
-  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  @@index([authorId])
-  @@index([published])
-}
+**Profile Table (1:1 with User):**
+- `id` (UUID, primary key)
+- `bio`, `avatar`, `website` (optional strings)
+- `userId` (foreign key, unique)
+- `createdAt`, `updatedAt` (timestamps)
 
-enum Role {
-  USER
-  ADMIN
-  MODERATOR
-}
-```
+**Post Table (Many:1 with User):**
+- `id` (UUID, primary key)
+- `title`, `content` (strings)
+- `published` (boolean, default false)
+- `authorId` (foreign key, indexed)
+- `createdAt`, `updatedAt` (timestamps)
 
-## SQL Migration Example
+## SQL Migration Guidelines
 
-```sql
-CREATE TABLE users (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  email VARCHAR(255) UNIQUE NOT NULL,
-  name VARCHAR(255),
-  password_hash VARCHAR(255),
-  role VARCHAR(50) DEFAULT 'USER',
-  created_at TIMESTAMP DEFAULT NOW(),
-  updated_at TIMESTAMP DEFAULT NOW()
-);
+**Create User Table:**
+- Use UUID for primary keys
+- Set email as UNIQUE and NOT NULL
+- Add default values where appropriate
+- Include created_at and updated_at timestamps
+- Create index on email for faster lookups
 
-CREATE INDEX idx_users_email ON users(email);
+**Create Profile Table:**
+- Link to users via user_id foreign key
+- Set user_id as UNIQUE for 1:1 relationship
+- Use CASCADE on delete to remove orphaned profiles
+- Store optional bio, avatar URL, and website
 
-CREATE TABLE profiles (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID UNIQUE REFERENCES users(id) ON DELETE CASCADE,
-  bio TEXT,
-  avatar VARCHAR(500),
-  created_at TIMESTAMP DEFAULT NOW()
-);
-```
+**Create Post Table:**
+- Link to users via author_id foreign key
+- Add indexes on author_id and published status
+- Use CASCADE delete to remove user's posts
 
 ## Best Practices
 1. Use UUIDs for primary keys

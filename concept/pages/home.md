@@ -4,103 +4,51 @@
 The landing/home page is the first impression. Focus on clear value proposition and conversion.
 
 ## Structure
-
-```tsx
-export default function HomePage() {
-  return (
-    <div className="home-page">
-      {/* Hero Section */}
-      <Hero
-        title="Welcome to Your App"
-        description="Build amazing things"
-        primaryCTA={{ label: 'Get Started', onClick: handleSignup }}
-        secondaryCTA={{ label: 'Learn More', onClick: scrollToFeatures }}
-      />
-
-      {/* Features Section */}
-      <section className="features">
-        <h2>Powerful Features</h2>
-        <div className="feature-grid">
-          <FeatureCard
-            icon="⚡"
-            title="Lightning Fast"
-            description="Built for speed and performance"
-          />
-          <FeatureCard
-            icon="🔒"
-            title="Secure"
-            description="Enterprise-grade security"
-          />
-          <FeatureCard
-            icon="📱"
-            title="Cross-Platform"
-            description="Web, mobile, and desktop"
-          />
-        </div>
-      </section>
-
-      {/* Social Proof */}
-      <section className="social-proof">
-        <h3>Trusted by thousands</h3>
-        <div className="logo-strip">
-          {/* Customer logos */}
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="cta">
-        <h2>Ready to get started?</h2>
-        <button>Start Free Trial</button>
-      </section>
-    </div>
-  );
-}
-```
+The home page should include:
+- Hero section with title, description, and CTAs
+- Features section showcasing 3-6 key benefits
+- Social proof section with customer logos
+- Final CTA section to drive conversions
 
 ## Key Sections
 
-1. **Hero**: Grab attention immediately
-2. **Features**: Showcase 3-6 key benefits
-3. **Social Proof**: Logos, testimonials, stats
-4. **How It Works**: 3-step process
-5. **Pricing**: Clear plans (optional)
-6. **FAQ**: Address objections
-7. **Final CTA**: Convert visitors
+1. **Hero**: Grab attention immediately with clear value proposition
+2. **Features**: Showcase 3-6 key benefits with icons and descriptions
+3. **Social Proof**: Display logos, testimonials, and statistics
+4. **How It Works**: Show 3-step process to get started
+5. **Pricing**: Present clear pricing plans (optional)
+6. **FAQ**: Address common questions and objections
+7. **Final CTA**: Strong call-to-action to convert visitors
 
 ## SEO Optimization
 
-```tsx
-import Head from 'next/head';
+Include proper meta tags:
+- Page title with app name and tagline
+- Meta description (155 characters max)
+- Open Graph tags for social sharing
+- Twitter Card meta tags
+- Canonical URL
+- Structured data (JSON-LD)
 
-export default function HomePage() {
-  return (
-    <>
-      <Head>
-        <title>App Name - Tagline</title>
-        <meta name="description" content="Brief description" />
-        <meta property="og:title" content="App Name" />
-        <meta property="og:description" content="Description" />
-        <meta property="og:image" content="/og-image.png" />
-      </Head>
-      {/* Page content */}
-    </>
-  );
-}
-```
-
-## Performance
+## Performance Best Practices
 
 - Lazy load below-the-fold content
-- Optimize images (WebP, srcset)
+- Optimize images (WebP format, proper sizing, srcset)
 - Minimize JavaScript on initial load
 - Use CDN for static assets
-- Implement critical CSS
+- Implement critical CSS inline
+- Defer non-critical resources
+- Optimize web fonts
 
 ## Conversion Best Practices
 
-1. Clear value proposition in 5 seconds
+1. Clear value proposition visible in 5 seconds
 2. Single primary CTA above the fold
-3. Remove friction from signup
-4. Mobile-first design
-5. Fast load times (<3s)
-6. A/B test everything
+3. Remove friction from signup process
+4. Mobile-first responsive design
+5. Fast load times (target <3s)
+6. A/B test headlines, CTAs, and layouts
+7. Use social proof prominently
+8. Create urgency without being pushy
+9. Clear benefit-focused copy
+10. Trust indicators (security badges, testimonials)

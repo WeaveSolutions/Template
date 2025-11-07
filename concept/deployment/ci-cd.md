@@ -2,110 +2,44 @@
 
 ## GitHub Actions Workflow
 
-```yaml
-name: CI/CD Pipeline
+A complete CI/CD pipeline should include:
 
-on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main]
+**Test Job:**
+- Checkout code
+- Setup Node.js with pnpm caching
+- Install dependencies
+- Run linter
+- Run type checking
+- Execute test suite
+- Build application
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'pnpm'
-      
-      - name: Install dependencies
-        run: pnpm install
-      
-      - name: Lint
-        run: pnpm lint
-      
-      - name: Type check
-        run: pnpm type-check
-      
-      - name: Run tests
-        run: pnpm test
-      
-      - name: Build
-        run: pnpm build
+**Deploy Web Job:**
+- Depends on successful test job
+- Only runs on main branch
+- Deploys to Vercel/Netlify
+- Uses deployment secrets
 
-  deploy-web:
-    needs: test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
+**Deploy Mobile Job:**
+- Depends on successful test job
+- Only runs on main branch
+- Setup Expo CLI
+- Publish to Expo/App Stores
 
-  deploy-mobile:
-    needs: test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Expo
-        uses: expo/expo-github-action@v8
-        with:
-          expo-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
-      
-      - name: Publish to Expo
-        run: |
-          cd apps/nexpo/expoMobile
-          expo publish
-
-  deploy-desktop:
-    needs: test
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
-      
-      - name: Build Desktop App
-        run: |
-          cd apps/desktop
-          pnpm tauri build
-      
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: desktop-app-${{ matrix.os }}
-          path: apps/desktop/src-tauri/target/release/
-```
+**Deploy Desktop Job:**
+- Matrix strategy for multiple OS (Windows, Mac, Linux)
+- Setup Rust toolchain
+- Build Tauri app for each platform
+- Upload build artifacts
 
 ## Environment Variables
 
-```bash
-# .env.production
-DATABASE_URL=postgresql://...
-REDIS_URL=redis://...
-AUTH0_DOMAIN=...
-AUTH0_CLIENT_ID=...
-API_URL=https://api.example.com
-```
+Production environment should include:
+- `DATABASE_URL` - PostgreSQL connection string
+- `REDIS_URL` - Redis connection string
+- `AUTH0_DOMAIN`, `AUTH0_CLIENT_ID` - Auth0 credentials
+- `API_URL` - Backend API endpoint
+- `NEXT_PUBLIC_*` - Public environment variables for frontend
+- Store secrets in GitHub Secrets, not in code
 
 ## Deployment Checklist
 
@@ -120,27 +54,19 @@ API_URL=https://api.example.com
 
 ## Monitoring
 
-```yaml
-# monitoring.yml
-services:
-  - name: web
-    url: https://example.com
-    interval: 60s
-    alerts:
-      - type: email
-      - type: slack
-  
-  - name: api
-    url: https://api.example.com/health
-    interval: 30s
-```
+Implement monitoring for:
+- Web application uptime (check every 60s)
+- API health endpoint (check every 30s)
+- Alert channels: Email, Slack, PagerDuty
+- Performance metrics (response times, error rates)
+- Database connection status
+- Resource usage (CPU, memory, disk)
 
 ## Rollback Strategy
 
-```bash
-# Rollback to previous version
-vercel rollback
-# or
-git revert HEAD
-git push origin main
-```
+Have a plan to revert deployments:
+- Use platform rollback features (Vercel, Netlify)
+- Git revert and redeploy
+- Keep previous version artifacts
+- Database migration rollback scripts
+- Test rollback procedure regularly

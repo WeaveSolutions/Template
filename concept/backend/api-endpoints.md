@@ -2,114 +2,48 @@
 
 ## REST API Structure
 
-```typescript
-// Express.js Example
-import express from 'express';
-const router = express.Router();
+API endpoints should follow RESTful conventions:
 
-// GET /api/users
-router.get('/users', async (req, res) => {
-  try {
-    const users = await db.user.findMany();
-    res.json({ success: true, data: users });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
+**Standard CRUD Operations:**
+- `GET /api/resource` - List all items
+- `POST /api/resource` - Create new item
+- `GET /api/resource/:id` - Get single item
+- `PUT /api/resource/:id` - Update item
+- `DELETE /api/resource/:id` - Delete item
 
-// POST /api/users
-router.post('/users', async (req, res) => {
-  try {
-    const user = await db.user.create({ data: req.body });
-    res.status(201).json({ success: true, data: user });
-  } catch (error) {
-    res.status(400).json({ success: false, error: error.message });
-  }
-});
-
-// GET /api/users/:id
-router.get('/users/:id', async (req, res) => {
-  const user = await db.user.findUnique({ where: { id: req.params.id } });
-  if (!user) return res.status(404).json({ success: false, error: 'Not found' });
-  res.json({ success: true, data: user });
-});
-
-// PUT /api/users/:id
-router.put('/users/:id', async (req, res) => {
-  const user = await db.user.update({
-    where: { id: req.params.id },
-    data: req.body
-  });
-  res.json({ success: true, data: user });
-});
-
-// DELETE /api/users/:id
-router.delete('/users/:id', async (req, res) => {
-  await db.user.delete({ where: { id: req.params.id } });
-  res.json({ success: true });
-});
-
-export default router;
-```
+**Best Practices:**
+- Use proper HTTP methods (GET, POST, PUT, DELETE)
+- Return appropriate status codes (200, 201, 400, 404, 500)
+- Wrap responses in consistent format
+- Handle errors gracefully
+- Validate input data
 
 ## Response Format
 
-```typescript
-interface APIResponse<T> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  pagination?: {
-    page: number;
-    limit: number;
-    total: number;
-  };
-}
-```
+All API responses should have a consistent structure:
+- `success` (boolean): Indicates if request succeeded
+- `data` (optional): The requested data or created/updated resource
+- `error` (optional): Error message if request failed
+- `pagination` (optional): Page info for list endpoints (page, limit, total)
 
 ## Error Handling
 
-```typescript
-class APIError extends Error {
-  statusCode: number;
-  constructor(message: string, statusCode: number) {
-    super(message);
-    this.statusCode = statusCode;
-  }
-}
-
-// Error middleware
-app.use((err, req, res, next) => {
-  const status = err.statusCode || 500;
-  res.status(status).json({
-    success: false,
-    error: err.message
-  });
-});
-```
+Implement centralized error handling:
+- Create custom error class with status codes
+- Use error middleware to catch all errors
+- Return consistent error response format
+- Log errors for debugging
+- Don't expose sensitive information in error messages
 
 ## Authentication
 
-```typescript
-// Middleware
-const authenticate = async (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
-  if (!token) return res.status(401).json({ error: 'Unauthorized' });
-  
-  try {
-    const user = await verifyToken(token);
-    req.user = user;
-    next();
-  } catch (error) {
-    res.status(401).json({ error: 'Invalid token' });
-  }
-};
-
-// Protected route
-router.get('/protected', authenticate, async (req, res) => {
-  res.json({ user: req.user });
-});
-```
+Secure your API endpoints with authentication:
+- Extract JWT token from Authorization header
+- Verify token validity
+- Attach user info to request object
+- Return 401 for unauthorized requests
+- Apply authentication middleware to protected routes
+- Use different middleware for public vs protected endpoints
 
 ## Best Practices
 1. Use versioning: `/api/v1/`

@@ -13,120 +13,23 @@ A page-level header component for displaying titles, breadcrumbs, and actions.
 
 ## Structure
 
-```tsx
-// React/Next.js Example
-export default function Header({
-  title,
-  subtitle,
-  breadcrumbs = [],
-  actions = [],
-  showBack = false
-}) {
-  return (
-    <header className="page-header">
-      {/* Breadcrumbs */}
-      {breadcrumbs.length > 0 && (
-        <nav aria-label="Breadcrumb">
-          <ol className="breadcrumbs">
-            {breadcrumbs.map((crumb, index) => (
-              <li key={index}>
-                {index < breadcrumbs.length - 1 ? (
-                  <a href={crumb.href}>{crumb.label}</a>
-                ) : (
-                  <span>{crumb.label}</span>
-                )}
-              </li>
-            ))}
-          </ol>
-        </nav>
-      )}
-
-      {/* Title Section */}
-      <div className="header-content">
-        <div className="header-text">
-          {showBack && (
-            <button onClick={() => window.history.back()} className="back-btn">
-              ← Back
-            </button>
-          )}
-          <h1>{title}</h1>
-          {subtitle && <p className="subtitle">{subtitle}</p>}
-        </div>
-
-        {/* Actions */}
-        {actions.length > 0 && (
-          <div className="header-actions">
-            {actions.map((action, index) => (
-              <button
-                key={index}
-                onClick={action.onClick}
-                className={action.variant || 'default'}
-              >
-                {action.label}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-    </header>
-  );
-}
-```
+The page header should contain:
+- **Breadcrumb Navigation**: Optional hierarchical navigation trail
+- **Title Section**: Main page heading (h1) with optional subtitle
+- **Back Button**: Optional navigation to previous page
+- **Action Buttons**: Primary actions for the page (Export, Add, Edit, etc.)
 
 ## Styling Guidelines
 
-```css
-.page-header {
-  padding: 2rem;
-  background: var(--bg-primary);
-  border-bottom: 1px solid var(--border-color);
-}
-
-.breadcrumbs {
-  display: flex;
-  gap: 0.5rem;
-  list-style: none;
-  padding: 0;
-  margin-bottom: 1rem;
-  font-size: 0.875rem;
-}
-
-.breadcrumbs li:not(:last-child)::after {
-  content: "/";
-  margin-left: 0.5rem;
-  color: var(--text-tertiary);
-}
-
-.header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.header-text h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  margin: 0;
-}
-
-.subtitle {
-  color: var(--text-secondary);
-  margin-top: 0.5rem;
-}
-
-.header-actions {
-  display: flex;
-  gap: 1rem;
-}
-
-@media (max-width: 768px) {
-  .header-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-}
-```
+- Apply consistent padding (2rem)
+- Add bottom border to separate from content
+- Use flexbox for horizontal layout between title and actions
+- Breadcrumbs: Small font size with separator between items
+- Title: Large, bold font (2rem)
+- Subtitle: Secondary text color
+- Action buttons: Horizontal flex with gap
+- Mobile: Stack title and actions vertically
+- Maintain proper spacing and alignment
 
 ## Props/Configuration
 
@@ -138,54 +41,18 @@ export default function Header({
 | `actions` | `Action[]` | `[]` | Header action buttons |
 | `showBack` | `boolean` | `false` | Show back navigation button |
 
-## Types
+## Configuration Types
 
-```typescript
-interface Breadcrumb {
-  label: string;
-  href: string;
-}
-
-interface Action {
-  label: string;
-  onClick: () => void;
-  variant?: 'primary' | 'secondary' | 'danger';
-  icon?: string;
-}
-```
+**Breadcrumb**: Object with label and href properties
+**Action**: Object with label, onClick handler, optional variant (primary/secondary/danger), and optional icon
 
 ## Usage Examples
 
-```tsx
-// Simple page header
-<Header title="Dashboard" />
-
-// With breadcrumbs
-<Header
-  title="User Profile"
-  breadcrumbs={[
-    { label: 'Home', href: '/' },
-    { label: 'Users', href: '/users' },
-    { label: 'John Doe', href: '/users/123' }
-  ]}
-/>
-
-// With actions
-<Header
-  title="Products"
-  subtitle="Manage your product inventory"
-  actions={[
-    { label: 'Export', onClick: handleExport, variant: 'secondary' },
-    { label: 'Add Product', onClick: handleAdd, variant: 'primary' }
-  ]}
-/>
-
-// Detail page with back button
-<Header
-  title="Product Details"
-  showBack={true}
-/>
-```
+1. **Simple Header**: Just a title
+2. **With Breadcrumbs**: Include navigation trail from home to current page
+3. **With Actions**: Add Export, Add, or Edit buttons
+4. **Detail Page**: Include back button for navigation
+5. **With Subtitle**: Add descriptive text below title
 
 ## Accessibility
 

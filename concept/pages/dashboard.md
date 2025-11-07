@@ -4,46 +4,36 @@
 Main application interface showing key metrics, data, and actions.
 
 ## Structure
-```tsx
-export default function Dashboard() {
-  return (
-    <div className="dashboard">
-      <Header title="Dashboard" actions={[{ label: 'Export', onClick: handleExport }]} />
-      
-      {/* Stats Cards */}
-      <div className="stats-grid">
-        <StatsCard title="Total Users" value="1,234" change="+12%" />
-        <StatsCard title="Revenue" value="$45.6K" change="+8%" />
-        <StatsCard title="Active Sessions" value="567" change="-3%" />
-      </div>
-
-      {/* Charts */}
-      <div className="charts">
-        <ChartCard title="Revenue Over Time" />
-        <ChartCard title="User Growth" />
-      </div>
-
-      {/* Recent Activity */}
-      <section className="recent-activity">
-        <h3>Recent Activity</h3>
-        <ActivityList items={recentItems} />
-      </section>
-    </div>
-  );
-}
-```
+The dashboard should include:
+- Page header with title and action buttons (Export, Refresh, etc.)
+- Stats cards showing key metrics with trend indicators
+- Interactive charts for data visualization
+- Recent activity feed or timeline
+- Quick action buttons for common tasks
 
 ## Key Features
-- Stats overview cards
-- Interactive charts
-- Recent activity feed
-- Quick actions
-- Real-time updates
+- **Stats Overview Cards**: Display important metrics at a glance with change indicators
+- **Interactive Charts**: Visualize data trends over time
+- **Recent Activity Feed**: Show latest events, actions, or updates
+- **Quick Actions**: Easy access to frequently used features
+- **Real-time Updates**: Live data refresh without page reload
+- **Filters & Date Ranges**: Allow users to customize data view
+- **Responsive Layout**: Grid adapts to different screen sizes
 
 ## Data Loading
-```tsx
-const { data, loading, error } = useQuery(DASHBOARD_QUERY);
+Implement proper loading states:
+- Show skeleton loaders while fetching data
+- Display error states with retry options
+- Handle empty states gracefully
+- Implement optimistic updates for better UX
+- Cache data appropriately
 
-if (loading) return <Skeleton />;
-if (error) return <ErrorState />;
-```
+## Best Practices
+1. Prioritize most important metrics at the top
+2. Use consistent card layouts
+3. Provide data export functionality
+4. Include time range selectors
+5. Show loading states for all async data
+6. Make charts interactive and responsive
+7. Allow customization of dashboard layout
+8. Implement proper error handling
