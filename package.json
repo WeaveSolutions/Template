@@ -43,7 +43,8 @@
     "logs:mindsdb": "node scripts/start-mindsdb.js logs",
     "workflows:generate": "node scripts/generate-workflows.js generate",
     "workflows:list": "node scripts/generate-workflows.js list",
-    "workflows:remove": "node scripts/generate-workflows.js remove"
+    "workflows:remove": "node scripts/generate-workflows.js remove",
+    "check:flags": "node scripts/check-dev-flags.js"
   },
   "workspaces": [
     "apps/desktop",
