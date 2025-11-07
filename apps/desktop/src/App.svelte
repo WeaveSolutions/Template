@@ -89,8 +89,11 @@
   <!-- Navigation Bar -->
   <nav class="navbar">
     <div class="nav-brand">
-      <h1 class="brand-title">⚡ Taurte</h1>
-      <span class="brand-subtitle">Enterprise Desktop</span>
+      <img src="/WeaveLogo.png" alt="Weave Logo" class="brand-logo" />
+      <div class="brand-text-group">
+        <h1 class="brand-title">Taurte</h1>
+        <span class="brand-subtitle">Enterprise Desktop</span>
+      </div>
     </div>
     <div class="nav-links">
       <button class="nav-link" class:active={activeView === 'home'} on:click={() => activeView = 'home'}>
@@ -537,6 +540,18 @@
     gap: 1rem;
   }
 
+  .brand-logo {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+  }
+
+  .brand-text-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
   .brand-title {
     margin: 0;
     font-size: 1.75rem;
@@ -545,11 +560,13 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    line-height: 1;
   }
 
   .brand-subtitle {
     font-size: 0.875rem;
     color: #9ca3af;
+    line-height: 1;
   }
 
   .nav-links {

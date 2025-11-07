@@ -73,7 +73,7 @@
     if (appInfo) {
       await info(
         `${appInfo.name} v${appInfo.version}\n\nPlatform: ${appInfo.platform}\n\nBuilt with Tauri and Svelte`,
-        { title: "About Nexpo Mobile", kind: "info" }
+        { title: "About Taurte Mobile", kind: "info" }
       );
     }
   };
@@ -85,13 +85,16 @@
 
 <main>
   <header>
-    <h1>
-      {#if appInfo}
-        {appInfo.name}
-      {:else}
-        Nexpo Mobile
-      {/if}
-    </h1>
+    <div class="header-brand">
+      <img src="/WeaveLogo.png" alt="Weave Logo" class="header-logo" />
+      <h1>
+        {#if appInfo}
+          {appInfo.name}
+        {:else}
+          Taurte Mobile
+        {/if}
+      </h1>
+    </div>
     <button class="about-btn" on:click={showAbout}>About</button>
   </header>
 
@@ -180,6 +183,18 @@
     background: rgba(255, 255, 255, 0.1);
     border-radius: 15px;
     backdrop-filter: blur(10px);
+  }
+
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .header-logo {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
   }
 
   h1 {

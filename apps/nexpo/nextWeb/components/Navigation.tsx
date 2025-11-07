@@ -33,10 +33,11 @@ export default function Navigation() {
           {/* Logo and Brand */}
           <div className="flex items-center space-x-4">
             <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-              {/* Logo Placeholder */}
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center font-bold text-white text-xl">
-                N
-              </div>
+              <img 
+                src="/WeaveLogo.png" 
+                alt="Weave Logo" 
+                className="w-10 h-10 object-contain"
+              />
               <div className="flex flex-col">
                 <span className="text-white font-bold text-lg leading-tight">Nexpo Enterprise</span>
                 <span className="text-gray-400 text-xs">Cross-Platform Stack</span>

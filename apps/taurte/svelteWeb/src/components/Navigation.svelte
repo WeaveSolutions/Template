@@ -35,7 +35,7 @@
   <div class="navbar-container">
     <div class="navbar-brand">
       <a href="/" class="brand-link">
-        <div class="brand-icon">⚡</div>
+        <img src="/WeaveLogo.png" alt="Weave Logo" class="brand-logo" />
         <div class="brand-content">
           <span class="brand-text">Taurte</span>
           <span class="brand-subtitle">Web Platform</span>
@@ -173,9 +173,10 @@
     transform: translateY(-1px);
   }
 
-  .brand-icon {
-    font-size: 2rem;
-    line-height: 1;
+  .brand-logo {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
     animation: pulse 2s infinite;
   }
 
