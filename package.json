@@ -44,7 +44,9 @@
     "workflows:generate": "node scripts/generate-workflows.js generate",
     "workflows:list": "node scripts/generate-workflows.js list",
     "workflows:remove": "node scripts/generate-workflows.js remove",
-    "check:flags": "node scripts/check-dev-flags.js"
+    "check:flags": "node scripts/check-dev-flags.js",
+    "kill:ports": "powershell -ExecutionPolicy Bypass -File scripts/kill-dev-ports.ps1",
+    "clean:start": "pnpm kill:ports && pnpm dev"
   },
   "workspaces": [
     "apps/desktop",

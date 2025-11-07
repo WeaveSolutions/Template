@@ -124,8 +124,8 @@ class DevPlatformRunner {
         platformsToStart.push({
           name: 'Expo Mobile',
           type: 'direct',
-          command: 'npx',
-          args: ['expo', 'start'],
+          command: 'pnpm',
+          args: ['exec', 'expo', 'start'],
           cwd: 'apps/nexpo/expoMobile'
         });
       }
