@@ -87,44 +87,28 @@ function startMindsDB() {
   const configPath = path.join(tmpDir, `config-${process.pid}.json`);
   fs.writeFileSync(configPath, JSON.stringify(configObject, null, 2), 'utf8');
 
-  const mindsdbArgs = [
-    '--api', 'http,mysql',
-    '--config', configPath,
-  ];
-
-  // Clean environment for MindsDB - remove conflicting variables
-  const cleanEnv = { ...process.env };
-  delete cleanEnv.DEBUG; // Remove Next.js DEBUG flag that conflicts with MindsDB
-  delete cleanEnv.LOG_LEVEL; // Remove any LOG_LEVEL that might conflict
-  delete cleanEnv.VITE_DEBUG; // Remove Vite debug flags
+  // Use PowerShell wrapper to completely isolate environment
+  // This is necessary because shell:true inherits all parent env vars
+  const wrapperScript = path.join(__dirname, 'start-mindsdb-wrapper.ps1');
   
-  // Create a minimal clean environment for MindsDB
-  // Only include essential variables, explicitly exclude DEBUG-related vars
-  const minimalEnv = {
-    PATH: process.env.PATH,
-    SYSTEMROOT: process.env.SYSTEMROOT, // Windows
-    SystemRoot: process.env.SystemRoot, // Windows
-    TEMP: process.env.TEMP,
-    TMP: process.env.TMP,
-    HOME: process.env.HOME,
-    USERPROFILE: process.env.USERPROFILE,
-    // MindsDB-specific
-    MINDSDB_STORAGE_PATH: path.join(__dirname, '..', 'data', 'mindsdb'),
-    MINDSDB_CACHE_PATH: path.join(__dirname, '..', 'data', 'mindsdb_cache'),
-    // Suppress verbose warnings
-    NUMEXPR_MAX_THREADS: '16',
-    PYTHONWARNINGS: 'ignore::UserWarning,ignore::DeprecationWarning',
-    // Explicitly unset problematic variables
-    DEBUG: undefined,
-    debug: undefined,
-    LOG_LEVEL: undefined,
-    log_level: undefined
-  };
-
-  const mindsdbProcess = spawn('python', ['-m', 'mindsdb', ...mindsdbArgs], {
+  const mindsdbProcess = spawn('powershell', [
+    '-ExecutionPolicy', 'Bypass',
+    '-File', wrapperScript,
+    configPath
+  ], {
     stdio: 'inherit',
-    shell: true,
-    env: minimalEnv
+    shell: false, // Don't use shell to avoid env inheritance
+    env: {
+      PATH: process.env.PATH,
+      SYSTEMROOT: process.env.SYSTEMROOT,
+      SystemRoot: process.env.SystemRoot,
+      TEMP: process.env.TEMP,
+      TMP: process.env.TMP,
+      HOME: process.env.HOME,
+      USERPROFILE: process.env.USERPROFILE,
+      MINDSDB_STORAGE_PATH: path.join(__dirname, '..', 'data', 'mindsdb'),
+      MINDSDB_CACHE_PATH: path.join(__dirname, '..', 'data', 'mindsdb_cache')
+    }
   });
 
   mindsdbProcess.on('error', (error) => {
