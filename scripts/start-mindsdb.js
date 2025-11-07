@@ -98,18 +98,33 @@ function startMindsDB() {
   delete cleanEnv.LOG_LEVEL; // Remove any LOG_LEVEL that might conflict
   delete cleanEnv.VITE_DEBUG; // Remove Vite debug flags
   
+  // Create a minimal clean environment for MindsDB
+  // Only include essential variables, explicitly exclude DEBUG-related vars
+  const minimalEnv = {
+    PATH: process.env.PATH,
+    SYSTEMROOT: process.env.SYSTEMROOT, // Windows
+    SystemRoot: process.env.SystemRoot, // Windows
+    TEMP: process.env.TEMP,
+    TMP: process.env.TMP,
+    HOME: process.env.HOME,
+    USERPROFILE: process.env.USERPROFILE,
+    // MindsDB-specific
+    MINDSDB_STORAGE_PATH: path.join(__dirname, '..', 'data', 'mindsdb'),
+    MINDSDB_CACHE_PATH: path.join(__dirname, '..', 'data', 'mindsdb_cache'),
+    // Suppress verbose warnings
+    NUMEXPR_MAX_THREADS: '16',
+    PYTHONWARNINGS: 'ignore::UserWarning,ignore::DeprecationWarning',
+    // Explicitly unset problematic variables
+    DEBUG: undefined,
+    debug: undefined,
+    LOG_LEVEL: undefined,
+    log_level: undefined
+  };
+
   const mindsdbProcess = spawn('python', ['-m', 'mindsdb', ...mindsdbArgs], {
     stdio: 'inherit',
     shell: true,
-    env: {
-      ...cleanEnv,
-      MINDSDB_STORAGE_PATH: path.join(__dirname, '..', 'data', 'mindsdb'),
-      MINDSDB_CACHE_PATH: path.join(__dirname, '..', 'data', 'mindsdb_cache'),
-      // Suppress verbose NumExpr warnings
-      NUMEXPR_MAX_THREADS: '16',
-      // Set Python warnings to minimal
-      PYTHONWARNINGS: 'ignore::UserWarning,ignore::DeprecationWarning'
-    }
+    env: minimalEnv
   });
 
   mindsdbProcess.on('error', (error) => {
