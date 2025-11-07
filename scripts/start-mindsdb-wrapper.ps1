@@ -1,12 +1,12 @@
 # MindsDB Environment Isolation Wrapper
 # This script completely removes DEBUG and LOG_LEVEL variables before starting MindsDB
 
-# Remove all DEBUG-related variables
-$env:DEBUG = $null
-$env:debug = $null
-$env:LOG_LEVEL = $null
-$env:log_level = $null
-$env:VITE_DEBUG = $null
+# COMPLETELY remove DEBUG-related variables using Remove-Item
+Remove-Item Env:\DEBUG -ErrorAction SilentlyContinue
+Remove-Item Env:\debug -ErrorAction SilentlyContinue
+Remove-Item Env:\LOG_LEVEL -ErrorAction SilentlyContinue
+Remove-Item Env:\log_level -ErrorAction SilentlyContinue
+Remove-Item Env:\VITE_DEBUG -ErrorAction SilentlyContinue
 
 # Set MindsDB-safe variables
 $env:NUMEXPR_MAX_THREADS = "16"
