@@ -1,16 +1,5 @@
 # MindsDB Environment Isolation Wrapper
-# This script completely removes DEBUG and LOG_LEVEL variables before starting MindsDB
-
-# COMPLETELY remove DEBUG-related variables using Remove-Item
-Remove-Item Env:\DEBUG -ErrorAction SilentlyContinue
-Remove-Item Env:\debug -ErrorAction SilentlyContinue
-Remove-Item Env:\LOG_LEVEL -ErrorAction SilentlyContinue
-Remove-Item Env:\log_level -ErrorAction SilentlyContinue
-Remove-Item Env:\VITE_DEBUG -ErrorAction SilentlyContinue
-
-# Set MindsDB-safe variables
-$env:NUMEXPR_MAX_THREADS = "16"
-$env:PYTHONWARNINGS = "ignore::UserWarning,ignore::DeprecationWarning"
+# This script creates a completely clean environment for MindsDB
 
 # Get arguments passed from Node.js
 $configPath = $args[0]
@@ -41,5 +30,30 @@ if (-not $pythonCmd) {
     exit 1
 }
 
-# Start MindsDB with clean environment
-& $pythonCmd -m mindsdb --api http,mysql --config $configPath
+# Create a minimal environment for MindsDB
+# Only include essential system variables, EXCLUDE debug/log variables
+$cleanEnv = @{
+    'PATH' = $env:PATH
+    'SYSTEMROOT' = $env:SYSTEMROOT
+    'TEMP' = $env:TEMP
+    'TMP' = $env:TMP
+    'USERPROFILE' = $env:USERPROFILE
+    'NUMEXPR_MAX_THREADS' = '16'
+    'PYTHONWARNINGS' = 'ignore::UserWarning,ignore::DeprecationWarning'
+}
+
+# Start MindsDB in a new process with clean environment
+$psi = New-Object System.Diagnostics.ProcessStartInfo
+$psi.FileName = $pythonCmd
+$psi.Arguments = "-m mindsdb --api http,mysql --config `"$configPath`""
+$psi.UseShellExecute = $false
+$psi.CreateNoWindow = $false
+
+# Clear default environment and add only our clean variables
+$psi.EnvironmentVariables.Clear()
+foreach ($key in $cleanEnv.Keys) {
+    $psi.EnvironmentVariables[$key] = $cleanEnv[$key]
+}
+
+$process = [System.Diagnostics.Process]::Start($psi)
+$process.WaitForExit()
