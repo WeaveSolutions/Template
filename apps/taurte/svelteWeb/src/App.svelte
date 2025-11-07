@@ -1,25 +1,48 @@
 <script lang="ts">
-  import { Router, Route } from 'svelte-routing';
   import { onMount } from 'svelte';
   import Home from './routes/Home.svelte';
   import Dashboard from './routes/Dashboard.svelte';
   import Login from './routes/Login.svelte';
   import Navigation from './components/Navigation.svelte';
-  import { authStore } from './stores/auth';
   import { initializeAuth } from './lib/auth';
 
-  let loading = true;
+  let loading = $state(true);
+  let currentPath = $state(window.location.pathname);
 
-  onMount(async () => {
-    try {
-      await initializeAuth();
-    } catch (error) {
-      console.error('Auth initialization failed:', error);
-    } finally {
-      loading = false;
-    }
+  // Simple router for Svelte 5
+  function navigate(path: string) {
+    window.history.pushState({}, '', path);
+    currentPath = path;
+  }
+
+  // Handle browser back/forward
+  function handlePopState() {
+    currentPath = window.location.pathname;
+  }
+
+  onMount(() => {
+    window.addEventListener('popstate', handlePopState);
+    
+    // Initialize auth asynchronously
+    initializeAuth()
+      .catch(error => console.error('Auth initialization failed:', error))
+      .finally(() => loading = false);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
   });
 </script>
+
+<svelte:window on:click={(e) => {
+  const target = e.target as HTMLElement;
+  const anchor = target.closest('a');
+  if (anchor && anchor.href && anchor.href.startsWith(window.location.origin)) {
+    e.preventDefault();
+    const path = new URL(anchor.href).pathname;
+    navigate(path);
+  }
+}} />
 
 <div class="app">
   {#if loading}
@@ -28,15 +51,17 @@
       <p>Loading...</p>
     </div>
   {:else}
-    <Router>
-      <Navigation />
-      
-      <main class="main-content">
-        <Route path="/login" component={Login} />
-        <Route path="/dashboard" component={Dashboard} />
-        <Route path="/" component={Home} />
-      </main>
-    </Router>
+    <Navigation />
+    
+    <main class="main-content">
+      {#if currentPath === '/login'}
+        <Login />
+      {:else if currentPath === '/dashboard'}
+        <Dashboard />
+      {:else}
+        <Home />
+      {/if}
+    </main>
   {/if}
 </div>
 

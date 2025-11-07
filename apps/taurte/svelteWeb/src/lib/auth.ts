@@ -1,5 +1,5 @@
 import { createAuth0Client, type Auth0Client, type Auth0ClientOptions } from '@auth0/auth0-spa-js';
-import { authStore } from '../stores/auth';
+import { authStore } from '../stores/auth.svelte';
 
 let auth0Client: Auth0Client | null = null;
 
@@ -19,8 +19,11 @@ export async function initializeAuth(): Promise<void> {
     authStore.setLoading(true);
     authStore.setError(null);
 
+    // Skip Auth0 initialization if not configured (development mode)
     if (!auth0Config.domain || !auth0Config.clientId) {
-      throw new Error('Auth0 configuration is missing. Please check your environment variables.');
+      console.warn('Auth0 not configured. Running in development mode without authentication.');
+      authStore.setLoading(false);
+      return;
     }
 
     auth0Client = await createAuth0Client(auth0Config);

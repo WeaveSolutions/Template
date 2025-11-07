@@ -1,10 +1,9 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { navigate } from 'svelte-routing';
-  import { authStore } from '../stores/auth';
+  import { authStore } from '../stores/auth.svelte';
   import { login } from '../lib/auth';
 
-  let isLogging = false;
+  let isLogging = $state(false);
 
   async function handleLogin() {
     try {
@@ -19,14 +18,14 @@
   // Redirect if already authenticated
   onMount(() => {
     if (authStore.isAuthenticated) {
-      navigate('/dashboard', { replace: true });
+      window.location.href = '/';
     }
   });
 
   // Watch for authentication changes
   $effect(() => {
     if (authStore.isAuthenticated) {
-      navigate('/dashboard', { replace: true });
+      window.location.href = '/dashboard';
     }
   });
 </script>
@@ -35,8 +34,8 @@
   <div class="login-container">
     <div class="login-card">
       <div class="login-header">
-        <h1 class="login-title">Welcome to Nexpo</h1>
-        <p class="login-subtitle">Sign in to access your dashboard</p>
+        <h1 class="login-title">Welcome to Taurte Web</h1>
+        <p class="login-subtitle">Sign in with Auth0 to access your dashboard</p>
       </div>
 
       {#if authStore.error}
@@ -49,7 +48,7 @@
         <div class="login-form">
           <button 
             class="btn btn-primary login-btn"
-            on:click={handleLogin}
+            onclick={handleLogin}
             disabled={isLogging || authStore.isLoading}
           >
             {#if isLogging || authStore.isLoading}

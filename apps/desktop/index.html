@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nexpo Tauri Desktop - Svelte Primary Mode</title>
+    <title>Taurte Desktop</title>
     <style>
       /* Loading screen styles */
       #loading {
@@ -13,7 +13,10 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: #0b0e17;
+        background-image: 
+          radial-gradient(ellipse 800px 600px at 50% 40%, rgba(102, 126, 234, 0.25) 0%, transparent 60%),
+          radial-gradient(ellipse 600px 800px at 50% 60%, rgba(118, 75, 162, 0.2) 0%, transparent 60%);
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -58,7 +61,7 @@
         margin: 0;
         padding: 0;
         font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-        background: #f5f5f5;
+        background: #0b0e17;
       }
     </style>
   </head>
@@ -67,8 +70,8 @@
     <!-- Loading screen -->
     <div id="loading">
       <div class="loading-spinner"></div>
-      <div class="loading-text">Nexpo Desktop</div>
-      <div class="loading-subtitle">Svelte Standalone Mode - Loading...</div>
+      <div class="loading-text">⚡ Taurte Desktop</div>
+      <div class="loading-subtitle">Enterprise Desktop Platform - Loading...</div>
     </div>
     
     <!-- Svelte app mount point -->

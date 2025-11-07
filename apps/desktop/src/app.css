@@ -3,9 +3,9 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(33, 53, 71, 0.87);
-  background-color: #ffffff;
+  color-scheme: dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #0b0e17;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -21,8 +21,8 @@
   --color-danger: #dc3545;
   --color-warning: #ffc107;
   --color-info: #0dcaf0;
-  --color-light: #f8f9fa;
-  --color-dark: #212529;
+  --color-light: #2d3748;
+  --color-dark: #f7fafc;
 
   /* Border radius */
   --border-radius-sm: 0.375rem;
@@ -67,24 +67,19 @@ html, body {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  padding: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #0b0e17;
+  color: #ffffff;
 }
 
 #app {
   width: 100%;
   margin: 0;
-  text-align: center;
-  background-color: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
+  padding: 0;
+  background: transparent;
   min-height: 100vh;
-}
-
-.dark-mode #app {
-  background-color: rgba(26, 26, 26, 0.95);
 }
 
 /* Button styles */

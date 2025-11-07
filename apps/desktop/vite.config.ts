@@ -2,8 +2,11 @@ import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import path from 'path';
 
-export default defineConfig(async () => ({
+export default defineConfig({
   plugins: [svelte()],
+  
+  // Reduce console noise
+  logLevel: 'info',
   
   // Resolve aliases for shared packages and Tauri Mobile resources
   resolve: {
@@ -23,6 +26,7 @@ export default defineConfig(async () => ({
     },
   },
   
+  // Prevent vite from obscuring rust errors
   clearScreen: false,
   server: {
     port: 1420,
@@ -37,4 +41,4 @@ export default defineConfig(async () => ({
     minify: !process.env.TAURI_DEBUG ? 'esbuild' : false,
     sourcemap: !!process.env.TAURI_DEBUG,
   },
-}));
+});

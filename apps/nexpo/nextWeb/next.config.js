@@ -17,6 +17,18 @@ try {
 const nextConfig = withExpo({
   reactStrictMode: false,
   output: process.env.NEXT_OUTPUT === 'export' ? 'export' : undefined,
+  // Suppress verbose Next.js logs
+  logging: {
+    fetches: {
+      fullUrl: false,
+    },
+  },
+  onDemandEntries: {
+    maxInactiveAge: 25 * 1000,
+    pagesBufferLength: 2,
+  },
+  // Empty turbopack config to silence webpack warning
+  turbopack: {},
   transpilePackages: [
     'solito',
     'react-native',
@@ -35,10 +47,8 @@ const nextConfig = withExpo({
     '@nexpo/shared-db',
   ],
   experimental: {
-    forceSwcTransforms: true,
     externalDir: true,
   },
-  serverComponentsExternalPackages: ['@prisma/client', '@dittolive/ditto'],
   async redirects() {
     return [
       {

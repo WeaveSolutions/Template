@@ -1,23 +1,15 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { navigate } from 'svelte-routing';
-  import { authStore } from '../stores/auth';
+  import { authStore } from '../stores/auth.svelte';
   import { getAccessToken } from '../lib/auth';
 
-  let accessToken = '';
-  let isLoadingToken = false;
+  let accessToken = $state('');
+  let isLoadingToken = $state(false);
 
   // Redirect if not authenticated
   onMount(() => {
     if (!authStore.isAuthenticated) {
-      navigate('/login', { replace: true });
-    }
-  });
-
-  // Watch for authentication changes
-  $effect(() => {
-    if (!authStore.isLoading && !authStore.isAuthenticated) {
-      navigate('/login', { replace: true });
+      window.location.href = '/login';
     }
   });
 
@@ -102,7 +94,7 @@
         <div class="token-actions">
           <button 
             class="btn btn-primary"
-            on:click={handleGetToken}
+            onclick={handleGetToken}
             disabled={isLoadingToken}
           >
             {#if isLoadingToken}
@@ -114,7 +106,7 @@
           </button>
           
           {#if accessToken}
-            <button class="btn btn-outline" on:click={copyToken}>
+            <button class="btn btn-outline" onclick={copyToken}>
               Copy Token
             </button>
           {/if}

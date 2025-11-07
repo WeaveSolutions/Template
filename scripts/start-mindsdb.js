@@ -79,28 +79,29 @@ function startMindsDB() {
         host: MINDSDB_CONFIG.host,
         port: MINDSDB_CONFIG.mysqlPort,
       },
-      mongodb: {
-        host: MINDSDB_CONFIG.host,
-        port: MINDSDB_CONFIG.mongoPort,
-      },
     },
   };
 
   const tmpDir = path.join(os.tmpdir(), 'mindsdb-nexpo');
   try { fs.mkdirSync(tmpDir, { recursive: true }); } catch {}
-  const configPath = path.join(tmpDir, `config-${process.pid}.yaml`);
-  fs.writeFileSync(configPath, yaml.dump(configObject), 'utf8');
+  const configPath = path.join(tmpDir, `config-${process.pid}.json`);
+  fs.writeFileSync(configPath, JSON.stringify(configObject, null, 2), 'utf8');
 
   const mindsdbArgs = [
-    '--api', 'http,mysql,mongodb',
+    '--api', 'http,mysql',
     '--config', configPath,
   ];
 
+  // Clean environment for MindsDB - remove conflicting variables
+  const cleanEnv = { ...process.env };
+  delete cleanEnv.DEBUG; // Remove Next.js DEBUG flag that conflicts with MindsDB
+  delete cleanEnv.LOG_LEVEL; // Remove any LOG_LEVEL that might conflict
+  
   const mindsdbProcess = spawn('python', ['-m', 'mindsdb', ...mindsdbArgs], {
     stdio: 'inherit',
     shell: true,
     env: {
-      ...process.env,
+      ...cleanEnv,
       MINDSDB_STORAGE_PATH: path.join(__dirname, '..', 'data', 'mindsdb'),
       MINDSDB_CACHE_PATH: path.join(__dirname, '..', 'data', 'mindsdb_cache')
     }
@@ -134,7 +135,6 @@ function startMindsDB() {
   console.log(`✅ MindsDB started successfully!`);
   console.log(`📊 HTTP API: http://${MINDSDB_CONFIG.host}:${MINDSDB_CONFIG.httpPort}`);
   console.log(`🗄️  MySQL API: mysql://${MINDSDB_CONFIG.host}:${MINDSDB_CONFIG.mysqlPort}`);
-  console.log(`🍃 MongoDB API: mongodb://${MINDSDB_CONFIG.host}:${MINDSDB_CONFIG.mongoPort}`);
   console.log('💡 Use Ctrl+C to stop the server');
 }
 

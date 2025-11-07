@@ -5,12 +5,16 @@ import path from 'path';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [svelte()],
+  
+  // Reduce console noise
+  logLevel: 'info',
+  
   server: {
-    port: 1420,
+    port: 5173,
     host: true
   },
   preview: {
-    port: 1420,
+    port: 5173,
     host: true
   },
   resolve: {

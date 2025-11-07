@@ -1,6 +1,7 @@
 import '../styles/globals.css';
 import React, { useState, useEffect } from 'react';
 import { Auth0Provider } from '@auth0/nextjs-auth0';
+import Head from 'next/head';
 
 // Client-only rendering to prevent SSR issues
 function ClientOnly({ children }: { children: any }) {
@@ -35,15 +36,27 @@ export default function MyApp({ Component, pageProps }: any) {
   // Development mode without Auth0
   if (!auth0Ready) {
     return (
-      <ClientOnly>
-        <Component {...pageProps} />
-      </ClientOnly>
+      <>
+        <Head>
+          <title>Nexpo Web</title>
+          <meta name="description" content="Nexpo Enterprise Web Platform - Cross-Platform Development Stack" />
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+        <ClientOnly>
+          <Component {...pageProps} />
+        </ClientOnly>
+      </>
     );
   }
 
   // Production mode with Auth0
   return (
     <Auth0Provider>
+      <Head>
+        <title>Nexpo Web</title>
+        <meta name="description" content="Nexpo Enterprise Web Platform - Cross-Platform Development Stack" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <ClientOnly>
         <Component {...pageProps} />
       </ClientOnly>

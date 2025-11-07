@@ -137,7 +137,7 @@ class DevPlatformRunner {
           name: 'Tauri Desktop',
           type: 'direct',
           command: 'pnpm',
-          args: ['run', 'desktop'],
+          args: ['run', 'dev'],
           cwd: 'apps/desktop'
         });
       }

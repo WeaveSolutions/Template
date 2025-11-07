@@ -1,0 +1,12 @@
+[build]
+# Reduce parallel jobs to avoid Windows file locking issues
+jobs = 1
+
+[net]
+# Retry downloads if they fail
+git-fetch-with-cli = true
+
+[term]
+# Better progress reporting
+verbose = false
+quiet = false

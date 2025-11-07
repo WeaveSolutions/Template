@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "cross-env DEBUG=\"-next:*,-*jsconfig-paths-plugin*\" next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -34,6 +34,7 @@
   "devDependencies": {
     "@types/node": "^22.15.30",
     "@types/react": "18.3.17",
+    "cross-env": "^7.0.3",
     "eslint": "^9.19.0",
     "eslint-config-next": "14.2.18",
     "next-compose-plugins": "^2.2.1",

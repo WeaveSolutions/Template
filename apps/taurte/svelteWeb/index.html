@@ -4,11 +4,90 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nexpo - Svelte App</title>
-    <meta name="description" content="Nexpo Svelte application with Auth0 integration and shared components" />
+    <title>Taurte Web</title>
+    <meta name="description" content="Taurte Web - Enterprise Web Platform with Svelte 5 and Auth0 Authentication" />
+    <style>
+      /* Loading screen styles */
+      #loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #0b0e17;
+        background-image: 
+          radial-gradient(ellipse 800px 600px at 50% 40%, rgba(102, 126, 234, 0.25) 0%, transparent 60%),
+          radial-gradient(ellipse 600px 800px at 50% 60%, rgba(118, 75, 162, 0.2) 0%, transparent 60%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        color: white;
+        font-family: Inter, system-ui, sans-serif;
+      }
+      
+      .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top: 4px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 1rem;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      .loading-text {
+        font-size: 1.2rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+      }
+      
+      .loading-subtitle {
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+      
+      /* Hide loading when app loads */
+      .loaded #loading {
+        display: none;
+      }
+      
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+        background: #0b0e17;
+      }
+    </style>
   </head>
   <body>
+    <!-- Loading screen -->
+    <div id="loading">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">⚡ Taurte Web</div>
+      <div class="loading-subtitle">Enterprise Web Platform - Loading...</div>
+    </div>
+    
+    <!-- Svelte app mount point -->
     <div id="app"></div>
+    
+    <!-- Svelte entry point -->
     <script type="module" src="/src/main.ts"></script>
+    
+    <!-- Hide loading screen when app is ready -->
+    <script>
+      window.addEventListener('DOMContentLoaded', () => {
+        // Hide loading screen after a short delay to ensure Svelte is mounted
+        setTimeout(() => {
+          document.body.classList.add('loaded');
+        }, 500);
+      });
+    </script>
   </body>
 </html>

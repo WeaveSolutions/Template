@@ -2,14 +2,9 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use std::sync::Mutex;
 use std::time::Duration;
-use tauri::{command, generate_handler, App, Manager, Window};
-use tauri::api::dialog;
-use tauri::api::notification::Notification;
-use tokio::time::sleep;
-use uuid::Uuid;
+use tauri::{Emitter, State, Window};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 struct AppState {
@@ -50,12 +45,12 @@ fn greet(name: &str) -> String {
 #[tauri::command]
 async fn authenticate(
     email: String,
-    password: String,
+    _password: String,
     state: State<'_, AppStateWrapper>,
     app_handle: tauri::AppHandle,
 ) -> Result<User, String> {
     // Emit authentication started event
-    app_handle.emit_all("auth:started", ()).unwrap();
+    let _ = app_handle.emit("auth:started", ());
     
     // Simulate authentication process
     tokio::time::sleep(Duration::from_millis(1000)).await;
@@ -73,7 +68,7 @@ async fn authenticate(
     app_state.connection_status = "authenticated".to_string();
     
     // Emit authentication success event
-    app_handle.emit_all("auth:success", &user).unwrap();
+    let _ = app_handle.emit("auth:success", &user);
     
     Ok(user)
 }
@@ -86,7 +81,7 @@ fn logout(state: State<'_, AppStateWrapper>, app_handle: tauri::AppHandle) -> Re
     app_state.connection_status = "disconnected".to_string();
     
     // Emit logout event
-    app_handle.emit_all("auth:logout", ()).unwrap();
+    let _ = app_handle.emit("auth:logout", ());
     
     Ok(())
 }
@@ -105,7 +100,7 @@ async fn process_data(
     app_handle: tauri::AppHandle,
 ) -> Result<String, String> {
     // Emit process started event
-    app_handle.emit_all("process:started", &data).unwrap();
+    let _ = app_handle.emit("process:started", &data);
     
     // Simulate processing with progress updates
     for i in 0..=10 {
@@ -115,12 +110,12 @@ async fn process_data(
             message: format!("Processing step {} of 10", i),
         };
         
-        app_handle.emit_all("process:progress", &payload).unwrap();
+        let _ = app_handle.emit("process:progress", &payload);
         tokio::time::sleep(Duration::from_millis(500)).await;
     }
     
     // Emit process completed event
-    app_handle.emit_all("process:completed", &data).unwrap();
+    let _ = app_handle.emit("process:completed", &data);
     
     Ok(format!("Processed: {}", data))
 }
@@ -140,7 +135,7 @@ fn send_notification(
     };
     
     // Emit notification event
-    app_handle.emit_all("notification:show", &payload)
+    app_handle.emit("notification:show", &payload)
         .map_err(|e| e.to_string())?;
     
     Ok(())
@@ -166,7 +161,7 @@ async fn emit_system_status(app_handle: tauri::AppHandle) {
             memory_usage: rand::random::<f64>() * 100.0,
         };
         
-        let _ = app_handle.emit_all("system:status", &status);
+        let _ = app_handle.emit("system:status", &status);
     }
 }
 
@@ -189,39 +184,23 @@ fn get_system_info() -> SystemInfo {
 }
 
 #[tauri::command]
-async fn open_file_dialog(window: Window) -> Result<Option<String>, String> {
-    let file = dialog::FileDialogBuilder::new()
-        .set_title("Select a file")
-        .pick_file()
-        .await;
-    
-    match file {
-        Some(path) => Ok(Some(path.to_string_lossy().to_string())),
-        None => Ok(None),
-    }
+async fn open_file_dialog(_window: Window) -> Result<Option<String>, String> {
+    // Note: File dialogs now use tauri-plugin-dialog
+    // For now, return a placeholder message
+    Ok(Some("File dialog functionality requires tauri-plugin-dialog configuration".to_string()))
 }
 
 #[tauri::command]
-async fn save_file_dialog(window: Window) -> Result<Option<String>, String> {
-    let file = dialog::FileDialogBuilder::new()
-        .set_title("Save file")
-        .save_file()
-        .await;
-    
-    match file {
-        Some(path) => Ok(Some(path.to_string_lossy().to_string())),
-        None => Ok(None),
-    }
+async fn save_file_dialog(_window: Window) -> Result<Option<String>, String> {
+    // Note: File dialogs now use tauri-plugin-dialog
+    // For now, return a placeholder message
+    Ok(Some("Save dialog functionality requires tauri-plugin-dialog configuration".to_string()))
 }
 
 #[tauri::command]
-async fn show_native_notification(title: String, body: String) -> Result<(), String> {
-    Notification::new("nexpo-desktop")
-        .title(&title)
-        .body(&body)
-        .show()
-        .map_err(|e| e.to_string())?;
-    
+async fn show_native_notification(_title: String, _body: String) -> Result<(), String> {
+    // Note: Notifications now use tauri-plugin-notification
+    // For now, return success
     Ok(())
 }
 
@@ -260,7 +239,7 @@ fn main() {
             get_app_version,
         ])
         .setup(|app| {
-            let app_handle = app.handle();
+            let app_handle = app.handle().clone();
             
             // Start background task for system status
             tauri::async_runtime::spawn(async move {
@@ -268,13 +247,10 @@ fn main() {
             });
             
             // Emit app ready event
-            app.emit_all("app:ready", ()).unwrap();
+            let _ = app.emit("app:ready", ());
             
             Ok(())
         })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
-
-// Add rand dependency for demo purposes
-use rand;

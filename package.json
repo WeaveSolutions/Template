@@ -37,7 +37,7 @@
     "workspace:nexpo": "node workspace-config.js --platform=nexpo",
     "workspace:taurte": "node workspace-config.js --platform=taurte",
     "workspace:all": "node workspace-config.js --platform=all",
-    "start:mindsdb": "node scripts/start-mindsdb.js start",
+    "start:mindsdb": "cross-env DEBUG= LOG_LEVEL= node scripts/start-mindsdb.js start",
     "stop:mindsdb": "node scripts/start-mindsdb.js stop",
     "restart:mindsdb": "node scripts/start-mindsdb.js restart",
     "logs:mindsdb": "node scripts/start-mindsdb.js logs",
