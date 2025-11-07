@@ -5,6 +5,9 @@ import path from "path";
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
   plugins: [svelte()],
+  
+  // Reduce console noise
+  logLevel: 'info',
   resolve: {
     alias: {
       "@shared/tauri": path.resolve(__dirname, "../../packages/shared-tauri/src"),
@@ -17,7 +20,7 @@ export default defineConfig(async () => ({
   clearScreen: false,
   // 2. tauri expects a fixed port, fail if that port is not available
   server: {
-    port: 5173,
+    port: 19000,
     strictPort: true,
     watch: {
       // 3. tell vite to ignore watching `src-tauri`

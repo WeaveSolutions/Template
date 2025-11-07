@@ -1,7 +1,8 @@
 {
-  "name": "nexpo-mobile",
+  "name": "@taurte/mobile",
   "private": true,
   "version": "1.0.0",
+  "description": "Taurte Mobile - Cross-platform mobile app powered by Tauri & Svelte 5",
   "type": "module",
   "scripts": {
     "dev": "vite",

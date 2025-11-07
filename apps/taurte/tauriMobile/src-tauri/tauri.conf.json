@@ -1,11 +1,11 @@
 {
   "$schema": "https://schema.tauri.app/config/2.0",
-  "productName": "Nexpo Mobile",
+  "productName": "Taurte Mobile",
   "version": "1.0.0",
-  "identifier": "com.nexpo.mobile",
+  "identifier": "com.taurte.mobile",
   "build": {
     "frontendDist": "../dist",
-    "devUrl": "http://localhost:5173",
+    "devUrl": "http://localhost:19000",
     "beforeDevCommand": "pnpm dev",
     "beforeBuildCommand": "pnpm build"
   },
@@ -41,7 +41,7 @@
   "app": {
     "windows": [
       {
-        "title": "Nexpo Mobile",
+        "title": "Taurte Mobile",
         "width": 375,
         "height": 812,
         "resizable": true,
@@ -88,7 +88,7 @@
   },
   "mobile": {
     "android": {
-      "packageName": "com.nexpo.mobile",
+      "packageName": "com.taurte.mobile",
       "versionCode": 1,
       "permissions": [
         "android.permission.INTERNET",
@@ -99,7 +99,7 @@
       ]
     },
     "ios": {
-      "bundleIdentifier": "com.nexpo.mobile",
+      "bundleIdentifier": "com.taurte.mobile",
       "buildNumber": "1.0.0",
       "frameworks": [],
       "permissions": [
