@@ -5,7 +5,23 @@ $source = "assets\images\WeaveLogo.png"
 
 if (-not (Test-Path $source)) {
     Write-Host "ERROR: WeaveLogo.png not found at $source" -ForegroundColor Red
-    Write-Host "Please save the logo image to assets\images\WeaveLogo.png" -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "QUICK SETUP:" -ForegroundColor Cyan
+    Write-Host "1. Right-click the Weave logo image in the chat" -ForegroundColor Yellow
+    Write-Host "2. Select 'Save Image As...'" -ForegroundColor Yellow
+    Write-Host "3. Save to: $((Get-Location).Path)\assets\images\WeaveLogo.png" -ForegroundColor Yellow
+    Write-Host "4. Run this script again: .\copy-logo.ps1" -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "TIP: The logo is the colorful gradient ring in the chat messages above" -ForegroundColor Green
+    
+    # Try to open the assets/images folder to make it easier
+    $targetDir = Join-Path (Get-Location).Path "assets\images"
+    if (Test-Path $targetDir) {
+        Write-Host ""
+        Write-Host "Opening destination folder..." -ForegroundColor Cyan
+        Start-Process explorer.exe $targetDir
+    }
+    
     exit 1
 }
 
