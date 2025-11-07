@@ -40,7 +40,7 @@ export default function MyApp({ Component, pageProps }: any) {
         <Head>
           <title>Nexpo Web</title>
           <meta name="description" content="Nexpo Enterprise Web Platform - Cross-Platform Development Stack" />
-          <link rel="icon" href="/favicon.ico" />
+          <link rel="icon" type="image/png" href="/WeaveLogo.png" />
         </Head>
         <ClientOnly>
           <Component {...pageProps} />
@@ -55,7 +55,7 @@ export default function MyApp({ Component, pageProps }: any) {
       <Head>
         <title>Nexpo Web</title>
         <meta name="description" content="Nexpo Enterprise Web Platform - Cross-Platform Development Stack" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" href="/WeaveLogo.png" />
       </Head>
       <ClientOnly>
         <Component {...pageProps} />
