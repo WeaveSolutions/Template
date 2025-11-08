@@ -44,7 +44,7 @@ Choose one primary database based on your template requirements:
 
 **Implementation Pattern:**
 - Auth0 login → Supabase Auth JWT → RLS policies check admin role → Dashboard access granted
-- User roles in `users` table with `role ENUM('user', 'admin', 'superadmin')`
+- User roles in `users` table with `role ENUM('user', 'analyst', 'admin', 'viewer')`
 
 ##### MongoDB (Atlas)
 - **Authentication Integration**: Custom Auth0 integration via MongoDB Realm
@@ -59,19 +59,17 @@ Choose one primary database based on your template requirements:
 - User document structure: `{ _id, email, roles: ['admin'], permissions: ['view_dashboard', 'edit_kpis'] }`
 
 #### 2.3 Role Hierarchy
-- **SuperAdmin**: Full access to all dashboards, KPI configuration, user management
-- **Admin**: Access to all analytics dashboards, limited configuration access
+- **Admin**: Full access to all dashboards, KPI configuration, and user management
 - **Analyst**: Read-only access to specific dashboards (Product, Marketing)
-- **Viewer**: Limited read-only access to executive summary only
+- **Viewer**: No dashboard access (reserved for future feature access or limited API usage)
 
 #### 2.4 Access Control Matrix
 
 | Role | Executive Dashboard | Product Dashboard | Technical Dashboard | Marketing Dashboard | KPI Configuration | User Management |
 |------|---------------------|-------------------|---------------------|---------------------|-------------------|-----------------|
-| SuperAdmin | Full Access | Full Access | Full Access | Full Access | Full Access | Full Access |
-| Admin | Full Access | Full Access | Full Access | Full Access | Read-Only | No Access |
+| Admin | Full Access | Full Access | Full Access | Full Access | Full Access | Full Access |
 | Analyst | Read-Only | Full Access | Read-Only | Full Access | No Access | No Access |
-| Viewer | Read-Only | No Access | No Access | No Access | No Access | No Access |
+| Viewer | No Access | No Access | No Access | No Access | No Access | No Access |
 
 #### 2.5 Security Best Practices
 - Implement JWT token expiration (15-minute access, 7-day refresh)
