@@ -1,0 +1,24 @@
+{
+  "name": "@taurte/shared-stores",
+  "version": "1.0.0",
+  "description": "Shared Svelte stores for Taurte applications",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src/**/*"
+  ],
+  "dependencies": {
+    "svelte": "^5.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0"
+  },
+  "peerDependencies": {
+    "svelte": "^5.0.0"
+  },
+  "license": "Apache-2.0",
+  "private": true
+}

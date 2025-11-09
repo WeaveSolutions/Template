@@ -99,7 +99,7 @@ Infrastructure and CI/CD templates:
 Templates support these technologies:
 - **Frontend**: React, Next.js, Svelte, Vue
 - **Mobile**: React Native, Expo, Tauri Mobile
-- **Desktop**: Tauri, Electron
+- **Desktop**: Tauri
 - **Backend**: Node.js, Express, FastAPI, Go
 - **Database**: PostgreSQL, MongoDB, Supabase, MindsDB
 - **Auth**: Auth0, Supabase Auth, JWT

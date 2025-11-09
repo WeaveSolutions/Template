@@ -1,0 +1,40 @@
+{
+  "name": "@weave/bi-core",
+  "version": "1.0.0",
+  "description": "Shared BI dashboard core - types, API clients, mock data, and utilities",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./types": "./src/types/index.ts",
+    "./api": "./src/api/index.ts",
+    "./utils": "./src/utils/index.ts",
+    "./mock-data": "./src/mock-data/index.ts",
+    "./config": "./src/config/index.ts"
+  },
+  "files": [
+    "src/**/*"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "lint": "eslint src/**/*.ts"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "vitest": "^2.0.0",
+    "eslint": "^9.0.0"
+  },
+  "keywords": [
+    "bi",
+    "dashboard",
+    "kpi",
+    "analytics",
+    "shared",
+    "cross-platform"
+  ],
+  "license": "Apache-2.0",
+  "private": true
+}

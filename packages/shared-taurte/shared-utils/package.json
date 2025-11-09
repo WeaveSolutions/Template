@@ -1,0 +1,19 @@
+{
+  "name": "@taurte/shared-utils",
+  "version": "1.0.0",
+  "description": "Shared utility functions for Taurte applications",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src/**/*"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.6.0"
+  },
+  "license": "Apache-2.0",
+  "private": true
+}
